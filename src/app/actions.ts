@@ -55,6 +55,5 @@ export async function analyzeProject(description: string) {
     return result;
   } catch (error) {
     console.error('Error in analyzeProject:', error);
-    throw new Error(`Analysis failed: ${error.message}`);
   }
 } 
