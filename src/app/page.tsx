@@ -2,8 +2,13 @@
 import { useState } from "react";
 import { analyzeProject } from "./actions";
 
+
+
+
 export default function Home() {
   const [description, setDescription] = useState("");
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [results, setResults] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
