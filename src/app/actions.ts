@@ -6,12 +6,12 @@ import path from 'path';
 export async function analyzeProject(description: string) {
   try {
     // Get absolute path to the Python script
-    const scriptPath = path.join(process.cwd(), 'scripts', 'analyzer.py');
+    const scriptPath = path.join(process.cwd(), 'scripts', 'LLM_response.py');
     console.log('Attempting to execute Python script at:', scriptPath);
 
     const result = await new Promise((resolve, reject) => {
       // Use python3 with shell: true and full path
-      const pythonProcess = spawn('python3', [scriptPath], {
+      const pythonProcess = spawn('python3', [scriptPath, description], {
         shell: true,
         stdio: ['pipe', 'pipe', 'pipe']
       });
