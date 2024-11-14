@@ -1,24 +1,18 @@
 'use client'
 import { useState } from "react";
+import {analyzeProject} from "@/app/actions";
 
 interface Levier {
   [key: string]: number;
 }
 
-interface AnalysisResult {
+export interface AnalysisResult {
   projet: string;
   is_related: boolean;
   leviers: Levier[];
 }
 
-const MOCKED_DATA = {
-  "projet": "Pose de centrales solaires photovoltaïques sur bâtiments communaux (école, garderie et salle des fêtes)",
-  "is_related": true,
-  "leviers": [
-      {"Electricité renouvelable": 0.95} as Levier,
-      {"Rénovation (tertiaire)": 0.6} as Levier
-  ]
-}
+
 
 export default function Home() {
   const [description, setDescription] = useState("");
@@ -30,8 +24,8 @@ export default function Home() {
     setLoading(true);
     
     try {
-      //const data = await analyzeProject(description);
-      setResults(MOCKED_DATA as AnalysisResult);
+      const data = await analyzeProject(description);
+      setResults(data as AnalysisResult);
     } catch (error) {
       console.error('Error:', error);
     } finally {
