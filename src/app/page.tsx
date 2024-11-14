@@ -120,7 +120,7 @@ export default function Home() {
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full p-3 border rounded-lg min-h-[150px] focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-3 border rounded-lg min-h-[150px] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-600"
               placeholder="Entrez la description de votre projet..."
             />
           </div>
