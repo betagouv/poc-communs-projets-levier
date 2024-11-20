@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Import python's built-in regular expression library
 import re
 import anthropic

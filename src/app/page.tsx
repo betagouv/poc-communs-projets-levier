@@ -10,6 +10,7 @@ export interface AnalysisResult {
   projet: string;
   is_related: boolean;
   leviers: Levier[];
+  explications: string;
 }
 
 
@@ -60,17 +61,17 @@ export default function Home() {
               {results.leviers.map((levier, index) => {
                 const [name, score] = Object.entries(levier)[0];
                 const percentage = (score * 100).toFixed(0);
-                
+
                 return (
-                  <div 
-                    key={index} 
+                  <div
+                    key={index}
                     className="bg-white border rounded-lg p-4 flex items-center justify-between"
                   >
                     <span className="font-medium">{name}</span>
                     <div className="flex items-center space-x-3">
                       <div className="w-48 bg-gray-200 rounded-full h-2.5">
-                        <div 
-                          className="bg-blue-600 h-2.5 rounded-full" 
+                        <div
+                          className="bg-blue-600 h-2.5 rounded-full"
                           style={{ width: `${percentage}%` }}
                         />
                       </div>
@@ -83,6 +84,25 @@ export default function Home() {
               })}
             </div>
           </div>
+        )}
+
+        {results.explications  && (
+            <div className="space-y-3">
+              <h3 className="font-semibold">Explication :</h3>
+              <div className="space-y-2">
+                {results.explications.split('Le levier').map((part, index) => {
+                  if (index === 0) return <p key={index}>{part}</p>;
+                  return (
+                      <ul key={index} className="list-disc pl-5">
+                        <li>
+                        Le levier
+                        {part}
+                        </li>
+                      </ul>
+                  );
+                })}
+              </div>
+            </div>
         )}
 
         {/* Show original JSON for debugging */}
@@ -101,14 +121,17 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen p-8 bg-gray-50">
+    <div className="min-h-screen p-8 bg-gray-50 dark:text-gray-900">
       <main className="max-w-2xl mx-auto">
         <h1 className="text-2xl font-bold mb-8">Analyseur de Projet</h1>
         
-        <form onSubmit={handleSubmit} className="space-y-4 bg-white p-6 rounded-lg shadow-sm">
+        <form onSubmit={handleSubmit} className="space-y-4 bg-white p-6 rounded-lg shadow-sm ">
           <div>
-            <label htmlFor="description" className="block mb-2 font-medium">
-              Description du Projet
+            <label 
+              htmlFor="description" 
+              className="block mb-2 text-sm font-medium text-gray-900"
+            >
+              Description du projet
             </label>
             <textarea
               id="description"
