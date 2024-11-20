@@ -70,6 +70,7 @@ def get_completion_cached(projet: str, system_prompt="", cached_prompt="", model
             "projet": projet,
             "is_related": False,
             "leviers": [],
+            "explications":""
         }    
     return response_dict
 
