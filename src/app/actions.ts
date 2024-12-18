@@ -4,15 +4,24 @@ import { spawn } from 'child_process';
 import path from 'path';
 import {AnalysisResult} from "@/app/page";
 
-export async function analyzeProject(description: string): Promise<AnalysisResult> {
+export interface CompetencesResult {
+  projet: string;
+  competences: Array<{
+    competence: string;
+    sous_competence: string;
+    score: number;
+  }>;
+}
+
+export async function analyzeProject(description: string, type: 'TE' | 'competences'): Promise<AnalysisResult | CompetencesResult> {
   return new Promise((resolve, reject) => {
-    // Escape single quotes and wrap the description in single quotes
     const escapedDescription = description.replace(/'/g, "'\\''");
     const pythonScript = path.join(process.cwd(), 'scripts', 'LLM_response.py');
     
     const pythonProcess = spawn('python3', [
       pythonScript,
-      `'${escapedDescription}'`  // Wrap in quotes to handle spaces and special characters
+      `'${escapedDescription}'`,
+      '--type', type
     ]);
 
     let outputString = '';
@@ -35,14 +44,24 @@ export async function analyzeProject(description: string): Promise<AnalysisResul
 
     pythonProcess.on('close', (code) => {
       console.log('Python process exited with code:', code);
+      console.log('Raw output:', outputString);
       if (code !== 0) {
         reject(new Error(`Process exited with code ${code}. Error: ${errorString}`));
         return;
       }
       try {
-        const jsonResult = JSON.parse(outputString);
+        const outputs = outputString.trim().split('\n').filter(line => line.trim());
+        
+        let jsonResult;
+        if (type === 'TE') {
+          jsonResult = JSON.parse(outputs[0]);
+        } else {
+          jsonResult = JSON.parse(outputs[outputs.length - 1]);
+        }
         resolve(jsonResult);
       } catch (e) {
+        console.error('JSON parse error:', e);
+        console.error('Failed to parse:', outputString);
         reject(e);
       }
     });
