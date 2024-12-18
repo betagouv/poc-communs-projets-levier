@@ -879,34 +879,6 @@ def classification_competences(projet: str, system_prompt=system_prompt_competen
     
     return response_dict
 
-
-# if __name__ == "__main__":
-#     parser = argparse.ArgumentParser(description='matching de projet écologique avec leviers FNV')
-#     parser.add_argument('projet', help='Description du projet à analyser')
-#     parser.add_argument('--model', default='haiku', choices=['haiku', 'sonnet'], 
-#                        help='Modèle à utiliser (default: sonnet)')
-    
-#     args = parser.parse_args()
-    
-#     response_classification = classification_TE(
-#         projet=args.projet,
-#         system_prompt=system_prompt_classification_TE,
-#         user_prompt=user_prompt_classification_TE,
-#         model=args.model
-#     )
-#     print(json.dumps(response_classification))
-
-#     response_competences = classification_competences(
-#         projet=args.projet,
-#         system_prompt=system_prompt_competences,
-#         user_prompt=user_prompt_competences,
-#         model=args.model
-#     )
-#     print(json.dumps(response_competences))
-
-
-# ... existing imports ...
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='matching de projet écologique avec leviers FNV')
     parser.add_argument('projet', help='Description du projet à analyser')
