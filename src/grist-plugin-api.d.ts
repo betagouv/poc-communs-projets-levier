@@ -14,13 +14,7 @@ declare module grist {
     InteractionOptionsRequest,
     WidgetColumnMap,
   } from "grist/CustomSectionAPI";
-  import {
-    AccessTokenOptions,
-    AccessTokenResult,
-    GristAPI,
-    GristDocAPI,
-    GristView,
-  } from "grist/GristAPI";
+  import { AccessTokenOptions, AccessTokenResult, GristAPI, GristDocAPI, GristView } from "grist/GristAPI";
   import { RowRecord } from "grist/GristData";
   import { RenderOptions } from "grist/RenderOptions";
   import { TableOperations } from "grist/TableOperations";
@@ -64,9 +58,7 @@ declare module grist {
    * but decoding data by default, replacing e.g. ['D', timestamp] with
    * a moment date. Option 'keepEncoded' skips the decoding step.
    */
-  export function fetchSelectedTable(options?: {
-    keepEncoded?: boolean;
-  }): Promise<any>;
+  export function fetchSelectedTable(options?: { keepEncoded?: boolean }): Promise<any>;
   /**
    * Fetches current selected record as for [[GristView.fetchSelectedRecord]],
    * but decoding data by default, replacing e.g. ['D', timestamp] with
@@ -84,10 +76,7 @@ declare module grist {
    * overridden to decode data by default.
    */
   export const docApi: GristDocAPI & GristView;
-  export const on: (
-    event: string | symbol,
-    listener: (...args: any[]) => void,
-  ) => Rpc;
+  export const on: (event: string | symbol, listener: (...args: any[]) => void) => Rpc;
   /**
    * Shortcut for [[WidgetAPI.getOption]]
    */
@@ -133,9 +122,7 @@ declare module grist {
    * });
    * '''
    */
-  export function getAccessToken(
-    options?: AccessTokenOptions,
-  ): Promise<AccessTokenResult>;
+  export function getAccessToken(options?: AccessTokenOptions): Promise<AccessTokenResult>;
   /**
    * Get the current selected table (for custom widgets).
    */
@@ -175,26 +162,17 @@ declare module grist {
    * in the future be called with null if the cursor moves away from
    * any row.
    */
-  export function onRecord(
-    callback: (
-      data: RowRecord | null,
-      mappings: WidgetColumnMap | null,
-    ) => unknown,
-  ): void;
+  export function onRecord(callback: (data: RowRecord | null, mappings: WidgetColumnMap | null) => unknown): void;
   /**
    * For custom widgets, add a handler that will be called whenever the
    * new (blank) row is selected.
    */
-  export function onNewRecord(
-    callback: (mappings: WidgetColumnMap | null) => unknown,
-  ): void;
+  export function onNewRecord(callback: (mappings: WidgetColumnMap | null) => unknown): void;
   /**
    * For custom widgets, add a handler that will be called whenever the
    * selected records change.  Handler will be called with a list of records.
    */
-  export function onRecords(
-    callback: (data: RowRecord[], mappings: WidgetColumnMap | null) => unknown,
-  ): void;
+  export function onRecords(callback: (data: RowRecord[], mappings: WidgetColumnMap | null) => unknown): void;
   /**
    * For custom widgets, add a handler that will be called whenever the
    * widget options change (and on initial ready message). Handler will be
@@ -202,9 +180,7 @@ declare module grist {
    * The second parameter has information about the widgets relationship with
    * the document that contains it.
    */
-  export function onOptions(
-    callback: (options: any, settings: InteractionOptions) => unknown,
-  ): void;
+  export function onOptions(callback: (options: any, settings: InteractionOptions) => unknown): void;
   /**
    * Calling 'addImporter(...)' adds a safeBrowser importer. It is a short-hand for forwarding calls
    * to an 'ImportSourceAPI' implementation registered in the file at 'path'. It takes care of
@@ -227,8 +203,7 @@ declare module grist {
   /**
    * Options when initializing connection to Grist.
    */
-  export interface ReadyPayload
-    extends Omit<InteractionOptionsRequest, "hasCustomOptions"> {
+  export interface ReadyPayload extends Omit<InteractionOptionsRequest, "hasCustomOptions"> {
     /**
      * Handler that will be called by Grist to open additional configuration panel inside the Custom Widget.
      */
@@ -368,11 +343,7 @@ declare module "grist/GristAPI" {
      * plugins. E.g. ImportSourceAPI.getImportSource is given a target identifier to allow rende UI
      * inline in the import dialog. Returns the procId which can be used to dispose the view.
      */
-    render(
-      path: string,
-      target: RenderTarget,
-      options?: RenderOptions,
-    ): Promise<number>;
+    render(path: string, target: RenderTarget, options?: RenderOptions): Promise<number>;
     /**
      * Dispose the process with id procId. If the process was embedded into the UI, removes the
      * corresponding element from the view.
@@ -487,12 +458,7 @@ declare module "grist/GristData" {
   /**
    * Possible types of cell content.
    */
-  export type CellValue =
-    | number
-    | string
-    | boolean
-    | null
-    | [GristObjCode, ...unknown[]];
+  export type CellValue = number | string | boolean | null | [GristObjCode, ...unknown[]];
   export interface BulkColValues {
     [colId: string]: CellValue[];
   }
@@ -604,21 +570,12 @@ declare module "grist/TableOperations" {
     /**
      * Create a record or records.
      */
-    create(
-      records: Types.NewRecord,
-      options?: OpOptions,
-    ): Promise<Types.MinimalRecord>;
-    create(
-      records: Types.NewRecord[],
-      options?: OpOptions,
-    ): Promise<Types.MinimalRecord[]>;
+    create(records: Types.NewRecord, options?: OpOptions): Promise<Types.MinimalRecord>;
+    create(records: Types.NewRecord[], options?: OpOptions): Promise<Types.MinimalRecord[]>;
     /**
      * Update a record or records.
      */
-    update(
-      records: Types.Record | Types.Record[],
-      options?: OpOptions,
-    ): Promise<void>;
+    update(records: Types.Record | Types.Record[], options?: OpOptions): Promise<void>;
     /**
      * Delete a record or records.
      */
@@ -626,10 +583,7 @@ declare module "grist/TableOperations" {
     /**
      * Add or update a record or records.
      */
-    upsert(
-      records: Types.AddOrUpdateRecord | Types.AddOrUpdateRecord[],
-      options?: UpsertOptions,
-    ): Promise<void>;
+    upsert(records: Types.AddOrUpdateRecord | Types.AddOrUpdateRecord[], options?: UpsertOptions): Promise<void>;
     /**
      * Determine the tableId of the table.
      */
@@ -752,10 +706,7 @@ declare module "grist/FileParserAPI" {
     getParseOptions(parseOptions?: ParseOptions): Promise<ParseOptions>;
   }
   export interface ParseFileAPI {
-    parseFile(
-      file: FileSource,
-      parseOptions?: ParseOptions,
-    ): Promise<ParseFileResult>;
+    parseFile(file: FileSource, parseOptions?: ParseOptions): Promise<ParseFileResult>;
   }
   /**
    * ParseOptions contains parse options depending on plugin,
@@ -1239,11 +1190,7 @@ declare module "grain-rpc/rpc" {
      * it may be given in the constructor, or later with setSendMessage. You must also call
      * receiveMessage() for every message received from the other side.
      */
-    constructor(options?: {
-      logger?: IRpcLogger;
-      sendMessage?: SendMessageCB;
-      callWrapper?: ICallWrapper;
-    });
+    constructor(options?: { logger?: IRpcLogger; sendMessage?: SendMessageCB; callWrapper?: ICallWrapper });
     /**
      * To use Rpc, call this for every message received from the other side of the channel.
      */
@@ -1288,11 +1235,7 @@ declare module "grain-rpc/rpc" {
      */
     registerImpl<Iface extends any>(name: string, impl: any): void;
     registerImpl<Iface>(name: string, impl: Iface, checker: tic.Checker): void;
-    registerForwarder(
-      fwdName: string,
-      dest: IForwarderDest,
-      fwdDest?: string,
-    ): void;
+    registerForwarder(fwdName: string, dest: IForwarderDest, fwdDest?: string): void;
     unregisterForwarder(fwdName: string): void;
     /**
      * Unregister an implementation, if one was registered with this name.
@@ -1308,11 +1251,7 @@ declare module "grain-rpc/rpc" {
     getStub<Iface extends any>(name: string): Iface;
     getStub<Iface>(name: string, checker: tic.Checker): Iface;
     getStubForward<Iface extends any>(fwdDest: string, name: string): any;
-    getStubForward<Iface>(
-      fwdDest: string,
-      name: string,
-      checker: tic.Checker,
-    ): Iface;
+    getStubForward<Iface>(fwdDest: string, name: string, checker: tic.Checker): Iface;
     /**
      * Simple way to registers a function under a given name, with no argument checking.
      */
@@ -1325,11 +1264,7 @@ declare module "grain-rpc/rpc" {
      * Call a remote function registered with registerFunc. Does no type checking.
      */
     callRemoteFunc(name: string, ...args: any[]): Promise<any>;
-    callRemoteFuncForward(
-      fwdDest: string,
-      name: string,
-      ...args: any[]
-    ): Promise<any>;
+    callRemoteFuncForward(fwdDest: string, name: string, ...args: any[]): Promise<any>;
     forwardCall(c: IMsgRpcCall): Promise<any>;
     forwardMessage(msg: IMsgCustom): Promise<any>;
   }
@@ -1509,11 +1444,7 @@ declare module "ts-interface-checker/types" {
   export type CheckerFunc = (value: any, ctx: IContext) => boolean;
   /** Node that represents a type. */
   export abstract class TType {
-    abstract getChecker(
-      suite: ITypeSuite,
-      strict: boolean,
-      allowedProps?: Set<string>,
-    ): CheckerFunc;
+    abstract getChecker(suite: ITypeSuite, strict: boolean, allowedProps?: Set<string>): CheckerFunc;
   }
   /**
    * Descriptor from which TType may be build (by parseSpec()). A plain string is equivalent to
@@ -1534,11 +1465,7 @@ declare module "ts-interface-checker/types" {
   export class TName extends TType {
     name: string;
     constructor(name: string);
-    getChecker(
-      suite: ITypeSuite,
-      strict: boolean,
-      allowedProps?: Set<string>,
-    ): CheckerFunc;
+    getChecker(suite: ITypeSuite, strict: boolean, allowedProps?: Set<string>): CheckerFunc;
   }
   /**
    * Defines a literal value, e.g. lit('hello') or lit(123).
@@ -1586,11 +1513,7 @@ declare module "ts-interface-checker/types" {
   export class TUnion extends TType {
     ttypes: TType[];
     constructor(ttypes: TType[]);
-    getChecker(
-      suite: ITypeSuite,
-      strict: boolean,
-      allowedProps?: Set<string>,
-    ): CheckerFunc;
+    getChecker(suite: ITypeSuite, strict: boolean, allowedProps?: Set<string>): CheckerFunc;
   }
   /**
    * Defines an intersection type, e.g. intersection('number', 'null').
@@ -1599,18 +1522,12 @@ declare module "ts-interface-checker/types" {
   export class TIntersection extends TType {
     ttypes: TType[];
     constructor(ttypes: TType[]);
-    getChecker(
-      suite: ITypeSuite,
-      strict: boolean,
-      allowedProps?: Set<string>,
-    ): CheckerFunc;
+    getChecker(suite: ITypeSuite, strict: boolean, allowedProps?: Set<string>): CheckerFunc;
   }
   /**
    * Defines an enum type, e.g. enum({'A': 1, 'B': 2}).
    */
-  export function enumtype(values: {
-    [name: string]: string | number;
-  }): TEnumType;
+  export function enumtype(values: { [name: string]: string | number }): TEnumType;
   export class TEnumType extends TType {
     members: {
       [name: string]: string | number;
@@ -1651,16 +1568,8 @@ declare module "ts-interface-checker/types" {
     bases: string[];
     props: TProp[];
     indexType?: TType;
-    constructor(
-      bases: string[],
-      props: TProp[],
-      indexType?: TOptional | TypeSpec,
-    );
-    getChecker(
-      suite: ITypeSuite,
-      strict: boolean,
-      allowedProps?: Set<string>,
-    ): CheckerFunc;
+    constructor(bases: string[], props: TProp[], indexType?: TOptional | TypeSpec);
+    getChecker(suite: ITypeSuite, strict: boolean, allowedProps?: Set<string>): CheckerFunc;
   }
   /**
    * Defines an optional property on an interface.
@@ -1694,11 +1603,7 @@ declare module "ts-interface-checker/types" {
   /**
    * Defines a function parameter.
    */
-  export function param(
-    name: string,
-    typeSpec: TypeSpec,
-    isOpt?: boolean,
-  ): TParam;
+  export function param(name: string, typeSpec: TypeSpec, isOpt?: boolean): TParam;
   export class TParam {
     name: string;
     ttype: TType;
@@ -1741,11 +1646,7 @@ declare module "ts-interface-checker/util" {
    * implementation that does not pay attention to messages, and a full implementation that does.
    */
   export interface IContext {
-    fail(
-      relPath: string | number | null,
-      message: string | null,
-      score: number,
-    ): false;
+    fail(relPath: string | number | null, message: string | null, score: number): false;
     unionResolver(): IUnionResolver;
     resolveUnion(ur: IUnionResolver): void;
     /**
@@ -1805,11 +1706,7 @@ declare module "ts-interface-checker/util" {
    * normally pass validation.
    */
   export class NoopContext implements IContext, IUnionResolver {
-    fail(
-      relPath: string | number | null,
-      message: string | null,
-      score: number,
-    ): false;
+    fail(relPath: string | number | null, message: string | null, score: number): false;
     fork(): IContext;
     completeFork(): boolean;
     failed(): boolean;
@@ -1826,11 +1723,7 @@ declare module "ts-interface-checker/util" {
      * i.e. the maximum length of Checker.validate() or IErrorDetail.nested.
      */
     static maxForks: number;
-    fail(
-      relPath: string | number | null,
-      message: string | null,
-      score: number,
-    ): false;
+    fail(relPath: string | number | null, message: string | null, score: number): false;
     unionResolver(): IUnionResolver;
     resolveUnion(unionResolver: IUnionResolver): void;
     getError(path: string): VError;
