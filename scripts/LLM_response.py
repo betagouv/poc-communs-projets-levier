@@ -158,11 +158,12 @@ La partie "aménagement du SAS" n'est pas assez précise pour déterminer son im
 {
     "projet": "Aménagement du SAS de la mairie et désimperméabilisation des extérieurs",
     "classification": "Le projet a un lien avec la transition écologique",
-    "leviers": {
-        "Désimperméabilisation des sols": 1.0,
-        "Sobriété dans l'utilisation de la ressource en eau": 0.7,
-        "Sobriété foncière": 0.5
-    }
+    "leviers": [
+            {"Désimperméabilisation des sols": 1.0},
+            {"Sobriété dans l'utilisation de la ressource en eau": 0.7},
+            {"Sobriété foncière": 0.5}
+    ]
+
 }
 </json>
 </exemple_2>
@@ -183,8 +184,7 @@ Concernant les leviers, bien que ce projet soit clairement lié à la transition
 {
     "projet": "Rénovation de l'éclairage public à Juvigny sous Andaine et Sept Forges",
     "classification": "Le projet a un lien avec la transition écologique",
-    "leviers": {
-    }
+    "leviers": []
 }
 </json>
 </exemple_3>
@@ -210,12 +210,13 @@ Les leviers associés sont :
 {
     "projet": "Extension du bois de Cormelles le Royal et des liaisons douces – CORMELLES LE ROYAL",
     "classification": "Le projet a un lien avec la transition écologique",
-    "leviers": {
-        "Gestion des forêts et produits bois": 0.9,
-        "Vélo": 0.8,
-        "Réduction des déplacements": 0.6,
-        "Surface en aire protégée": 0.5
-    }
+    "leviers": [
+            {"Gestion des forêts et produits bois": 0.9},
+            {"Vélo": 0.8},
+            {"Réduction des déplacements": 0.6},
+            {"Surface en aire protégée": 0.5}
+    ]
+
 }
 </json></exemple_4><exemple_5><projet>Chaufferie collective et réseau de chaleur urbain – VERSON / CLM </projet>
 <raisonnement>
@@ -234,11 +235,11 @@ Les leviers associés sont :
 {
     "projet": "Chaufferie collective et réseau de chaleur urbain – VERSON / CLM",
     "classification": "Le projet a un lien avec la transition écologique",
-    "leviers": {
-        "Réseaux de chaleur décarbonés": 1.0,
-        "Changement chaudières gaz + rénovation (résidentiel)": 0.6,
-        "Changement chaudières fioul + rénovation (résidentiel)": 0.6
-    }
+    "leviers": [
+            {"Réseaux de chaleur décarbonés": 1.0},
+            {"Changement chaudières gaz + rénovation (résidentiel)": 0.6},
+            {"Changement chaudières fioul + rénovation (résidentiel)": 0.6}
+        ]
 }
 </json></exemple_5>
 <exemple_6><projet>Revitalisation du centre bourg Saint Mars d'Egrenne </projet>
@@ -265,11 +266,11 @@ Ces associations sont faites avec prudence étant donné le manque d'information
 {
     "projet": "Revitalisation du centre bourg Saint Mars d'Egrenne",
     "classification": "Le projet n'est pas assez précis pour être lié ou non à la transition écologique",
-    "leviers": {
-        "Sobriété foncière": 0.6,
-        "Rénovation (hors changement chaudières)": 0.5,
-        "Réduction des déplacements": 0.4
-    }
+    "leviers": [
+        {"Sobriété foncière": 0.6},
+        {"Rénovation (hors changement chaudières)": 0.5},
+        {"Réduction des déplacements": 0.4}
+    ]
 }
 </json></exemple_6>
 
@@ -291,8 +292,7 @@ Concernant les leviers, bien que ce projet soit clairement lié à la transition
 {
     "projet": "Travaux d'assainissement des eaux usées",
     "classification": "Le projet a un lien avec la transition écologique",
-    "leviers": {
-    }
+    "leviers": []
 }
 </json>
 </exemple_7>
@@ -321,10 +321,10 @@ Cependant, certains leviers peuvent être potentiellement pertinents, avec des s
 {
     "projet": "Aménagement du parking de la salle communale (Ceaucé)",
     "classification": "Le projet n'est pas assez précis pour être lié ou non à la transition écologique",
-    "leviers": {
-        "Désimperméabilisation des sols": 0.3,
-        "Véhicules électriques": 0.2
-    }
+    "leviers": [
+        {"Désimperméabilisation des sols": 0.3},
+        {"Véhicules électriques": 0.2}]
+
 }
 </json>
 </exemple_8>
