@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { RowRecord } from "grist/GristData";
 import { analyzeProject } from "@/app/actions";
 import { CompetencesResult, LeviersResult } from "@/app/types";
 import { WidgetColumnMap } from "grist/CustomSectionAPI";
+import type { RowRecord, CellValue } from "grist/GristData";
 
 export const GristAnalyzer = () => {
   const [isLoadingLeviers, setIsLoadingLeviers] = useState(false);
@@ -20,9 +20,9 @@ export const GristAnalyzer = () => {
       requiredAccess: "full",
       columns: [
         { name: "description", type: "Text" },
-        { name: "leviers", type: "Text" },
-        { name: "competence_principale", type: "Text" },
-        { name: "competence_secondaire", type: "Text" },
+        { name: "leviers", type: "ChoiceList" },
+        { name: "thematique_prioritaire", type: "Choice" },
+        { name: "thematique_secondaire", type: "Choice" },
       ],
     });
 
@@ -96,12 +96,14 @@ export const GristAnalyzer = () => {
         throw new Error("No record selected");
       }
 
-      const leversString = Array.from(selectedLevers).join(", ");
+      const leversArray = Array.from(selectedLevers);
       const leversColumnId = columnMapping?.leviers;
+
+      const choiceListValue = ["L", ...leversArray] as unknown as CellValue;
 
       await grist.selectedTable.update({
         id: currentSelection.id,
-        fields: { [leversColumnId as string]: leversString },
+        fields: { [leversColumnId as string]: choiceListValue },
       });
     } catch (error) {
       setError(error instanceof Error ? error.message : "Failed to save levers");
@@ -115,8 +117,8 @@ export const GristAnalyzer = () => {
       }
 
       const competences = competencesResult.competences;
-      const mainCompetenceColumnId = columnMapping?.competence_principale;
-      const secondaryCompetenceColumnId = columnMapping?.competence_secondaire;
+      const mainCompetenceColumnId = columnMapping?.thematique_prioritaire;
+      const secondaryCompetenceColumnId = columnMapping?.thematique_secondaire;
 
       await grist.selectedTable.update({
         id: currentSelection.id,
@@ -207,7 +209,7 @@ export const GristAnalyzer = () => {
       <div className="mt-6 space-y-6">
         {/* Competences Section */}
         <div className="mb-8">
-          <h3 className="font-semibold mb-3 text-gray-800">Compétences identifiées :</h3>
+          <h3 className="font-semibold mb-3 text-gray-800">Thématiques identifiées :</h3>
 
           {isLoadingCompetences ? (
             <div className="p-4 border rounded-lg bg-gray-50">
@@ -225,7 +227,7 @@ export const GristAnalyzer = () => {
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   ></path>
                 </svg>
-                <span className="text-gray-600">Analyse des compétences en cours...</span>
+                <span className="text-gray-600">Analyse des thématiques en cours...</span>
               </div>
             </div>
           ) : competencesResult?.competences ? (
@@ -268,7 +270,7 @@ export const GristAnalyzer = () => {
                 <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                 </svg>
-                Appliquer les compétences
+                Appliquer les thématiques
               </button>
             </>
           ) : null}
