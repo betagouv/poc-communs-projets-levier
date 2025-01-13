@@ -6,7 +6,7 @@ import { useEffect } from "react";
 
 export default function WidgetPage() {
   useEffect(() => {
-    init({ url: "https://stats.beta.gouv.fr/", siteId: "184" });
+    init({ url: "https://stats.beta.gouv.fr/", siteId: "184", disableCookies: true });
   }, []);
 
   return <GristAnalyzer />;
