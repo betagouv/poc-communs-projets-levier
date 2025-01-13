@@ -27,8 +27,6 @@ export const GristAnalyzer = () => {
       ],
     });
 
-    push(["trackEvent", "Debug", "Widget Load", "Initial Load"]);
-
     grist.onRecord((record: RowRecord | null, mappings) => {
       console.log("onRecord called:", record);
       setCurrentSelection(record);
@@ -37,7 +35,7 @@ export const GristAnalyzer = () => {
   }, []);
 
   const analyzeCurrentRow = async () => {
-    push(["trackEvent", "Analysis", "Start", "Description Analysis"]);
+    push(["trackEvent", "Analysis", "Start"]);
     setError(undefined);
 
     try {
@@ -97,7 +95,6 @@ export const GristAnalyzer = () => {
   };
 
   const saveLevers = async () => {
-    push(["trackEvent", "Levers", "Save", `Count: ${selectedLevers.size}`]);
     try {
       if (!currentSelection) {
         throw new Error("No record selected");
@@ -113,15 +110,14 @@ export const GristAnalyzer = () => {
         fields: { [leversColumnId as string]: choiceListValue },
       });
 
-      push(["trackEvent", "Levers", "Save", `Count: ${selectedLevers.size}`]);
+      push(["trackEvent", "Leviers", "Save", `Count: ${selectedLevers.size}`]);
     } catch (error) {
       setError(error instanceof Error ? error.message : "Failed to save levers");
-      push(["trackEvent", "Levers", "Error", error instanceof Error ? error.message : "Save failed"]);
+      push(["trackEvent", "Leviers", "Error", error instanceof Error ? error.message : "Save failed"]);
     }
   };
 
   const saveCompetences = async () => {
-    push(["trackEvent", "Competences", "Save", "Save Competences"]);
     try {
       if (!currentSelection || !competencesResult?.competences) {
         throw new Error("No record or competences selected");
@@ -144,6 +140,7 @@ export const GristAnalyzer = () => {
             : "",
         },
       });
+      push(["trackEvent", "Competences", "Save"]);
     } catch (error) {
       setError(error instanceof Error ? error.message : "Failed to save competences");
     }
