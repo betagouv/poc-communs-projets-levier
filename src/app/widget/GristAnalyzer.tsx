@@ -3,6 +3,7 @@ import { analyzeProject } from "@/app/actions";
 import { CompetencesResult, LeviersResult } from "@/app/types";
 import { WidgetColumnMap } from "grist/CustomSectionAPI";
 import type { RowRecord, CellValue } from "grist/GristData";
+import { push } from "@socialgouv/matomo-next";
 
 export const GristAnalyzer = () => {
   const [isLoadingLeviers, setIsLoadingLeviers] = useState(false);
@@ -26,6 +27,8 @@ export const GristAnalyzer = () => {
       ],
     });
 
+    push(["trackEvent", "Debug", "Widget Load", "Initial Load"]);
+
     grist.onRecord((record: RowRecord | null, mappings) => {
       console.log("onRecord called:", record);
       setCurrentSelection(record);
@@ -34,6 +37,7 @@ export const GristAnalyzer = () => {
   }, []);
 
   const analyzeCurrentRow = async () => {
+    push(["trackEvent", "Analysis", "Start", "Description Analysis"]);
     setError(undefined);
 
     try {
@@ -82,8 +86,10 @@ export const GristAnalyzer = () => {
     setSelectedLevers((prev) => {
       const newSelected = new Set(prev);
       if (newSelected.has(leverName)) {
+        push(["trackEvent", "Levers", "Deselect", leverName]);
         newSelected.delete(leverName);
       } else {
+        push(["trackEvent", "Levers", "Select", leverName]);
         newSelected.add(leverName);
       }
       return newSelected;
@@ -91,6 +97,7 @@ export const GristAnalyzer = () => {
   };
 
   const saveLevers = async () => {
+    push(["trackEvent", "Levers", "Save", `Count: ${selectedLevers.size}`]);
     try {
       if (!currentSelection) {
         throw new Error("No record selected");
@@ -105,12 +112,16 @@ export const GristAnalyzer = () => {
         id: currentSelection.id,
         fields: { [leversColumnId as string]: choiceListValue },
       });
+
+      push(["trackEvent", "Levers", "Save", `Count: ${selectedLevers.size}`]);
     } catch (error) {
       setError(error instanceof Error ? error.message : "Failed to save levers");
+      push(["trackEvent", "Levers", "Error", error instanceof Error ? error.message : "Save failed"]);
     }
   };
 
   const saveCompetences = async () => {
+    push(["trackEvent", "Competences", "Save", "Save Competences"]);
     try {
       if (!currentSelection || !competencesResult?.competences) {
         throw new Error("No record or competences selected");
