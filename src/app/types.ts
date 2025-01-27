@@ -24,7 +24,11 @@ export interface Questions {
 }
 
 export interface QuestionAnswers {
-  Q1?: "oui" | "non";
-  Q2?: "oui" | "non";
-  Q3?: "oui" | "non";
+  [question: string]: "oui" | "non";
+}
+
+// Add this to help with type safety
+export interface FormattedQuestionAnswer {
+  question: string;
+  answer: "oui" | "non";
 }

@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { analyzeProject, generateQuestions } from "@/app/actions";
+import { analyzeProject, generateQuestions, generateResume } from "@/app/actions";
 import { CompetencesResult, LeviersResult, Questions, QuestionAnswers } from "@/app/types";
 
 export default function Home() {
@@ -11,6 +11,8 @@ export default function Home() {
   const [answers, setAnswers] = useState<QuestionAnswers>({});
   const [loading, setLoading] = useState(false);
   const [loadingQuestions, setLoadingQuestions] = useState(false);
+  const [resume, setResume] = useState<string | null>(null);
+  const [loadingResume, setLoadingResume] = useState(false);
 
   // Add this effect to monitor questions state
   useEffect(() => {
@@ -69,11 +71,39 @@ export default function Home() {
     }
   };
 
-  const handleAnswer = (question: keyof Questions, answer: "oui" | "non") => {
+  const handleAnswer = (questionKey: keyof Questions, answer: "oui" | "non") => {
+    if (!questions || !questions[questionKey]) return;
+    
+    const fullQuestion = questions[questionKey];
+    console.log("Storing answer for question:", fullQuestion, answer);
+    
     setAnswers(prev => ({
       ...prev,
-      [question]: answer
+      [fullQuestion as string]: answer
     }));
+  };
+
+  const handleGenerateResume = async () => {
+    if (!description || !questions || Object.keys(answers).length === 0) return;
+    
+    console.log("Current answers state:", answers);
+    const formattedAnswers = Object.entries(answers).reduce<Record<string, "oui" | "non">>((acc, [question, answer]) => {
+      acc[question] = answer;
+      return acc;
+    }, {});
+    
+    console.log("Formatted answers for resume:", formattedAnswers);
+    
+    setLoadingResume(true);
+    try {
+      const resumeText = await generateResume(description, formattedAnswers);
+      console.log("Generated resume:", resumeText);
+      setResume(resumeText);
+    } catch (error) {
+      console.error("Error generating resume:", error);
+    } finally {
+      setLoadingResume(false);
+    }
   };
 
   const renderResults = (results: LeviersResult) => {
@@ -115,7 +145,19 @@ export default function Home() {
           questions={questions} 
           answers={answers} 
           onAnswer={handleAnswer}
+          onGenerateResume={handleGenerateResume}
+          loadingResume={loadingResume}
         />
+
+        {/* Resume Section */}
+        {resume && (
+          <div className="bg-white shadow-sm rounded-lg border border-gray-200 p-6 space-y-3">
+            <h3 className="font-semibold text-lg text-gray-800">Résumé du projet :</h3>
+            <div className="prose prose-sm max-w-none">
+              <p className="whitespace-pre-wrap text-gray-700">{resume}</p>
+            </div>
+          </div>
+        )}
 
         {/* Levers Section */}
         {results.leviers.length > 0 && (
@@ -258,14 +300,25 @@ export default function Home() {
   );
 }
 
-const QuestionsSection = ({ questions, answers, onAnswer }: { 
-  questions: Questions | null, 
-  answers: QuestionAnswers,
-  onAnswer: (question: keyof Questions, answer: "oui" | "non") => void 
+const QuestionsSection = ({ 
+  questions, 
+  answers, 
+  onAnswer,
+  onGenerateResume,
+  loadingResume 
+}: { 
+  questions: Questions | null;
+  answers: QuestionAnswers;
+  onAnswer: (question: keyof Questions, answer: "oui" | "non") => void;
+  onGenerateResume: () => void;
+  loadingResume: boolean;
 }) => {
-  console.log("QuestionsSection render:", { questions, answers });
-  
   if (!questions) return null;
+
+  // Check if all questions have been answered using the full question text
+  const allQuestionsAnswered = Object.values(questions).every(
+    question => question && answers[question]
+  );
 
   return (
     <div className="bg-white shadow-sm rounded-lg border border-gray-200 p-6 space-y-6">
@@ -283,7 +336,7 @@ const QuestionsSection = ({ questions, answers, onAnswer }: {
                   <button
                     onClick={() => onAnswer(key as keyof Questions, "oui")}
                     className={`flex-1 py-2 px-4 rounded-md font-medium transition-all ${
-                      answers[key as keyof Questions] === "oui"
+                      answers[question] === "oui"
                         ? "bg-green-500 text-white"
                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     }`}
@@ -293,7 +346,7 @@ const QuestionsSection = ({ questions, answers, onAnswer }: {
                   <button
                     onClick={() => onAnswer(key as keyof Questions, "non")}
                     className={`flex-1 py-2 px-4 rounded-md font-medium transition-all ${
-                      answers[key as keyof Questions] === "non"
+                      answers[question] === "non"
                         ? "bg-red-500 text-white"
                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     }`}
@@ -305,6 +358,21 @@ const QuestionsSection = ({ questions, answers, onAnswer }: {
             </div>
           )
         )}
+      </div>
+
+      {/* Resume button */}
+      <div className="flex justify-center pt-4">
+        <button
+          onClick={onGenerateResume}
+          disabled={!allQuestionsAnswered || loadingResume}
+          className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+            allQuestionsAnswered
+              ? "bg-blue-500 text-white hover:bg-blue-600"
+              : "bg-gray-300 text-gray-500 cursor-not-allowed"
+          }`}
+        >
+          {loadingResume ? "Génération..." : "Résumer mon projet"}
+        </button>
       </div>
     </div>
   );

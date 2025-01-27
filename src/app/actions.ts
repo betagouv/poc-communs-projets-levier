@@ -129,3 +129,60 @@ export async function generateQuestions(description: string, classificationResul
     });
   });
 }
+
+export async function generateResume(
+  description: string, 
+  answers: Record<string, "oui" | "non">  // Now contains full questions as keys
+): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const escapedDescription = description.replace(/'/g, "'\\''");
+    
+    // Format answers to include full questions
+    const formattedAnswers = Object.entries(answers).reduce((acc, [question, answer]) => ({
+      ...acc,
+      [question]: answer
+    }), {});
+    
+    const answersJson = JSON.stringify(formattedAnswers);
+    console.log("Sending answers to Python:", answersJson);
+    
+    const pythonScript = path.join(process.cwd(), "scripts", "LLM_response.py");
+
+    const pythonProcess = spawn("python3", [
+      pythonScript, 
+      `'${escapedDescription}'`,
+      "--type",
+      "resume",
+      "--answers",
+      answersJson
+    ]);
+
+    let outputString = "";
+    let errorString = "";
+
+    pythonProcess.stdout.on("data", (data) => {
+      outputString += data.toString();
+      console.log("Python output:", data.toString());
+    });
+
+    pythonProcess.stderr.on("data", (data) => {
+      errorString += data.toString();
+      console.error("Python error:", data.toString());
+    });
+
+    pythonProcess.on("error", (error) => {
+      console.error("Failed to start Python process:", error);
+      reject(error);
+    });
+
+    pythonProcess.on("close", (code) => {
+      console.log("Python process exited with code:", code);
+      console.log("Raw output:", outputString);
+      if (code !== 0) {
+        reject(new Error(`Process exited with code ${code}. Error: ${errorString}`));
+        return;
+      }
+      resolve(outputString.trim());
+    });
+  });
+}

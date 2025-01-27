@@ -252,9 +252,10 @@ if __name__ == "__main__":
     parser.add_argument('projet', help='Description du projet à analyser')
     parser.add_argument('--model', default='haiku', choices=['haiku', 'sonnet'], 
                        help='Modèle à utiliser (default: sonnet)')
-    parser.add_argument('--type', default='TE', choices=['TE', 'competences', 'questions'],
+    parser.add_argument('--type', default='TE', choices=['TE', 'competences', 'questions', 'resume'],
                        help='Type d\'analyse à effectuer')
     parser.add_argument('--classification', type=str, help='Classification result for questions generation')
+    parser.add_argument('--answers', type=str, help='Questions answers for resume generation')
     
     args = parser.parse_args()
     
@@ -293,6 +294,22 @@ if __name__ == "__main__":
             print(json.dumps(questions, ensure_ascii=False))
         except Exception as e:
             print(f"Error processing classification: {e}", file=sys.stderr)
+            print(f"Args received: {args}", file=sys.stderr)
+            sys.exit(1)
+    elif args.type == 'resume':
+        try:
+            print("[DEBUG] Starting resume generation", file=sys.stderr)
+            print(f"[DEBUG] Received answers: {args.answers}", file=sys.stderr)
+            
+            answers = json.loads(args.answers)
+            resume = generation_resume(
+                projet=args.projet,
+                question_reponses=answers,
+                model=args.model
+            )
+            print(resume)  # The function already returns formatted text
+        except Exception as e:
+            print(f"Error generating resume: {e}", file=sys.stderr)
             print(f"Args received: {args}", file=sys.stderr)
             sys.exit(1)
     else:
