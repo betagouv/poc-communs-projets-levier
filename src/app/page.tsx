@@ -1,13 +1,32 @@
 "use client";
-import { useState } from "react";
-import { analyzeProject } from "@/app/actions";
-import { CompetencesResult, LeviersResult } from "@/app/types";
+import { useState, useEffect } from "react";
+import { analyzeProject, generateQuestions } from "@/app/actions";
+import { CompetencesResult, LeviersResult, Questions, QuestionAnswers } from "@/app/types";
 
 export default function Home() {
   const [description, setDescription] = useState("");
   const [teResults, setTeResults] = useState<LeviersResult | null>(null);
   const [compResults, setCompResults] = useState<CompetencesResult | null>(null);
+  const [questions, setQuestions] = useState<Questions | null>(null);
+  const [answers, setAnswers] = useState<QuestionAnswers>({});
   const [loading, setLoading] = useState(false);
+  const [loadingQuestions, setLoadingQuestions] = useState(false);
+
+  // Add this effect to monitor questions state
+  useEffect(() => {
+    console.log("Questions state changed:", questions);
+  }, [questions]);
+
+  useEffect(() => {
+    console.log("State update:", {
+      description,
+      teResults,
+      questions,
+      answers,
+      loading,
+      loadingQuestions
+    });
+  }, [description, teResults, questions, answers, loading, loadingQuestions]);
 
   const handleAnalysis = async (type: "TE" | "competences") => {
     setLoading(true);
@@ -25,7 +44,41 @@ export default function Home() {
     }
   };
 
+  const handleGenerateQuestions = async () => {
+    if (!description || !teResults) return;
+    setLoadingQuestions(true);
+    try {
+      console.log("Starting question generation...");
+      console.log("Current description:", description);
+      console.log("Current teResults:", teResults);
+      
+      const questions = await generateQuestions(description, teResults);
+      console.log("Received questions:", questions);
+      
+      if (questions) {
+        console.log("Setting questions state...");
+        setQuestions(questions);
+        console.log("Questions state updated");
+      } else {
+        console.log("No questions received");
+      }
+    } catch (error) {
+      console.error("Error generating questions:", error);
+    } finally {
+      setLoadingQuestions(false);
+    }
+  };
+
+  const handleAnswer = (question: keyof Questions, answer: "oui" | "non") => {
+    setAnswers(prev => ({
+      ...prev,
+      [question]: answer
+    }));
+  };
+
   const renderResults = (results: LeviersResult) => {
+    console.log("renderResults called with:", { results, questions, answers });
+    
     return (
       <div className="mt-8 space-y-6">
         <h2 className="text-xl font-bold mb-4">Analyse de la description du projet</h2>
@@ -45,6 +98,24 @@ export default function Home() {
             {results.classification || "Non classifié"}
           </div>
         </div>
+
+        {/* Préciser mon projet button */}
+        <div className="flex justify-center my-6">
+          <button
+            onClick={handleGenerateQuestions}
+            disabled={loadingQuestions}
+            className="bg-blue-500 text-white px-8 py-3 rounded-lg hover:bg-blue-600 disabled:bg-gray-400 transition-colors font-medium"
+          >
+            {loadingQuestions ? "Génération..." : "Préciser mon projet"}
+          </button>
+        </div>
+
+        {/* Questions Section */}
+        <QuestionsSection 
+          questions={questions} 
+          answers={answers} 
+          onAnswer={handleAnswer}
+        />
 
         {/* Levers Section */}
         {results.leviers.length > 0 && (
@@ -179,9 +250,62 @@ export default function Home() {
           </div>
         </form>
 
+        {console.log("teResults:", teResults)}
         {teResults && renderResults(teResults)}
         {compResults && renderCompetencesResults(compResults)}
       </main>
     </div>
   );
 }
+
+const QuestionsSection = ({ questions, answers, onAnswer }: { 
+  questions: Questions | null, 
+  answers: QuestionAnswers,
+  onAnswer: (question: keyof Questions, answer: "oui" | "non") => void 
+}) => {
+  console.log("QuestionsSection render:", { questions, answers });
+  
+  if (!questions) return null;
+
+  return (
+    <div className="bg-white shadow-sm rounded-lg border border-gray-200 p-6 space-y-6">
+      <h3 className="font-semibold text-lg text-gray-800">Questions pour préciser votre projet :</h3>
+      <div className="space-y-4">
+        {Object.entries(questions).map(([key, question]) => 
+          question && (
+            <div key={key} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <span className="font-medium text-gray-700 min-w-[40px]">{key}:</span>
+                  <span className="text-gray-800">{question}</span>
+                </div>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => onAnswer(key as keyof Questions, "oui")}
+                    className={`flex-1 py-2 px-4 rounded-md font-medium transition-all ${
+                      answers[key as keyof Questions] === "oui"
+                        ? "bg-green-500 text-white"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    }`}
+                  >
+                    Oui
+                  </button>
+                  <button
+                    onClick={() => onAnswer(key as keyof Questions, "non")}
+                    className={`flex-1 py-2 px-4 rounded-md font-medium transition-all ${
+                      answers[key as keyof Questions] === "non"
+                        ? "bg-red-500 text-white"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    }`}
+                  >
+                    Non
+                  </button>
+                </div>
+              </div>
+            </div>
+          )
+        )}
+      </div>
+    </div>
+  );
+};
