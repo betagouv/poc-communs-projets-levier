@@ -261,7 +261,7 @@ if __name__ == "__main__":
     
     if args.type == 'TE':
         response_classification = classification_TE(
-            projet=args.projet,
+            projet=args.projet,  # This will be either the original description or the resume
             system_prompt=system_prompt_classification_TE,
             user_prompt=user_prompt_classification_TE,
             model=args.model

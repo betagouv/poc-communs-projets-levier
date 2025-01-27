@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { analyzeProject, generateQuestions, generateResume } from "@/app/actions";
+import { analyzeProject, generateQuestions, generateResume, reclassifyProject } from "@/app/actions";
 import { CompetencesResult, LeviersResult, Questions, QuestionAnswers } from "@/app/types";
 
 export default function Home() {
@@ -13,6 +13,8 @@ export default function Home() {
   const [loadingQuestions, setLoadingQuestions] = useState(false);
   const [resume, setResume] = useState<string | null>(null);
   const [loadingResume, setLoadingResume] = useState(false);
+  const [reclassificationResult, setReclassificationResult] = useState<LeviersResult | null>(null);
+  const [loadingReclassification, setLoadingReclassification] = useState(false);
 
   // Add this effect to monitor questions state
   useEffect(() => {
@@ -106,6 +108,22 @@ export default function Home() {
     }
   };
 
+  const handleReclassify = async () => {
+    if (!resume) return;
+    
+    setLoadingReclassification(true);
+    try {
+      console.log("Starting reclassification with resume:", resume);
+      const result = await reclassifyProject(resume);
+      console.log("Reclassification result:", result);
+      setReclassificationResult(result);
+    } catch (error) {
+      console.error("Error during reclassification:", error);
+    } finally {
+      setLoadingReclassification(false);
+    }
+  };
+
   const renderResults = (results: LeviersResult) => {
     console.log("renderResults called with:", { results, questions, answers });
     
@@ -151,11 +169,51 @@ export default function Home() {
 
         {/* Resume Section */}
         {resume && (
-          <div className="bg-white shadow-sm rounded-lg border border-gray-200 p-6 space-y-3">
-            <h3 className="font-semibold text-lg text-gray-800">Résumé du projet :</h3>
-            <div className="prose prose-sm max-w-none">
-              <p className="whitespace-pre-wrap text-gray-700">{resume}</p>
+          <div className="space-y-6">
+            <div className="bg-white shadow-sm rounded-lg border border-gray-200 p-6 space-y-3">
+              <h3 className="font-semibold text-lg text-gray-800">Résumé du projet :</h3>
+              <div className="prose prose-sm max-w-none">
+                <p className="whitespace-pre-wrap text-gray-700">{resume}</p>
+              </div>
             </div>
+
+            {/* Reclassification button */}
+            <div className="flex justify-center">
+              <button
+                onClick={handleReclassify}
+                disabled={loadingReclassification}
+                className="bg-purple-500 text-white px-6 py-2 rounded-lg hover:bg-purple-600 disabled:bg-gray-400 transition-colors"
+              >
+                {loadingReclassification ? "Classification en cours..." : "Classifier le projet enrichi"}
+              </button>
+            </div>
+
+            {/* Reclassification results */}
+            {reclassificationResult && (
+              <div className="bg-white shadow-sm rounded-lg border border-gray-200 p-6 space-y-4">
+                <h3 className="font-semibold text-lg text-gray-800">Nouvelle classification :</h3>
+                <div
+                  className={`inline-flex items-center px-3 py-1 rounded-full text-sm ${
+                    reclassificationResult.classification?.includes("projet a un lien avec la transition écologique")
+                      ? "bg-green-100 text-green-800"
+                      : reclassificationResult.classification?.includes("pas de lien avec la transition écologique")
+                        ? "bg-red-100 text-red-800"
+                        : "bg-orange-100 text-orange-800"
+                  }`}
+                >
+                  {reclassificationResult.classification || "Non classifié"}
+                </div>
+
+                {/* Show comparison if classification changed */}
+                {teResults && teResults.classification !== reclassificationResult.classification && (
+                  <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <p className="text-sm text-yellow-800">
+                      <span className="font-medium">Note :</span> La classification a changé après l'enrichissement du projet.
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
 
