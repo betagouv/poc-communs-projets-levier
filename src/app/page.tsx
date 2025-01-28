@@ -425,7 +425,6 @@ export default function Home() {
           </div>
         </form>
 
-        {console.log("teResults:", teResults)}
         {teResults && renderResults(teResults)}
         {compResults && renderCompetencesResults(compResults)}
       </main>

@@ -163,7 +163,7 @@ def generation_question_fermes(LLM_response: json, system_prompt=system_prompt_q
     #print(LLM_response)
     response = client.messages.create(
         model=model_name,
-        temperature = 0.5,
+        temperature = 0.6,
         max_tokens=1024,
         system=[
             {
