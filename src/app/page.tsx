@@ -259,7 +259,7 @@ export default function Home() {
                   </div>
                 )}
 
-                {/* Add Levers Section for reclassification */}
+                {/* Levers Section for reclassification */}
                 {reclassificationResult.leviers && Object.entries(reclassificationResult.leviers).length > 0 && (
                   <div className="mt-6 space-y-3">
                     <h4 className="font-semibold">Leviers identifiés :</h4>
@@ -284,6 +284,28 @@ export default function Home() {
                     </div>
                   </div>
                 )}
+
+                {/* Add Reasoning Section for reclassification - Moved after Levers */}
+                {reclassificationResult.raisonnement && (
+                  <div className="space-y-3">
+                    <details className="group">
+                      <summary className="cursor-pointer text-gray-600 hover:text-gray-800 font-semibold flex items-center">
+                        <span>Raisonnement</span>
+                        <svg 
+                          className="ml-2 w-5 h-5 transform transition-transform group-open:rotate-180" 
+                          fill="none" 
+                          viewBox="0 0 24 24" 
+                          stroke="currentColor"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </summary>
+                      <div className="mt-3 bg-white border rounded-lg p-4">
+                        <p className="whitespace-pre-wrap">{reclassificationResult.raisonnement}</p>
+                      </div>
+                    </details>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -293,9 +315,23 @@ export default function Home() {
         <div className="mt-6">
           <details className="text-sm">
             <summary className="cursor-pointer text-gray-600 hover:text-gray-800">Voir les données JSON</summary>
-            <pre className="mt-2 bg-gray-100 p-4 rounded-md overflow-auto">
-              {JSON.stringify(results, null, 2)}
-            </pre>
+            <div className="space-y-4">
+              <div>
+                <h4 className="font-medium text-gray-700 mb-2">Première analyse :</h4>
+                <pre className="mt-2 bg-gray-100 p-4 rounded-md overflow-auto">
+                  {JSON.stringify(results, null, 2)}
+                </pre>
+              </div>
+              
+              {reclassificationResult && (
+                <div>
+                  <h4 className="font-medium text-gray-700 mb-2">Après enrichissement :</h4>
+                  <pre className="mt-2 bg-gray-100 p-4 rounded-md overflow-auto">
+                    {JSON.stringify(reclassificationResult, null, 2)}
+                  </pre>
+                </div>
+              )}
+            </div>
           </details>
         </div>
       </div>
