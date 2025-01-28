@@ -35,14 +35,17 @@ export default function Home() {
   const handleAnalysis = async (type: "TE" | "competences") => {
     setLoading(true);
     try {
+      console.log("Starting analysis with description:", description);
       const data = await analyzeProject(description, type);
+      console.log("Analysis result:", data);
       if (type === "TE") {
+        console.log("Setting TE results:", data);
         setTeResults(data as LeviersResult);
       } else {
         setCompResults(data as CompetencesResult);
       }
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error in handleAnalysis:", error);
     } finally {
       setLoading(false);
     }
@@ -125,13 +128,11 @@ export default function Home() {
   };
 
   const renderResults = (results: LeviersResult) => {
-    console.log("renderResults called with:", { results, questions, answers });
-    
     return (
       <div className="mt-8 space-y-6">
         <h2 className="text-xl font-bold mb-4">Analyse de la description du projet</h2>
 
-        {/* Project Status */}
+        {/* Classification Section */}
         <div className="space-y-2">
           <h3 className="font-semibold">Classification du projet :</h3>
           <div
@@ -146,6 +147,32 @@ export default function Home() {
             {results.classification || "Non classifié"}
           </div>
         </div>
+
+        {/* Levers Section */}
+        {results.leviers && Object.entries(results.leviers).length > 0 && (
+          <div className="space-y-3">
+            <h3 className="font-semibold">Leviers identifiés :</h3>
+            <div className="space-y-2">
+              {Object.entries(results.leviers).map(([name, score], index) => {
+                const percentage = (score * 100).toFixed(0);
+                return (
+                  <div key={index} className="bg-white border rounded-lg p-4 flex items-center justify-between">
+                    <span className="font-medium">{name}</span>
+                    <div className="flex items-center space-x-3">
+                      <div className="w-48 bg-gray-200 rounded-full h-2.5">
+                        <div 
+                          className="bg-blue-600 h-2.5 rounded-full" 
+                          style={{ width: `${percentage}%` }} 
+                        />
+                      </div>
+                      <span className="text-sm text-gray-600 min-w-[3rem]">{percentage}%</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Préciser mon projet button */}
         <div className="flex justify-center my-6">
@@ -217,31 +244,6 @@ export default function Home() {
           </div>
         )}
 
-        {/* Levers Section */}
-        {results.leviers.length > 0 && (
-          <div className="space-y-3">
-            <h3 className="font-semibold">Leviers identifiés :</h3>
-            <div className="space-y-2">
-              {results.leviers.map((levier, index) => {
-                const [name, score] = Object.entries(levier)[0];
-                const percentage = (score * 100).toFixed(0);
-
-                return (
-                  <div key={index} className="bg-white border rounded-lg p-4 flex items-center justify-between">
-                    <span className="font-medium">{name}</span>
-                    <div className="flex items-center space-x-3">
-                      <div className="w-48 bg-gray-200 rounded-full h-2.5">
-                        <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: `${percentage}%` }} />
-                      </div>
-                      <span className="text-sm text-gray-600 min-w-[3rem]">{percentage}%</span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
         {/* Reasoning Section */}
         {results.raisonnement && (
           <div className="space-y-3">
@@ -252,11 +254,13 @@ export default function Home() {
           </div>
         )}
 
-        {/* Show original JSON for debugging */}
+        {/* Debug JSON */}
         <div className="mt-6">
           <details className="text-sm">
             <summary className="cursor-pointer text-gray-600 hover:text-gray-800">Voir les données JSON</summary>
-            <pre className="mt-2 bg-gray-100 p-4 rounded-md overflow-auto">{JSON.stringify(results, null, 2)}</pre>
+            <pre className="mt-2 bg-gray-100 p-4 rounded-md overflow-auto">
+              {JSON.stringify(results, null, 2)}
+            </pre>
           </details>
         </div>
       </div>

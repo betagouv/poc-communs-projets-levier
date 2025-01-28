@@ -89,7 +89,6 @@ def classification_TE(projet: str, system_prompt=system_prompt_classification_TE
         response_dict["raisonnement"] = raisonnement_content.group(1).strip()
     else:
         response_dict["raisonnement"] = "No raisonnement found in the response."
-
     return response_dict
 
 

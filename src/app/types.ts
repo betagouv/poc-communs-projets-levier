@@ -1,9 +1,8 @@
 export interface LeviersResult {
-  levier1: number;
-  levier2: number;
-  levier3: number;
-  levier4: number;
-  levier5: number;
+  projet: string;
+  classification: string | null;
+  leviers: { [key: string]: number };  // Object mapping lever names to scores
+  raisonnement: string | null;
   questions?: Questions;
 }
 

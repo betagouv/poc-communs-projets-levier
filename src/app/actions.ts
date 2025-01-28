@@ -24,11 +24,6 @@ export async function analyzeProject<T>(description: string, type: "TE" | "compe
       console.error("Python error:", data.toString());
     });
 
-    pythonProcess.on("error", (error) => {
-      console.error("Failed to start Python process:", error);
-      reject(error);
-    });
-
     pythonProcess.on("close", (code) => {
       console.log("Python process exited with code:", code);
       console.log("Raw output:", outputString);
