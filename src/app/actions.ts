@@ -2,6 +2,7 @@
 
 import { spawn } from "child_process";
 import path from "path";
+import { LeviersResult, Questions } from "./types";
 
 export async function analyzeProject<T>(description: string, type: "TE" | "competences"): Promise<T> {
   return new Promise((resolve, reject) => {

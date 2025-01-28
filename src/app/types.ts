@@ -1,8 +1,9 @@
 export interface LeviersResult {
-  projet: string;
-  classification: string;
-  leviers: Record<string, number>[];
-  raisonnement: string;
+  levier1: number;
+  levier2: number;
+  levier3: number;
+  levier4: number;
+  levier5: number;
   questions?: Questions;
 }
 
@@ -18,9 +19,7 @@ export interface CompetencesResult {
 }
 
 export interface Questions {
-  Q1: string | null;
-  Q2: string | null;
-  Q3: string | null;
+  [key: string]: string; // question text as key, additional metadata as value if needed
 }
 
 export interface QuestionAnswers {
