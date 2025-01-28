@@ -171,6 +171,28 @@ export default function Home() {
           </div>
         )}
 
+        {/* Reasoning Section - Moved up */}
+        {results.raisonnement && (
+          <div className="space-y-3">
+            <details className="group">
+              <summary className="cursor-pointer text-gray-600 hover:text-gray-800 font-semibold flex items-center">
+                <span>Raisonnement</span>
+                <svg 
+                  className="ml-2 w-5 h-5 transform transition-transform group-open:rotate-180" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </summary>
+              <div className="mt-3 bg-white border rounded-lg p-4">
+                <p className="whitespace-pre-wrap">{results.raisonnement}</p>
+              </div>
+            </details>
+          </div>
+        )}
+
         {/* Préciser mon projet button */}
         <div className="flex justify-center my-6">
           <button
@@ -264,28 +286,6 @@ export default function Home() {
                 )}
               </div>
             )}
-          </div>
-        )}
-
-        {/* Reasoning Section */}
-        {results.raisonnement && (
-          <div className="space-y-3">
-            <details className="group">
-              <summary className="cursor-pointer text-gray-600 hover:text-gray-800 font-semibold flex items-center">
-                <span>Raisonnement</span>
-                <svg 
-                  className="ml-2 w-5 h-5 transform transition-transform group-open:rotate-180" 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </summary>
-              <div className="mt-3 bg-white border rounded-lg p-4">
-                <p className="whitespace-pre-wrap">{results.raisonnement}</p>
-              </div>
-            </details>
           </div>
         )}
 
