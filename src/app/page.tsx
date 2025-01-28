@@ -236,6 +236,32 @@ export default function Home() {
                     </p>
                   </div>
                 )}
+
+                {/* Add Levers Section for reclassification */}
+                {reclassificationResult.leviers && Object.entries(reclassificationResult.leviers).length > 0 && (
+                  <div className="mt-6 space-y-3">
+                    <h4 className="font-semibold">Leviers identifiés :</h4>
+                    <div className="space-y-2">
+                      {Object.entries(reclassificationResult.leviers).map(([name, score], index) => {
+                        const percentage = (score * 100).toFixed(0);
+                        return (
+                          <div key={index} className="bg-white border rounded-lg p-4 flex items-center justify-between">
+                            <span className="font-medium">{name}</span>
+                            <div className="flex items-center space-x-3">
+                              <div className="w-48 bg-gray-200 rounded-full h-2.5">
+                                <div 
+                                  className="bg-blue-600 h-2.5 rounded-full" 
+                                  style={{ width: `${percentage}%` }} 
+                                />
+                              </div>
+                              <span className="text-sm text-gray-600 min-w-[3rem]">{percentage}%</span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
