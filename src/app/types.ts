@@ -1,7 +1,7 @@
 export interface LeviersResult {
   projet: string;
   classification: string | null;
-  leviers: { [key: string]: number };  // Object mapping lever names to scores
+  leviers: Record<string, number>;
   raisonnement: string | null;
   questions?: Questions;
 }
