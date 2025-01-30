@@ -5,19 +5,14 @@ interface AnalysisFormProps {
   loading: boolean;
 }
 
-export const AnalysisForm = ({
-  description,
-  onDescriptionChange,
-  onAnalyze,
-  loading,
-}: AnalysisFormProps) => {
+export const AnalysisForm = ({ description, onDescriptionChange, onAnalyze, loading }: AnalysisFormProps) => {
   return (
     <form className="space-y-4 bg-white p-6 rounded-lg shadow-sm">
       <div className="flex flex-col gap-4">
         <textarea
           value={description}
           onChange={(e) => onDescriptionChange(e.target.value)}
-          className="w-full p-4 border rounded-lg resize-none h-48"
+          className="w-full p-4 border rounded-lg resize-none h-32"
           placeholder="Décrivez votre projet..."
         />
         <div className="flex gap-4">
@@ -39,4 +34,4 @@ export const AnalysisForm = ({
       </div>
     </form>
   );
-}; 
+};
