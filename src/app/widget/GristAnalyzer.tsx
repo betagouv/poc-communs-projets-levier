@@ -310,8 +310,7 @@ export const GristAnalyzer = () => {
           ) : leviersResult?.leviers ? (
             <>
               <div className="space-y-2">
-                {leviersResult.leviers.map((lever, index) => {
-                  const [name, score] = Object.entries(lever)[0];
+                {Object.entries(leviersResult.leviers).map(([name, score], index) => {
                   const percentage = (score * 100).toFixed(0);
 
                   return (
