@@ -7,11 +7,9 @@ import { ClassificationSection } from "./_components/ClassificationSection";
 import { CompetencesSection } from "./_components/CompetencesSection";
 import { LeversSection } from "./_components/LeversSection";
 import { QuestionsSection } from "./_components/QuestionsSection";
-import { ReclassificationSection } from "./_components/ReclassificationSection";
 import { ResumeSection } from "./_components/ResumeSection";
 
 export default function AnalyzerPage() {
-  // Move all state declarations from the original component
   const [description, setDescription] = useState("");
   const [teResults, setTeResults] = useState<LeviersResult | null>(null);
   const [compResults, setCompResults] = useState<CompetencesResult | null>(null);
@@ -21,7 +19,6 @@ export default function AnalyzerPage() {
   const [loadingQuestions, setLoadingQuestions] = useState(false);
   const [resume, setResume] = useState<string | null>(null);
   const [loadingResume, setLoadingResume] = useState(false);
-  const [reclassificationResult, setReclassificationResult] = useState<LeviersResult | null>(null);
   const [loadingReclassification, setLoadingReclassification] = useState(false);
 
   const handleAnalysis = async (type: "TE" | "competences") => {
@@ -31,7 +28,6 @@ export default function AnalyzerPage() {
     setQuestions(null);
     setAnswers({});
     setResume(null);
-    setReclassificationResult(null);
     setLoadingQuestions(false);
     setLoadingResume(false);
     setLoadingReclassification(false);
@@ -127,7 +123,6 @@ export default function AnalyzerPage() {
       console.log("Starting reclassification with resume:", resume);
       const result = await reclassifyProject(resume);
       console.log("Reclassification result:", result);
-      setReclassificationResult(result);
       setTeResults(result);
     } catch (error) {
       console.error("Error during reclassification:", error);
@@ -198,15 +193,6 @@ export default function AnalyzerPage() {
                   resume={resume}
                   onReclassify={handleReclassify}
                   loadingReclassification={loadingReclassification}
-                />
-              </div>
-            )}
-
-            {reclassificationResult && (
-              <div className="mt-8">
-                <ReclassificationSection
-                  result={reclassificationResult}
-                  originalClassification={teResults?.classification ?? null}
                 />
               </div>
             )}
