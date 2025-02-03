@@ -30,7 +30,7 @@
     "typescript": "^5"
   },
   "engines": {
-    "pnpm": "^9.x",
+    "pnpm": "9.15.4",
     "node": "22.x"
   }
 }
