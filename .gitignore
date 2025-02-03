@@ -43,8 +43,12 @@ next-env.d.ts
 apisation.ipynb
 workflow_requalification_projet.ipynb
 
+#python cache
+/__pycache__
+
 #intellij
 .idea
 
 #codebuddy
 .codebuddy
+
