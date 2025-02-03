@@ -29,6 +29,11 @@ export const GristAnalyzer = () => {
 
     grist.onRecord((record: RowRecord | null, mappings) => {
       console.log("onRecord called:", record);
+
+      //reset state if needed
+      setLeviersResult(undefined);
+      setCompetencesResult(undefined);
+      setSelectedLevers(new Set());
       setCurrentSelection(record);
       setColumnMapping(mappings);
     });
