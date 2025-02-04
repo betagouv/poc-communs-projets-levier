@@ -15,22 +15,13 @@ export const AnalysisForm = ({ description, onDescriptionChange, onAnalyze, load
           className="w-full p-4 border rounded-lg resize-none h-32"
           placeholder="Décrivez votre projet..."
         />
-        <div className="flex gap-4">
-          <button
-            onClick={() => onAnalyze("TE")}
-            disabled={loading || !description}
-            className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors text-sm"
-          >
-            {loading ? "Analyse en cours..." : "Analyser les leviers"}
-          </button>
-          <button
-            onClick={() => onAnalyze("competences")}
-            disabled={loading || !description}
-            className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors text-sm"
-          >
-            {loading ? "Analyse en cours..." : "Analyser les compétences"}
-          </button>
-        </div>
+        <button
+          onClick={() => onAnalyze("TE")}
+          disabled={loading || !description}
+          className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors text-sm"
+        >
+          {loading ? "Analyse en cours..." : "Analyser les leviers"}
+        </button>
       </div>
     </form>
   );
