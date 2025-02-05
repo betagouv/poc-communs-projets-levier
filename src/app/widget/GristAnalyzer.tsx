@@ -29,9 +29,10 @@ export const GristAnalyzer = () => {
 
     grist.onRecord((record: RowRecord | null, mappings) => {
       console.log("onRecord called:", record);
-      
+
       // Get current selection directly from state setter to avoid stale closure
-      setCurrentSelection(prevSelection => {
+      setCurrentSelection((prevSelection) => {
+        console.log("prevSelection", prevSelection);
         // Only reset state if the row selection has actually changed
         if (record?.id !== prevSelection?.id) {
           setLeviersResult(undefined);
@@ -40,7 +41,7 @@ export const GristAnalyzer = () => {
         }
         return record;
       });
-      
+
       setColumnMapping(mappings);
     });
     // Empty dependency array since we only want to set up listeners once
