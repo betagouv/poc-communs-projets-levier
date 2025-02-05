@@ -29,21 +29,21 @@ export const GristAnalyzer = () => {
 
     grist.onRecord((record: RowRecord | null, mappings) => {
       console.log("onRecord called:", record);
-
-      // Only reset state if the row selection has actually changed
-      // Since this callback seems to be called even when the row has not changed
-      if (record?.id !== currentSelection?.id) {
-        console.log("record", record);
-        console.log("currentSelection", currentSelection);
-        // setLeviersResult(undefined);
-        // setCompetencesResult(undefined);
-        // setSelectedLevers(new Set());
-      }
-      setCurrentSelection(record);
+      
+      // Get current selection directly from state setter to avoid stale closure
+      setCurrentSelection(prevSelection => {
+        // Only reset state if the row selection has actually changed
+        if (record?.id !== prevSelection?.id) {
+          setLeviersResult(undefined);
+          setCompetencesResult(undefined);
+          setSelectedLevers(new Set());
+        }
+        return record;
+      });
+      
       setColumnMapping(mappings);
     });
-    // we only want to attach those handler once even if row id changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Empty dependency array since we only want to set up listeners once
   }, []);
 
   const analyzeCurrentRow = async () => {
