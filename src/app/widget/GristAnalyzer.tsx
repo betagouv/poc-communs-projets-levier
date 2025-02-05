@@ -33,9 +33,11 @@ export const GristAnalyzer = () => {
       // Only reset state if the row selection has actually changed
       // Since this callback seems to be called even when the row has not changed
       if (record?.id !== currentSelection?.id) {
-        setLeviersResult(undefined);
-        setCompetencesResult(undefined);
-        setSelectedLevers(new Set());
+        console.log("record", record);
+        console.log("currentSelection", currentSelection);
+        // setLeviersResult(undefined);
+        // setCompetencesResult(undefined);
+        // setSelectedLevers(new Set());
       }
       setCurrentSelection(record);
       setColumnMapping(mappings);
