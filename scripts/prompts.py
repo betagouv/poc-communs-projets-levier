@@ -61,9 +61,9 @@ Liste des leviers  :
 	9.	Surface en aire protégée : Augmentation de la superficie des zones protégées pour préserver la biodiversité et les écosystèmes sensibles.
 	10.	Résorption des points noirs prioritaires de continuité écologique : Élimination des obstacles majeurs qui empêchent la libre circulation des espèces dans les écosystèmes.
 	11.	Restauration des habitats naturels : Actions visant à réhabiliter les écosystèmes dégradés pour favoriser la biodiversité.
-	12.	Réduction de l’usage des produits phytosanitaires : Diminution de l’utilisation de pesticides et herbicides pour protéger la santé humaine et l’environnement.
+	12.	Réduction de l'usage des produits phytosanitaires : Diminution de l’utilisation de pesticides et herbicides pour protéger la santé humaine et l’environnement.
 	13.	Développement de l’agriculture biologique et de HVE : Promotion de l’agriculture biologique et de la Haute Valeur Environnementale pour des pratiques agricoles plus durables.
-	14.	Respect d’Egalim pour la restauration collective : Mise en œuvre de la loi Egalim pour favoriser une alimentation saine et durable dans les cantines et restaurants collectifs.
+	14.	Respect d'Egalim pour la restauration collective : Mise en œuvre de la loi Egalim pour favoriser une alimentation saine et durable dans les cantines et restaurants collectifs.
 	15.	Sobriété des bâtiments (résidentiel) : Réduction de la consommation d’énergie dans les bâtiments résidentiels par des comportements sobres.
 	16.	Changement chaudières fioul + rénovation (résidentiel) : Remplacement des chaudières au fioul par des systèmes plus propres et rénovation énergétique des logements.
 	17.	Changement chaudières gaz + rénovation (résidentiel) : Remplacement des chaudières au gaz par des systèmes plus efficaces et rénovation énergétique des logements.
@@ -74,31 +74,32 @@ Liste des leviers  :
 	22.	Gaz fluorés résidentiel : Réduction de l’utilisation des gaz fluorés dans les équipements résidentiels, car ils ont un fort potentiel de réchauffement climatique.
 	23.	Gaz fluorés tertiaire : Réduction de l’utilisation des gaz fluorés dans les équipements du secteur tertiaire.
 	24.	Captage de méthane dans les ISDND : Récupération du méthane émis par les Installations de Stockage de Déchets Non Dangereux pour limiter les émissions de gaz à effet de serre.
-	25.	Sobriété déchets : Réduction de la production de déchets à la source par des comportements sobres.
+	25.	Prévention déchets : Réduction de la production de déchets à la source par des comportements sobres.
 	26.	Valorisation matière des déchets : Recyclage et réutilisation des déchets pour en faire de nouvelles ressources.
-	27.	Collecte et tri des déchets : Amélioration des systèmes de collecte et de tri pour augmenter le recyclage.
-	28.	Sobriété dans l’utilisation de la ressource en eau : Réduction de la consommation d’eau par des usages plus économes.
-	29.	Protection des zones de captage d’eau : Mesures pour préserver les zones où l’eau est prélevée pour l’alimentation en eau potable.
-	30.	Désimperméabilisation des sols : Réduction des surfaces imperméables pour favoriser l’infiltration de l’eau dans les sols.
-	31.	Électricité renouvelable : Développement de la production d’électricité à partir de sources renouvelables comme le solaire et l’éolien.
-	32.	Biogaz : Production de gaz renouvelable à partir de matières organiques pour remplacer le gaz fossile.
-	33.	Réseaux de chaleur décarbonés : Utilisation de sources d’énergie renouvelable ou de récupération pour alimenter les réseaux de chauffage urbain.
-	34.	Top 50 sites industriels : Actions ciblées sur les 50 sites industriels les plus émetteurs pour réduire significativement les émissions.
-	35.	Industrie diffuse : Réduction des émissions provenant de l’ensemble des activités industrielles moins concentrées.
-	36.	Fret décarboné et multimodalité : Promotion de modes de transport de marchandises moins polluants et combinant différents modes (train, bateau, etc.).
-	37.	Efficacité et sobriété logistique : Optimisation des flux logistiques pour réduire la consommation d’énergie et les émissions.
-	38.	Réduction des déplacements : Diminution de la nécessité de se déplacer, par exemple via le télétravail ou la relocalisation des services.
-	39.	Covoiturage : Partage de véhicules entre plusieurs personnes pour réduire le nombre de voitures sur la route.
-	40.	Vélo : Promotion de l’usage du vélo pour les déplacements quotidiens.
-	41.	Transports en commun : Développement et amélioration des services de transport public pour encourager leur utilisation.
-	42.	Véhicules électriques : Transition vers les véhicules électriques pour réduire les émissions du transport routier.
-	43.	Efficacité énergétique des véhicules privés : Amélioration de la consommation de carburant des véhicules pour réduire les émissions.
-	44.	Bus et cars décarbonés : Remplacement des bus et cars par des modèles à faibles émissions ou électriques.
-	45.	2 roues (élec & efficacité) : Promotion des deux-roues électriques ou plus économes en énergie.
-	46.	Nucléaire : Maintien ou développement de l’énergie nucléaire pour une production d’électricité bas-carbone.
-	47.	Bio-carburants : Utilisation de carburants issus de la biomasse pour remplacer les carburants fossiles.
-	48.	Efficacité des aéronefs : Amélioration de l’efficacité énergétique des avions pour réduire les émissions du secteur aérien.
-	49.	SAF : Utilisation de carburants d’aviation durables (Sustainable Aviation Fuel) pour réduire l’impact environnemental des vols.
+	27.	Moindre stockage en décharge : Réduction du volume des déchets mis en décharges.
+	28.	Collecte et tri des déchets : Amélioration des systèmes de collecte et de tri pour augmenter le recyclage.
+	29.	Sobriété dans l'utilisation de la ressource en eau : Réduction de la consommation d'eau par des usages plus économes.
+	30.	Protection des zones de captage d'eau : Mesures pour préserver les zones où l'eau est prélevée pour l'alimentation en eau potable.
+	31.	Désimperméabilisation des sols : Réduction des surfaces imperméables pour favoriser l'infiltration de l'eau dans les sols.
+	32.	Électricité renouvelable : Développement de la production d'électricité à partir de sources renouvelables comme le solaire et l'éolien.
+	33.	Biogaz : Production de gaz renouvelable à partir de matières organiques pour remplacer le gaz fossile.
+	34.	Réseaux de chaleur décarbonés : Utilisation de sources d'énergie renouvelable ou de récupération pour alimenter les réseaux de chauffage urbain.
+	35.	Top 50 sites industriels : Actions ciblées sur les 50 sites industriels les plus émetteurs pour réduire significativement les émissions.
+	36.	Industrie diffuse : Réduction des émissions provenant de l'ensemble des activités industrielles moins concentrées.
+	37.	Fret décarboné et multimodalité : Promotion de modes de transport de marchandises moins polluants et combinant différents modes (train, bateau, etc.).
+	38.	Efficacité et sobriété logistique : Optimisation des flux logistiques pour réduire la consommation d'énergie et les émissions.
+	39.	Réduction des déplacements : Diminution de la nécessité de se déplacer, par exemple via le télétravail ou la relocalisation des services.
+	40.	Covoiturage : Partage de véhicules entre plusieurs personnes pour réduire le nombre de voitures sur la route.
+	41.	Vélo : Promotion de l'usage du vélo pour les déplacements quotidiens.
+	42.	Transports en commun : Développement et amélioration des services de transport public pour encourager leur utilisation.
+	43.	Véhicules électriques : Transition vers les véhicules électriques pour réduire les émissions du transport routier.
+	44.	Efficacité énergétique des véhicules privés : Amélioration de la consommation de carburant des véhicules pour réduire les émissions.
+	45.	Bus et cars décarbonés : Remplacement des bus et cars par des modèles à faibles émissions ou électriques.
+	46.	2 roues (élec & efficacité) : Promotion des deux-roues électriques ou plus économes en énergie.
+	47.	Nucléaire : Maintien ou développement de l'énergie nucléaire pour une production d'électricité bas-carbone.
+	48.	Bio-carburants : Utilisation de carburants issus de la biomasse pour remplacer les carburants fossiles.
+	49.	Efficacité des aéronefs : Amélioration de l'efficacité énergétique des avions pour réduire les émissions du secteur aérien.
+	50.	SAF : Utilisation de carburants d'aviation durables (Sustainable Aviation Fuel) pour réduire l'impact environnemental des vols.
 </leviers>
 
 Liste des acronymes :
