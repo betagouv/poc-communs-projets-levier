@@ -16,7 +16,7 @@ API_KEY = os.getenv("ANTHROPIC_API_KEY")
 client = anthropic.Anthropic(api_key=API_KEY)
 
 # Importing the prompts, hard-coded in a separate file
-from prompts import system_prompt_classification_TE, user_prompt_classification_TE, system_prompt_competences, user_prompt_competences,system_prompt_questions_fermees,user_prompt_questions_fermees, system_prompt_resume_projet, user_prompt_resume_projet
+from prompts import system_prompt_classification_TE, user_prompt_classification_TE, system_prompt_competences, user_prompt_competences,system_prompt_questions_fermees,user_prompt_questions_fermees, system_prompt_resume_projet, user_prompt_resume_projet,system_prompt_questions_fermees_boussole,user_prompt_questions_fermees_boussole
 
 def classification_TE(projet: str, system_prompt=system_prompt_classification_TE, user_prompt=user_prompt_classification_TE, model="haiku"):
     # Use the MODEL_NAME variable that's being set
@@ -156,7 +156,7 @@ def classification_competences(projet: str, system_prompt=system_prompt_competen
     
     return response_dict
 
-def generation_question_fermes(LLM_response: json, system_prompt=system_prompt_questions_fermees, user_prompt=user_prompt_questions_fermees, model="haiku"):
+def generation_question_fermes(LLM_response: json, system_prompt=system_prompt_questions_fermees_boussole, user_prompt=user_prompt_questions_fermees_boussole, model="haiku"):
     # Use the MODEL_NAME variable that's being set
     model_name = "claude-3-5-sonnet-20241022" if model == "sonnet" else "claude-3-5-haiku-20241022"
     LLM_response=json.dumps(LLM_response, ensure_ascii=False)
@@ -169,6 +169,7 @@ def generation_question_fermes(LLM_response: json, system_prompt=system_prompt_q
             {
                 "type": "text",
                 "text": system_prompt,
+                "cache_control": {"type": "ephemeral"}
             }
         ],
             messages=[
