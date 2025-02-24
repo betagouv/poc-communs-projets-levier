@@ -888,3 +888,163 @@ Reformule la description du projet en intégrant les réponses de l'utilisateur,
 
 Voici les informations disponibles pour la reformulation :
 """
+
+# Constantes pour les corrections des leviers et compétences
+
+leviers = [
+  "Gestion des forêts et produits bois",
+  "Changements de pratiques de fertilisation azotée",
+  "Elevage durable",
+  "Gestion des haies",
+  "Bâtiments & Machines agricoles",
+  "Gestion des prairies",
+  "Pratiques stockantes",
+  "Sobriété foncière",
+  "Surface en aire protégée",
+  "Résorption des points noirs prioritaires de continuité écologique",
+  "Restauration des habitats naturels",
+  "Réduction de l'usage des produits phytosanitaires",
+  "Développement de l'agriculture biologique et de HVE",
+  "Respect d'Egalim pour la restauration collective",
+  "Sobriété des bâtiments (résidentiel)",
+  "Changement chaudières fioul + rénovation (résidentiel)",
+  "Changement chaudières gaz + rénovation (résidentiel)",
+  "Rénovation (hors changement chaudières)",
+  "Sobriété des bâtiments (tertiaire)",
+  "Changement chaudières fioul + rénovation (tertiaire)",
+  "Changement chaudières gaz + rénovation (tertiaire)",
+  "Gaz fluorés résidentiel",
+  "Gaz fluorés tertiaire",
+  "Captage de méthane dans les ISDND",
+  "Prévention déchets",
+  "Valorisation matière des déchets",
+  "Moindre stockage en décharge",
+  "Collecte et tri des déchets",
+  "Sobriété dans l'utilisation de la ressource en eau",
+  "Protection des zones de captage d'eau",
+  "Désimperméabilisation des sols",
+  "Electricité renouvelable",
+  "Biogaz",
+  "Réseaux de chaleur décarbonés",
+  "Top 50 sites industriels",
+  "Industrie diffuse",
+  "Fret décarboné et multimodalité",
+  "Efficacité et sobriété logistique",
+  "Réduction des déplacements",
+  "Covoiturage",
+  "Vélo",
+  "Transports en commun",
+  "Véhicules électriques",
+  "Efficacité énergétique des véhicules privés",
+  "Bus et cars décarbonés",
+  "2 roues (élec&efficacité)",
+  "Nucléaire",
+  "Bio-carburants",
+  "Efficacité des aéronefs",
+  "SAF",
+]
+
+corrections_leviers = {
+    # Base corrections for accents and common variations
+    'Électricité renouvelable': 'Electricité renouvelable',
+    'Énergies renouvelables': 'Electricité renouvelable',
+    'Solaire photovoltaïque': 'Electricité renouvelable',
+    
+    
+    # Agriculture
+    'Élevage durable': 'Elevage durable',
+    'Agriculture biologique': 'Développement de l\'agriculture biologique et de HVE',
+    'Agriculture biologique et de HVE': 'Développement de l\'agriculture biologique et de HVE',
+    'Agriculture biologique et HVE': 'Développement de l\'agriculture biologique et de HVE',
+    'Développement de l\'agriculture biologique': 'Développement de l\'agriculture biologique et de HVE',
+    'Développement de l\'agriculture biologique et HVE': 'Développement de l\'agriculture biologique et de HVE',
+    'HVE': 'Développement de l\'agriculture biologique et de HVE',
+    'Bâtiments & Machines': 'Bâtiments & Machines agricoles',
+    'Gestion des bâtiments & machines': 'Bâtiments & Machines agricoles',
+    'Agriculture durable': 'Développement de l\'agriculture biologique et de HVE',
+    'Changements des pratiques agricoles': 'Développement de l\'agriculture biologique et de HVE',
+    
+    # Déchets
+    #'Collecte et tri des déchets' : 'Augmentation du taux de collecte',
+    'Réduction des déchets': 'Prévention déchets',
+    'Sobriété déchets': 'Prévention déchets',
+    'Sobriété des déchets': 'Prévention déchets',
+    'Gestion des déchets': 'Prévention déchets',
+    
+    # Mobility and transport
+    '2 roues (élec & efficacité)': '2 roues (élec&efficacité)',
+    'Deux roues (élec & efficacité)': '2 roues (élec&efficacité)',
+    'Transport en commun': 'Transports en commun',
+    'Transport décarboné': 'Fret décarboné et multimodalité',
+    'Véhicules électriques et hybrides': 'Véhicules électriques',
+    'Véhicules à faibles émissions': 'Véhicules électriques',
+    'Véhicules (élec & efficacité)': 'Véhicules électriques',
+    'Véhicules électriques (autre aspect)': "Véhicules électriques",
+    'Modes actifs': 'Vélo',
+    'Mobilités douces': 'Vélo',
+    'Mobilité douce': 'Vélo',
+    
+    # Réduction des déplacements
+    'Réduction des émissions de CO2 liées aux déplacements': 'Réduction des déplacements',
+    'Réduction des déplacements (sensibilisation)': 'Réduction des déplacements',
+    'Réduction des déplacements (consommer local)': 'Réduction des déplacements',
+    'Réduction des déplacements (connexion)': 'Réduction des déplacements',
+    'Réduction des déplacements (communication)': 'Réduction des déplacements',
+    'Réduction des déplacements (mobilité optimisée)': 'Réduction des déplacements',
+    'Réduction des déplacements professionnels': 'Réduction des déplacements',
+    'Réduction de l\'usage des déplacements': 'Réduction des déplacements',
+    'Réduction de l\'usage des véhicules privés': 'Réduction des déplacements',
+    'Réduction des émissions de transport': 'Réduction des déplacements',
+    'Réduction des émissions du transport': 'Réduction des déplacements',
+
+
+    # Industrie
+    'Efficacité énergétique des sites industriels': 'Industrie diffuse',
+    'Industrie et efficacité énergétique': 'Industrie diffuse',
+    'Industrie (efficacité énergétique)': 'Industrie diffuse',
+    'Efficacité énergétique des process': 'Industrie diffuse',
+    'Efficacité énergétique des installations': 'Industrie diffuse',
+
+    
+    # Réno et sobriété bâtiments
+    'Rénovation (tertiaire)' : 'Rénovation (hors changement chaudières)',
+    'Rénovation': 'Rénovation (hors changement chaudières)',
+    'Rénovation (résidentiel)': 'Rénovation (hors changement chaudières)',
+    'Efficacité énergétique des bâtiments tertiaires': 'Sobriété des bâtiments (tertiaire)',
+    'Efficacité énergétique des bâtiments (tertiaire)': 'Sobriété des bâtiments (tertiaire)',
+    'Performance énergétique des bâtiments (tertiaire)': 'Sobriété des bâtiments (tertiaire)',
+    'Sobriété des bâtiments': 'Sobriété des bâtiments (résidentiel)',
+    
+    # Vehicules privés
+    'Efficacité des véhicules privés': 'Efficacité énergétique des véhicules privés',
+    'Efficacité énergétique des véhicules': 'Efficacité énergétique des véhicules privés',
+    'Réduction des émissions des véhicules': 'Efficacité énergétique des véhicules privés',
+
+    # Logistics
+    'Sobriété logistique et efficacité': 'Efficacité et sobriété logistique',
+    'Sobriété logistique': 'Efficacité et sobriété logistique',
+    'Efficacité logistique et sobriété': 'Efficacité et sobriété logistique',
+    
+    # Protected areas and biodiversity
+    'Résorption des points noirs de continuité écologique': 'Résorption des points noirs prioritaires de continuité écologique',
+    'Superficie en aire protégée': 'Surface en aire protégée',
+    '9. Surface en aire protégée': 'Surface en aire protégée',
+    'Restoration des habitats naturels': 'Restauration des habitats naturels',
+    'Artificialisation des sols': 'Sobriété foncière',
+    
+    # Eau
+    'Sobriété dans l\'utilisation de la ressource': 'Sobriété dans l\'utilisation de la ressource en eau',
+    'Réutilisation des eaux usées': 'Sobriété dans l\'utilisation de la ressource en eau',
+    'Réutilisation des eaux usées traitées (REUT)': 'Sobriété dans l\'utilisation de la ressource en eau',
+    'Récupération d\'eau de pluie': 'Sobriété dans l\'utilisation de la ressource en eau',
+    
+    # Wood and construction
+    'Respect d\'Egalim': 'Respect d\'Egalim pour la restauration collective',
+    'Bois construction et commande publique': 'Gestion des forêts et produits bois',
+    'Construction bois': 'Gestion des forêts et produits bois',
+    
+    # Biofuels
+    'Biocaburants': 'Bio-carburants',
+    'Biocarburants': 'Bio-carburants'
+}
+
