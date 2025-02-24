@@ -265,10 +265,9 @@ def classification_competences(projet: str, system_prompt=system_prompt_competen
     
     return response_dict
 
-def generation_question_fermes(LLM_response: json, system_prompt=system_prompt_questions_fermees_boussole, user_prompt=user_prompt_questions_fermees_boussole, model="haiku"):
+def generation_question_fermes(projet: str, system_prompt=system_prompt_questions_fermees_boussole, user_prompt=user_prompt_questions_fermees_boussole, model="haiku"):
     # Use the MODEL_NAME variable that's being set
     model_name = "claude-3-5-sonnet-20241022" if model == "sonnet" else "claude-3-5-haiku-20241022"
-    LLM_response=json.dumps(LLM_response, ensure_ascii=False)
     #print(LLM_response)
     response = client.messages.create(
         model=model_name,
@@ -290,7 +289,7 @@ def generation_question_fermes(LLM_response: json, system_prompt=system_prompt_q
             },
             {
                 "type": "text",
-                "text":  "<reponse_LLM>\n" + LLM_response + "\n</reponse_LLM>"
+                "text":  "<projet>\n" + projet + "\n</projet>"
             }
             ]
         }
@@ -395,7 +394,7 @@ if __name__ == "__main__":
             
             questions_start = time.time()
             questions = generation_question_fermes(
-                LLM_response=response_classification,
+                projet=args.projet,
                 model=args.model
             )
             print(f"[DEBUG] Questions generated in {time.time() - questions_start:.2f}s", file=sys.stderr)

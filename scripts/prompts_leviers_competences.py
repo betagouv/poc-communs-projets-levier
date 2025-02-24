@@ -858,8 +858,6 @@ Sois bienveillant, concis et constructif dans ta formulation.
 
 user_prompt_questions_fermees_boussole = """
 
-
-
 En te basant sur les instructions et les exemples ci-dessus, pose exactement 3 questions fermées (avec réponses « oui » ou « non ») qui aideront l’utilisateur à préciser comment son projet contribue à la transition écologique. 
 Concentre-toi particulièrement sur la réduction des émissions de gaz à effet de serre, la préservation des ressources, la protection de la biodiversité, l’économie circulaire, ainsi que sur la réduction des pollutions et des déchets.
 
