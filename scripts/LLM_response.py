@@ -27,7 +27,10 @@ from prompts_leviers_competences import (
     system_prompt_questions_fermees_boussole,
     user_prompt_questions_fermees_boussole,
     leviers,
-    corrections_leviers
+    corrections_leviers,
+    competences,
+    corrections_competences,
+    corrections_sous_competences
 )
 
 
@@ -200,6 +203,83 @@ def classification_TE(projet: str, system_prompt=system_prompt_classification_TE
         response_dict["raisonnement"] = "No raisonnement found in the response."
     return response_dict
 
+def post_treatment_competences(json_data, competences_list, corrections_competences, corrections_sous_competences):
+    """
+    Post-processes competences and sub-competences in a JSON response by correcting or removing invalid entries.
+    
+    This function takes a JSON response containing project information and competences, validates each competence
+    and sub-competence against reference lists, corrects them using corrections dictionaries, validates the pairs,
+    and removes invalid entries. The resulting competences are sorted by score in descending order.
+    
+    Args:
+        json_data (dict): A dictionary containing project data with the following structure:
+            {
+                'projet': str,
+                'competences': list[dict] where each dict contains:
+                    - 'competence': str
+                    - 'sous_competence': str
+                    - 'score': float
+            }
+        competences_list (dict): Dictionary of valid competences with their associated sub-competences
+        corrections_competences (dict): Dictionary mapping incorrect competence names to their correct forms
+        corrections_sous_competences (dict): Dictionary mapping incorrect sub-competence names to their correct forms
+    
+    Returns:
+        dict: A copy of the input dictionary with processed competences
+    """
+    # Create a deep copy of the entire json_data
+    result = copy.deepcopy(json_data)
+    
+    # Create a copy of competences to avoid modifying the list during iteration
+    competences_to_process = list(result["competences"])
+    result["competences"] = []
+    
+    # Iterate through the copy
+    for comp in competences_to_process:
+        competence_name = comp["competence"]
+        sous_competence_name = comp["sous_competence"]
+        score = comp["score"]
+        
+        # Check and correct competence name if needed
+        if competence_name not in competences_list:
+            if competence_name in corrections_competences:
+                competence_name = corrections_competences[competence_name]
+            else:
+                continue  # Skip this entry if competence is invalid and has no correction
+        
+        # Check if competence has possible sub-competences
+        has_possible_sous_competences = bool(competences_list.get(competence_name, []))
+        
+        if has_possible_sous_competences:
+            # If competence has possible sub-competences, it must have a valid one
+            if not sous_competence_name:
+                continue  # Skip if no sub-competence provided
+            
+            # Try to correct sub-competence if invalid
+            if sous_competence_name not in competences_list[competence_name]:
+                if sous_competence_name in corrections_sous_competences:
+                    sous_competence_name = corrections_sous_competences[sous_competence_name]
+                else:
+                    continue  # Skip if sub-competence invalid and no correction exists
+            
+            # Verify corrected sub-competence is valid for this competence
+            if sous_competence_name not in competences_list[competence_name]:
+                continue
+        else:
+            # If competence has no possible sub-competences, it should not have one
+            sous_competence_name = ""
+        
+        # Add the processed competence entry
+        result["competences"].append({
+            "competence": competence_name,
+            "sous_competence": sous_competence_name,
+            "score": score
+        })
+    
+    # Sort competences by score in descending order
+    result["competences"].sort(key=lambda x: x["score"], reverse=True)
+    
+    return result
 
 def classification_competences(projet: str, system_prompt=system_prompt_competences, user_prompt=user_prompt_competences, model="haiku"):
     # Use the MODEL_NAME variable that's being set
@@ -208,7 +288,6 @@ def classification_competences(projet: str, system_prompt=system_prompt_competen
     response = client.messages.create(
         model=model_name,  # Use the variable instead of hardcoding
         max_tokens=1024,
-        temperature=0.3,
         system=[
             {
                 "type": "text",
@@ -256,6 +335,8 @@ def classification_competences(projet: str, system_prompt=system_prompt_competen
         json_str = json_content.group(1).strip()
         try:
             json_data = json.loads(json_str)
+            # post-treatment of the LLM response for competences
+            json_data = post_treatment_competences(json_data, competences,corrections_competences,corrections_sous_competences)
             response_dict.update(json_data)
         except json.JSONDecodeError:
             response_dict["competences"] = "Error in treating the project: Invalid JSON format"
@@ -427,4 +508,4 @@ if __name__ == "__main__":
             user_prompt=user_prompt_competences,
             model=args.model
         )
-        print(json.dumps(response_competences))
+        print(json.dumps(response_competences, ensure_ascii=False))
