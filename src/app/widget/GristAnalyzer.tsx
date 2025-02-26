@@ -1,38 +1,40 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { analyzeProject } from "@/app/actions";
 import { CompetencesResult, LeviersResult } from "@/app/types";
 import { WidgetColumnMap } from "grist/CustomSectionAPI";
-import type { RowRecord, CellValue } from "grist/GristData";
+import type { CellValue, RowRecord } from "grist/GristData";
 import { push } from "@socialgouv/matomo-next";
+
+type ReferenceTable = {
+  FNV: string[];
+  Levier: string[];
+};
 
 export const GristAnalyzer = () => {
   const [isLoadingLeviers, setIsLoadingLeviers] = useState(false);
   const [isLoadingCompetences, setIsLoadingCompetences] = useState(false);
-
   const [error, setError] = useState<string | undefined>();
   const [leviersResult, setLeviersResult] = useState<LeviersResult | undefined>();
   const [competencesResult, setCompetencesResult] = useState<CompetencesResult | undefined>();
   const [selectedLevers, setSelectedLevers] = useState<Set<string>>(new Set());
   const [currentSelection, setCurrentSelection] = useState<RowRecord | null>(null);
   const [columnMapping, setColumnMapping] = useState<WidgetColumnMap | null>(null);
+  const [FNV_ReferenceTable, setFNV_ReferenceTable] = useState<ReferenceTable | null>(null);
 
   useEffect(() => {
     grist.ready({
       requiredAccess: "full",
       columns: [
         { name: "description", type: "Text" },
-        { name: "leviers", type: "ChoiceList" },
+        { name: "leviers" },
         { name: "thematique_prioritaire", type: "Choice" },
         { name: "thematique_secondaire", type: "Choice" },
       ],
     });
 
     grist.onRecord((record: RowRecord | null, mappings) => {
-      console.log("onRecord called:", record);
-
       // Get current selection directly from state setter to avoid stale closure
       setCurrentSelection((prevSelection) => {
-        console.log("prevSelection", prevSelection);
         // Only reset state if the row selection has actually changed
         if (record?.id !== prevSelection?.id) {
           setLeviersResult(undefined);
@@ -44,8 +46,24 @@ export const GristAnalyzer = () => {
 
       setColumnMapping(mappings);
     });
+
+    fetchFNVReferencesTable();
     // Empty dependency array since we only want to set up listeners once
   }, []);
+
+  const fetchFNVReferencesTable = async (): Promise<void> => {
+    const levierReferenceTable: { FNV: string[]; Levier: string[] } = await grist.docApi.fetchTable("Thematiques_FNV");
+    setFNV_ReferenceTable(levierReferenceTable);
+  };
+
+  async function getLeverIds(leverNames: string[], levierReferenceTable: ReferenceTable) {
+    const leverIds = [];
+    for (const name of leverNames) {
+      const matchedLevierIndex = levierReferenceTable.Levier.findIndex((levier) => levier === name);
+      leverIds.push(matchedLevierIndex + 1);
+    }
+    return leverIds;
+  }
 
   const analyzeCurrentRow = async () => {
     push(["trackEvent", "Analysis", "Start"]);
@@ -97,10 +115,10 @@ export const GristAnalyzer = () => {
     setSelectedLevers((prev) => {
       const newSelected = new Set(prev);
       if (newSelected.has(leverName)) {
-        push(["trackEvent", "Levers", "Deselect", leverName]);
+        push(["trackEvent", "Leviers", "Deselect", leverName]);
         newSelected.delete(leverName);
       } else {
-        push(["trackEvent", "Levers", "Select", leverName]);
+        push(["trackEvent", "Leviers", "Select", leverName]);
         newSelected.add(leverName);
       }
       return newSelected;
@@ -113,14 +131,16 @@ export const GristAnalyzer = () => {
         throw new Error("No record selected");
       }
 
-      const leversArray = Array.from(selectedLevers);
       const leversColumnId = columnMapping?.leviers;
+      const leversArray = Array.from(selectedLevers);
 
-      const choiceListValue = ["L", ...leversArray] as unknown as CellValue;
+      // at this stage the FNV_ReferenceTable is populated
+      const leverIds = await getLeverIds(leversArray, FNV_ReferenceTable!);
 
+      // Update the ReferenceList column with the array of row IDs
       await grist.selectedTable.update({
         id: currentSelection.id,
-        fields: { [leversColumnId as string]: choiceListValue },
+        fields: { [leversColumnId as string]: ["L", ...leverIds] as unknown as CellValue },
       });
 
       push(["trackEvent", "Leviers", "Save", `Count: ${selectedLevers.size}`]);
