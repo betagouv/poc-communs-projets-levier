@@ -282,6 +282,40 @@ def post_treatment_competences(json_data, competences_list, corrections_competen
     return result
 
 def classification_competences(projet: str, system_prompt=system_prompt_competences, user_prompt=user_prompt_competences, model="haiku"):
+    """
+    Classifies a project based on required competences and sub-competences.
+    
+    This function uses the Claude LLM to analyze a project description and identify
+    relevant competences and sub-competences needed for the project, along with their scores.
+    The results are post-processed to ensure they match reference lists or corrections.
+    
+    Args:
+        projet (str): Description of the project to analyze
+        system_prompt (str, optional): System prompt for the LLM. Defaults to system_prompt_competences.
+        user_prompt (str, optional): User prompt for the LLM. Defaults to user_prompt_competences.
+        model (str, optional): Model version to use ("haiku" or "sonnet"). Defaults to "haiku".
+        
+    Returns:
+        dict: A dictionary containing:
+            - projet (str): Original project description
+            - competences (list): List of dictionaries, each containing:
+                - competence (str): The competence name
+                - sous_competence (str): The sub-competence name (if applicable)
+                - score (float): Relevance score for this competence (0-1)
+              The competences are post-processed and sorted by descending score.
+    
+    Example:
+        >>> result = classification_competences("Rénovation thermique de la mairie")
+        >>> result
+        {
+            'projet': "Rénovation thermique de la mairie",
+            'competences': [
+                {'competence': 'Habitat', 'sous_competence': 'Bâtiments et construction', 'score': 0.9},
+                {'competence': 'Habitat', 'sous_competence': 'Equipement public', 'score': 0.9},
+                {'competence': 'Actions en matière de gestion des eaux', 'sous_competence': 'Eau potable', 'score': 0.4}
+            ]
+        }
+    """
     # Use the MODEL_NAME variable that's being set
     model_name = "claude-3-5-sonnet-20241022" if model == "sonnet" else "claude-3-5-haiku-20241022"
     #print(model_name)
@@ -347,6 +381,35 @@ def classification_competences(projet: str, system_prompt=system_prompt_competen
     return response_dict
 
 def generation_question_fermes(projet: str, system_prompt=system_prompt_questions_fermees_boussole, user_prompt=user_prompt_questions_fermees_boussole, model="haiku"):
+    """
+    Generates closed-ended questions for a project based on its description.
+    
+    This function uses the Claude LLM to analyze a project description and generate
+    a set of closed-ended questions that can help gather more information about the
+    project's relevance to ecological transition.
+    
+    Args:
+        projet (str): Description of the project to analyze
+        system_prompt (str, optional): System prompt for the LLM.
+                                     Defaults to system_prompt_questions_fermees_boussole.
+        user_prompt (str, optional): User prompt for the LLM. 
+                                   Defaults to user_prompt_questions_fermees_boussole.
+        model (str, optional): Model version to use ("haiku" or "sonnet"). Defaults to "haiku".
+        
+    Returns:
+        dict: A dictionary containing generated questions, typically with keys Q1, Q2, Q3,
+              where each value is itself a dictionary containing the question and possible answers.
+              Returns empty or None values for questions if an error occurs.
+    
+    Example:
+        >>> questions = generation_question_fermes("Création d'un city-stade")
+        >>> questions
+        {
+            'Q1': "Le projet prévoit-il l'utilisation de matériaux de construction recyclés ou à faible impact environnemental ?",
+            'Q2': 'Le city-stade intègre-t-il des aménagements favorisant la biodiversité locale (végétalisation, zones naturelles) ?',
+            'Q3': "Le projet inclut-il des dispositifs de récupération des eaux de pluie ou d'éclairage économe en énergie ?"
+        }
+    """
     # Use the MODEL_NAME variable that's being set
     model_name = "claude-3-5-sonnet-20241022" if model == "sonnet" else "claude-3-5-haiku-20241022"
     #print(LLM_response)
@@ -402,7 +465,32 @@ def generation_question_fermes(projet: str, system_prompt=system_prompt_question
             "Q3": None
         }
 
-def generation_resume(projet,question_reponses,system_prompt=system_prompt_resume_projet, user_prompt=user_prompt_resume_projet, model="haiku"):
+def generation_resume(projet, question_reponses, system_prompt=system_prompt_resume_projet, user_prompt=user_prompt_resume_projet, model="haiku"):
+    """
+    Generates a summary of a project based on its description and answers to questions.
+    
+    This function uses the Claude LLM to create a comprehensive summary of a project by 
+    combining the original project description with answers to previously generated questions.
+    The summary provides a more structured and detailed understanding of the project.
+    
+    Args:
+        projet (str): Description of the project to analyze
+        question_reponses (dict): Dictionary containing questions and their answers
+        system_prompt (str, optional): System prompt for the LLM. Defaults to system_prompt_resume_projet.
+        user_prompt (str, optional): User prompt for the LLM. Defaults to user_prompt_resume_projet.
+        model (str, optional): Model version to use ("haiku" or "sonnet"). Defaults to "haiku".
+        
+    Returns:
+        str: A text summary of the project incorporating the answers to the questions
+        
+    Example:
+        >>> answers = {"Le projet prévoit-il l'utilisation de matériaux de construction recyclés ou à faible impact environnemental ?":"non",
+                        "Le city-stade intègre-t-il des aménagements favorisant la biodiversité locale (végétalisation, zones naturelles) ?":"oui",
+                        "Le projet inclut-il des dispositifs de récupération des eaux de pluie ou d'éclairage économe en énergie ?":"oui"}
+        >>> summary = generation_resume("Création d'un city-stade", answers)
+        >>> summary
+        "Création d'un city-stade intégrant des aménagements favorables à la biodiversité locale, avec des dispositifs de récupération des eaux de pluie et d'éclairage économe en énergie, offrant un espace sportif et environnemental innovant."
+    """
     # Use the MODEL_NAME variable that's being set
     model_name = "claude-3-5-sonnet-20241022" if model == "sonnet" else "claude-3-5-haiku-20241022"
     #print(model_name)
