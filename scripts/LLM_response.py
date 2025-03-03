@@ -546,32 +546,13 @@ if __name__ == "__main__":
         print(json.dumps(response_classification, ensure_ascii=False))
     elif args.type == 'questions':
         try:
-            import time
-            start = time.time()
-            
-            # Debug print with clearer labels
-            print("[DEBUG] Received classification", file=sys.stderr)
-            
-            try:
-                response_classification = json.loads(args.classification)
-            except json.JSONDecodeError as e:
-                print("[ERROR] JSON decode error:", e, file=sys.stderr)
-                raise
-                
-            print(f"[DEBUG] JSON parsing completed in {time.time() - start:.2f}s", file=sys.stderr)
-            print(f"[DEBUG] Processing classification: {response_classification['classification']}", file=sys.stderr)
-            
-            questions_start = time.time()
             questions = generation_question_fermes(
                 projet=args.projet,
                 model=args.model
             )
-            print(f"[DEBUG] Questions generated in {time.time() - questions_start:.2f}s", file=sys.stderr)
-            
             print(json.dumps(questions, ensure_ascii=False))
         except Exception as e:
-            print(f"Error processing classification: {e}", file=sys.stderr)
-            print(f"Args received: {args}", file=sys.stderr)
+            print(f"Error generating questions: {e}", file=sys.stderr)
             sys.exit(1)
     elif args.type == 'resume':
         try:
