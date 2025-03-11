@@ -30,3 +30,8 @@ export interface FormattedQuestionAnswer {
   question: string;
   answer: "oui" | "non";
 }
+
+export type ReferenceTable = {
+  FNV: string[];
+  Levier: string[];
+};
