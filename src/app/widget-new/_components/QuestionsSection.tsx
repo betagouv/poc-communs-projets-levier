@@ -1,17 +1,30 @@
 import { Questions, QuestionAnswers } from "@/app/types";
 import { generateResume } from "@/app/actions";
 import React, { useState } from "react";
+import type { RowRecord } from "grist/GristData";
+import { WidgetColumnMap } from "grist/CustomSectionAPI";
+import { SuccessMessage } from "@/app/widget-new/_components/SuccessMessage";
 
 interface QuestionsSectionProps {
   questions: Questions;
   answers: QuestionAnswers;
   setAnswers: React.Dispatch<React.SetStateAction<QuestionAnswers>>;
   intitule: string;
+  currentSelection: RowRecord | null;
+  columnMapping: WidgetColumnMap | null;
 }
 
-export function QuestionsSection({ questions, answers, setAnswers, intitule }: QuestionsSectionProps) {
+export function QuestionsSection({
+  questions,
+  answers,
+  setAnswers,
+  intitule,
+  currentSelection,
+  columnMapping,
+}: QuestionsSectionProps) {
   const [resume, setResume] = useState<string | null>(null);
   const [loadingResume, setLoadingResume] = useState(false);
+  const [updateSuccess, setUpdateSuccess] = useState<boolean | null>(null);
 
   const handleAnswer = async (questionKey: keyof Questions, answer: "oui" | "non") => {
     //todo still need this condition despite the step isolation ?
@@ -55,6 +68,25 @@ export function QuestionsSection({ questions, answers, setAnswers, intitule }: Q
   };
 
   const allQuestionsAnswered = Object.keys(answers).length === Object.keys(questions).length;
+
+  const applyNewDescriptionToGrist = async () => {
+    if (!currentSelection || !columnMapping?.description || !resume) {
+      console.error("Cannot update description: Missing required data");
+      setUpdateSuccess(false);
+      return;
+    }
+
+    try {
+      await grist.selectedTable.update({
+        id: currentSelection.id,
+        fields: { [columnMapping.description as string]: resume },
+      });
+      setUpdateSuccess(true);
+    } catch (error) {
+      console.error("Error updating description in Grist:", error);
+      setUpdateSuccess(false);
+    }
+  };
 
   return (
     <div className="space-y-3">
@@ -121,7 +153,7 @@ export function QuestionsSection({ questions, answers, setAnswers, intitule }: Q
 
         {loadingResume && (
           <div className="text-sm text-gray-600 animate-pulse text-center">
-            Mise à jour de l&apos;analyse en cours...
+            Génération de la nouvelle description...
           </div>
         )}
 
@@ -132,11 +164,12 @@ export function QuestionsSection({ questions, answers, setAnswers, intitule }: Q
               <p className="text-gray-700 whitespace-pre-wrap">{resume}</p>
             </div>
             <button
-              onClick={handleGenerateResume}
+              onClick={applyNewDescriptionToGrist}
               className="w-full mt-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors text-sm disabled:bg-gray-300 disabled:cursor-not-allowed"
             >
               Appliquer la nouvelle description
             </button>
+            {updateSuccess && <SuccessMessage message={"Description mise à jour avec succès !"} />}
           </>
         )}
       </div>

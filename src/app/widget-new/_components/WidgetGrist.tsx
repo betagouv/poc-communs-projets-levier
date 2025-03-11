@@ -205,8 +205,9 @@ export const WidgetGrist = () => {
           setAnswers={setAnswers}
           questions={questions}
           answers={answers}
-          //todo refine this typing
           intitule={currentSelection![columnMapping?.intitule as string] as string}
+          currentSelection={currentSelection}
+          columnMapping={columnMapping}
         />
       )}
     </div>
