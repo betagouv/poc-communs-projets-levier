@@ -47,7 +47,7 @@ export const ProjectDetail: FC<ProjectDetailProps> = ({
       <button
         onClick={analyzeCurrentRow}
         disabled={isLoadingLeviers || isLoadingCompetences || !currentSelection}
-        className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 font-medium shadow-sm"
+        className="mt-4 w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 font-medium shadow-sm flex items-center justify-center"
       >
         {isLoadingLeviers || isLoadingCompetences ? (
           <span className="flex items-center justify-center">

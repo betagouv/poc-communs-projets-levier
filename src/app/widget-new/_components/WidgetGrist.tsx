@@ -9,6 +9,7 @@ import { ThematiquesSection } from "./ThematiquesSection";
 import { LeviersSection } from "./LeviersSection";
 import { ErrorDisplay } from "./ErrorDisplay";
 import { QuestionsSection } from "./QuestionsSection";
+import { StepNaviguation } from "./StepNaviguation";
 
 type ReferenceTable = {
   FNV: string[];
@@ -30,6 +31,7 @@ export const WidgetGrist = () => {
   const [FNV_ReferenceTable, setFNV_ReferenceTable] = useState<ReferenceTable | null>(null);
   const [leviersHaveBeenSaved, setLeviersHaveBeenSaved] = useState(false);
   const [thematiquesHaveBeenSaved, setThematiquesHaveBeenSaved] = useState(false);
+  const [currentStep, setCurrentStep] = useState<"thematiques-leviers" | "questions">("thematiques-leviers");
 
   const fetchFNVReferencesTable = async (): Promise<void> => {
     const levierReferenceTable: { FNV: string[]; Levier: string[] } = await grist.docApi.fetchTable("Thematiques_FNV");
@@ -145,6 +147,7 @@ export const WidgetGrist = () => {
   useEffect(() => {
     if (thematiquesHaveBeenSaved && leviersHaveBeenSaved && !questions) {
       handleGenerateQuestions();
+      setCurrentStep("questions");
     }
   }, [thematiquesHaveBeenSaved, leviersHaveBeenSaved, questions]);
 
@@ -152,10 +155,27 @@ export const WidgetGrist = () => {
   console.log("thematiquesHaveBeenSaved", thematiquesHaveBeenSaved);
   console.log("leviersHaveBeenSaved", leviersHaveBeenSaved);
 
-  const displayStep1 = !thematiquesHaveBeenSaved || !leviersHaveBeenSaved;
+  const goToThematiquesLeviers = () => {
+    setCurrentStep("thematiques-leviers");
+  };
+
+  const goToQuestions = () => {
+    setCurrentStep("questions");
+  };
+
+  const displayStep1 = currentStep === "thematiques-leviers";
+  const displayStep2 = currentStep === "questions";
 
   return (
     <div className="p-4 max-w-xl mx-auto bg-white min-h-screen">
+      <StepNaviguation
+        currentStep={currentStep}
+        thematiquesHaveBeenSaved={thematiquesHaveBeenSaved}
+        leviersHaveBeenSaved={leviersHaveBeenSaved}
+        goToThematiquesLeviers={goToThematiquesLeviers}
+        goToQuestions={goToQuestions}
+      />
+
       {displayStep1 && (
         <>
           <ProjectDetail
@@ -200,7 +220,7 @@ export const WidgetGrist = () => {
           <div className="h-10 bg-gray-200 rounded"></div>
         </div>
       )}
-      {questions && (
+      {displayStep2 && questions && (
         <QuestionsSection
           setAnswers={setAnswers}
           questions={questions}
@@ -208,6 +228,7 @@ export const WidgetGrist = () => {
           intitule={currentSelection![columnMapping?.intitule as string] as string}
           currentSelection={currentSelection}
           columnMapping={columnMapping}
+          goToThematiquesLeviers={goToThematiquesLeviers}
         />
       )}
     </div>

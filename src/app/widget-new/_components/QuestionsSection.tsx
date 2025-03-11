@@ -12,6 +12,7 @@ interface QuestionsSectionProps {
   intitule: string;
   currentSelection: RowRecord | null;
   columnMapping: WidgetColumnMap | null;
+  goToThematiquesLeviers: () => void;
 }
 
 export function QuestionsSection({
@@ -21,6 +22,7 @@ export function QuestionsSection({
   intitule,
   currentSelection,
   columnMapping,
+  goToThematiquesLeviers,
 }: QuestionsSectionProps) {
   const [resume, setResume] = useState<string | null>(null);
   const [loadingResume, setLoadingResume] = useState(false);
@@ -169,7 +171,18 @@ export function QuestionsSection({
             >
               Appliquer la nouvelle description
             </button>
-            {updateSuccess && <SuccessMessage message={"Description mise à jour avec succès !"} />}
+
+            {updateSuccess && (
+              <div>
+                <SuccessMessage message={"Description mise à jour avec succès !"} />
+                <button
+                  onClick={goToThematiquesLeviers}
+                  className="w-full mt-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors text-sm disabled:bg-gray-300 disabled:cursor-not-allowed"
+                >
+                  Identifier des thématiques / leviers
+                </button>
+              </div>
+            )}
           </>
         )}
       </div>
