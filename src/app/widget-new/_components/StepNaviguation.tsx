@@ -1,4 +1,5 @@
 import React, { FC } from "react";
+import { Button } from "./Button";
 
 type StepNaviguationProps = {
   currentStep: string;
@@ -18,26 +19,22 @@ export const StepNaviguation:FC<StepNaviguationProps> = ({
   return (
     <div className="flex justify-center mb-6">
       <div className="flex items-center space-x-2">
-        <button
+        <Button
           onClick={goToThematiquesLeviers}
-          className={`px-4 py-2 rounded-md text-sm transition-all ${
-            currentStep === "thematiques-leviers"
-              ? "bg-blue-600 text-white"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-          }`}
+          variant={currentStep === "thematiques-leviers" ? "primary" : "secondary"}
+          size="sm"
         >
           Thématiques et leviers
-        </button>
+        </Button>
         <div className="w-8 h-0.5 bg-gray-300"></div>
-        <button
+        <Button
           onClick={goToQuestions}
           disabled={!thematiquesHaveBeenSaved || !leviersHaveBeenSaved}
-          className={`px-4 py-2 rounded-md text-sm transition-all ${
-            currentStep === "questions" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-          } ${!thematiquesHaveBeenSaved || !leviersHaveBeenSaved ? "opacity-50 cursor-not-allowed" : ""}`}
+          variant={currentStep === "questions" ? "primary" : "secondary"}
+          size="sm"
         >
           Questions
-        </button>
+        </Button>
       </div>
     </div>
   );

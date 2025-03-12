@@ -1,7 +1,8 @@
 import React, { FC } from "react";
 import type { RowRecord } from "grist/GristData";
 import { WidgetColumnMap } from "grist/CustomSectionAPI";
-import { LoadingSpinner } from "./Icons/LoadingSpinner";
+import { Button } from "./Button";
+import { SuccessMessage } from "@/app/widget-new/_components/SuccessMessage";
 
 type ProjectDetailProps = {
   currentSelection: RowRecord | null;
@@ -9,6 +10,7 @@ type ProjectDetailProps = {
   isLoadingLeviers: boolean;
   isLoadingCompetences: boolean;
   analyzeCurrentRow: () => Promise<void>;
+  descriptionHasBeenUpdated: boolean;
 };
 
 export const ProjectDetail: FC<ProjectDetailProps> = ({
@@ -17,6 +19,7 @@ export const ProjectDetail: FC<ProjectDetailProps> = ({
   isLoadingCompetences,
   isLoadingLeviers,
   analyzeCurrentRow,
+  descriptionHasBeenUpdated,
 }) => {
   //todo remove h2
   return (
@@ -44,19 +47,16 @@ export const ProjectDetail: FC<ProjectDetailProps> = ({
         </div>
       )}
 
-      <button
+      {descriptionHasBeenUpdated && <SuccessMessage message="Description mise à jour avec succès !" />}
+
+      <Button
         onClick={analyzeCurrentRow}
         disabled={isLoadingLeviers || isLoadingCompetences || !currentSelection}
-        className="mt-4 w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 font-medium shadow-sm flex items-center justify-center"
+        isLoading={isLoadingLeviers || isLoadingCompetences}
+        fullWidth
       >
-        {isLoadingLeviers || isLoadingCompetences ? (
-          <span className="flex items-center justify-center">
-            <LoadingSpinner /> Analyse en cours...
-          </span>
-        ) : (
-          "Identifier des  thématiques / leviers"
-        )}
-      </button>
+        {isLoadingLeviers || isLoadingCompetences ? "Analyse en cours..." : "Identifier des thématiques / leviers"}
+      </Button>
     </div>
   );
 };

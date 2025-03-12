@@ -4,6 +4,8 @@ import { push } from "@socialgouv/matomo-next";
 import type { CellValue, RowRecord } from "grist/GristData";
 import { WidgetColumnMap } from "grist/CustomSectionAPI";
 import { SuccessMessage } from "@/app/widget-new/_components/SuccessMessage";
+import { Button } from "./Button";
+import { CheckMark } from "@/app/widget-new/_components/Icons/CheckMark";
 
 type LeviersSectionProps = {
   leviersResult: LeviersResult | undefined;
@@ -136,17 +138,15 @@ export const LeviersSection: FC<LeviersSectionProps> = ({
             })}
           </div>
 
-          <button
+          <Button
             disabled={selectedLevers.size === 0}
             onClick={saveLevers}
-            className="mt-6 w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 font-medium shadow-sm flex items-center justify-center"
-            bg-indigo-600
+            fullWidth
+            className="mt-6"
+            icon={<CheckMark />}
           >
-            <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-            </svg>
             Enregistrer les leviers ({selectedLevers.size})
-          </button>
+          </Button>
 
           {leviersHaveBeenSaved && <SuccessMessage message="Leviers ajoutées avec succès" />}
         </>

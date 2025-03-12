@@ -31,6 +31,7 @@ export const WidgetGrist = () => {
   const [FNV_ReferenceTable, setFNV_ReferenceTable] = useState<ReferenceTable | null>(null);
   const [leviersHaveBeenSaved, setLeviersHaveBeenSaved] = useState(false);
   const [thematiquesHaveBeenSaved, setThematiquesHaveBeenSaved] = useState(false);
+  const [descriptionHasBeenUpdated, setDescriptionHasBeenUpdated] = useState(false);
   const [currentStep, setCurrentStep] = useState<"thematiques-leviers" | "questions">("thematiques-leviers");
 
   const fetchFNVReferencesTable = async (): Promise<void> => {
@@ -94,9 +95,10 @@ export const WidgetGrist = () => {
       setIsLoadingLeviers(true);
 
       // Combine intitule with description if available
-      const projectText = description && typeof description === 'string' && description.trim() !== '' 
-        ? `${intitule}\n${description}`
-        : intitule as string;
+      const projectText =
+        description && typeof description === "string" && description.trim() !== ""
+          ? `${intitule}\n${description}`
+          : (intitule as string);
 
       analyzeProject(projectText, "competences")
         .then((result) => {
@@ -126,18 +128,18 @@ export const WidgetGrist = () => {
     }
   };
 
-  // todo put that in questions
   const handleGenerateQuestions = async () => {
     if (!currentSelection || !leviersResult) return;
-    
+
     const intitule = currentSelection[columnMapping?.intitule as string];
     const description = currentSelection[columnMapping?.description as string];
-    
+
     // Combine intitule with description if available
-    const projectText = description && typeof description === 'string' && description.trim() !== '' 
-      ? `${intitule}\n${description}`
-      : intitule as string;
-    
+    const projectText =
+      description && typeof description === "string" && description.trim() !== ""
+        ? `${intitule}\n${description}`
+        : (intitule as string);
+
     setLoadingQuestions(true);
     try {
       const questions = await generateQuestions(projectText);
@@ -163,11 +165,9 @@ export const WidgetGrist = () => {
       handleGenerateQuestions();
       setCurrentStep("questions");
     }
+    // we dont want handleGenerateQuestions to be in the dependency array, because it rerun on every render since the function is declared in the component
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [thematiquesHaveBeenSaved, leviersHaveBeenSaved, questions]);
-
-  console.log("questions", questions);
-  console.log("thematiquesHaveBeenSaved", thematiquesHaveBeenSaved);
-  console.log("leviersHaveBeenSaved", leviersHaveBeenSaved);
 
   const goToThematiquesLeviers = () => {
     setCurrentStep("thematiques-leviers");
@@ -175,6 +175,15 @@ export const WidgetGrist = () => {
 
   const goToQuestions = () => {
     setCurrentStep("questions");
+  };
+
+  const redirectToStep1AfterNewDescriptionHasBeenApplierd = () => {
+    goToThematiquesLeviers();
+    setLeviersResult(undefined);
+    setCompetencesResult(undefined);
+    setSelectedLevers(new Set());
+    setLeviersHaveBeenSaved(false);
+    setThematiquesHaveBeenSaved(false);
   };
 
   const displayStep1 = currentStep === "thematiques-leviers";
@@ -198,6 +207,7 @@ export const WidgetGrist = () => {
             analyzeCurrentRow={analyzeCurrentRow}
             isLoadingCompetences={isLoadingCompetences}
             isLoadingLeviers={isLoadingLeviers}
+            descriptionHasBeenUpdated={descriptionHasBeenUpdated}
           />
 
           <ErrorDisplay error={error} />
@@ -239,10 +249,11 @@ export const WidgetGrist = () => {
           setAnswers={setAnswers}
           questions={questions}
           answers={answers}
+          setDescriptionHasBeenUpdated={setDescriptionHasBeenUpdated}
           intitule={currentSelection![columnMapping?.intitule as string] as string}
           currentSelection={currentSelection}
           columnMapping={columnMapping}
-          goToThematiquesLeviers={goToThematiquesLeviers}
+          goToThematiquesLeviers={redirectToStep1AfterNewDescriptionHasBeenApplierd}
         />
       )}
     </div>

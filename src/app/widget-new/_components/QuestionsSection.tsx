@@ -1,14 +1,15 @@
-import { Questions, QuestionAnswers } from "@/app/types";
+import { QuestionAnswers, Questions } from "@/app/types";
 import { generateResume } from "@/app/actions";
 import React, { useState } from "react";
 import type { RowRecord } from "grist/GristData";
 import { WidgetColumnMap } from "grist/CustomSectionAPI";
-import { SuccessMessage } from "@/app/widget-new/_components/SuccessMessage";
+import { Button } from "./Button";
 
 interface QuestionsSectionProps {
   questions: Questions;
   answers: QuestionAnswers;
   setAnswers: React.Dispatch<React.SetStateAction<QuestionAnswers>>;
+  setDescriptionHasBeenUpdated: React.Dispatch<React.SetStateAction<boolean>>;
   intitule: string;
   currentSelection: RowRecord | null;
   columnMapping: WidgetColumnMap | null;
@@ -23,10 +24,10 @@ export function QuestionsSection({
   currentSelection,
   columnMapping,
   goToThematiquesLeviers,
+  setDescriptionHasBeenUpdated,
 }: QuestionsSectionProps) {
   const [resume, setResume] = useState<string | null>(null);
   const [loadingResume, setLoadingResume] = useState(false);
-  const [updateSuccess, setUpdateSuccess] = useState<boolean | null>(null);
 
   const handleAnswer = async (questionKey: keyof Questions, answer: "oui" | "non") => {
     //todo still need this condition despite the step isolation ?
@@ -74,7 +75,7 @@ export function QuestionsSection({
   const applyNewDescriptionToGrist = async () => {
     if (!currentSelection || !columnMapping?.description || !resume) {
       console.error("Cannot update description: Missing required data");
-      setUpdateSuccess(false);
+      setDescriptionHasBeenUpdated(false);
       return;
     }
 
@@ -83,10 +84,11 @@ export function QuestionsSection({
         id: currentSelection.id,
         fields: { [columnMapping.description as string]: resume },
       });
-      setUpdateSuccess(true);
+      setDescriptionHasBeenUpdated(true);
+      goToThematiquesLeviers();
     } catch (error) {
       console.error("Error updating description in Grist:", error);
-      setUpdateSuccess(false);
+      setDescriptionHasBeenUpdated(false);
     }
   };
 
@@ -145,13 +147,15 @@ export function QuestionsSection({
           </div>
         )}
 
-        <button
+        <Button
           onClick={handleGenerateResume}
           disabled={!allQuestionsAnswered || loadingResume}
-          className="w-full mt-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors text-sm disabled:bg-gray-300 disabled:cursor-not-allowed"
+          isLoading={loadingResume}
+          fullWidth
+          className="mt-2"
         >
           Voir la proposition
-        </button>
+        </Button>
 
         {loadingResume && (
           <div className="text-sm text-gray-600 animate-pulse text-center">
@@ -165,24 +169,9 @@ export function QuestionsSection({
               <h2 className="text-sm font-medium text-gray-500 mb-2">Nouvelle description</h2>
               <p className="text-gray-700 whitespace-pre-wrap">{resume}</p>
             </div>
-            <button
-              onClick={applyNewDescriptionToGrist}
-              className="w-full mt-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors text-sm disabled:bg-gray-300 disabled:cursor-not-allowed"
-            >
+            <Button onClick={applyNewDescriptionToGrist} fullWidth className="mt-2">
               Appliquer la nouvelle description
-            </button>
-
-            {updateSuccess && (
-              <div>
-                <SuccessMessage message={"Description mise à jour avec succès !"} />
-                <button
-                  onClick={goToThematiquesLeviers}
-                  className="w-full mt-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors text-sm disabled:bg-gray-300 disabled:cursor-not-allowed"
-                >
-                  Identifier des thématiques / leviers
-                </button>
-              </div>
-            )}
+            </Button>
           </>
         )}
       </div>
