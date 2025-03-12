@@ -62,7 +62,7 @@ export const ThematiquesSection: FC<CompetencesResultsProps> = ({
         <div className="p-4 border rounded-lg bg-gray-50">
           <div className="flex items-center justify-center">
             <svg
-              className="animate-spin h-5 w-5 text-gray-500 mr-2"
+              className="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-500"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -74,12 +74,12 @@ export const ThematiquesSection: FC<CompetencesResultsProps> = ({
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
               ></path>
             </svg>
-            <span className="text-gray-600">Analyse des thématiques en cours...</span>
+            <span className="text-black">Analyse des thématiques en cours...</span>
           </div>
         </div>
       ) : competencesResult?.competences ? (
         <>
-          <h3 className="font-semibold mb-3 text-gray-800">Thématiques suggérées :</h3>
+          <h3 className="font-semibold mb-3 text-black">Thématiques suggérées :</h3>
           <div className="space-y-3">
             {competencesResult.competences
               .sort((a, b) => b.score - a.score)
@@ -90,15 +90,15 @@ export const ThematiquesSection: FC<CompetencesResultsProps> = ({
                   <div key={index} className="p-4 border rounded-lg bg-white">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center space-x-2">
-                        <span className="font-medium text-gray-700">{comp.competence}</span>
+                        <span className="font-medium text-black">{comp.competence}</span>
                         {comp.sous_competence && (
                           <>
                             <CheckMark />
-                            <span className="text-gray-600">{comp.sous_competence}</span>
+                            <span className="text-black">{comp.sous_competence}</span>
                           </>
                         )}
                       </div>
-                      <span className="text-sm font-medium text-gray-600">{percentage}%</span>
+                      <span className="text-sm font-medium text-black">{percentage}%</span>
                     </div>
                   </div>
                 );

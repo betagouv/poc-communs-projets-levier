@@ -87,7 +87,7 @@ export const LeviersSection: FC<LeviersSectionProps> = ({
         <div className="p-4 border rounded-lg bg-gray-50">
           <div className="flex items-center justify-center">
             <svg
-              className="animate-spin h-5 w-5 text-gray-500 mr-2"
+              className="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-500"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -99,12 +99,12 @@ export const LeviersSection: FC<LeviersSectionProps> = ({
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
               ></path>
             </svg>
-            <span className="text-gray-600">Analyse des leviers en cours...</span>
+            <span className="text-black">Analyse des leviers en cours...</span>
           </div>
         </div>
       ) : leviersResult?.leviers ? (
         <>
-          <h3 className="font-semibold mb-3 text-gray-800">Leviers suggérés :</h3>
+          <h3 className="font-semibold mb-3 text-black">Leviers suggérés :</h3>
           <div className="space-y-2">
             {Object.entries(leviersResult.leviers).map(([name, score], index) => {
               const percentage = (score * 100).toFixed(0);
@@ -125,12 +125,12 @@ export const LeviersSection: FC<LeviersSectionProps> = ({
                     className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                   />
                   <div className="flex justify-between items-center w-full ml-3">
-                    <span className="text-gray-700 font-medium">{name}</span>
+                    <span className="text-black font-medium">{name}</span>
                     <div className="flex items-center space-x-3">
                       <div className="w-24 bg-gray-200 rounded-full h-2">
                         <div className="bg-blue-600 h-2 rounded-full" style={{ width: `${percentage}%` }} />
                       </div>
-                      <span className="text-sm text-gray-600 font-medium">{percentage}%</span>
+                      <span className="text-sm text-black font-medium">{percentage}%</span>
                     </div>
                   </div>
                 </label>

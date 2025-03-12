@@ -140,7 +140,7 @@ export function QuestionsSection({
 
   return (
     <div className="space-y-3">
-      <h2 className="text-lg font-semibold">Enrichir la description du projet</h2>
+      <h2 className="text-lg text-black font-semibold">Enrichir la description du projet</h2>
       <span className="text-sm text-gray-600">
         Répondez à ces questions pour obtenir une proposition de description enrichie.
       </span>
@@ -155,7 +155,7 @@ export function QuestionsSection({
               }`}
             >
               <div className="flex items-center justify-between gap-4">
-                <p className="text-sm text-gray-700">{question}</p>
+                <p className="text-sm text-black">{question}</p>
                 <div className="flex gap-2 shrink-0">
                   <button
                     onClick={() => handleAnswer(key, "oui")}
@@ -212,8 +212,8 @@ export function QuestionsSection({
         {resume && (
           <>
             <div className="mb-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-              <h2 className="text-sm font-medium text-gray-500 mb-2">Nouvelle description</h2>
-              <p className="text-gray-700 whitespace-pre-wrap">{resume}</p>
+              <h2 className="text-sm font-medium text-black mb-2">Nouvelle description</h2>
+              <p className="text-black whitespace-pre-wrap">{resume}</p>
             </div>
             <Button onClick={applyNewDescriptionToGrist} fullWidth className="mt-2">
               Appliquer la nouvelle description

@@ -7,6 +7,6 @@ export const SuccessMessage = ({ message }: { message: string }) => (
         clipRule="evenodd"
       />
     </svg>
-    <span>{message}</span>
+    <span className="text-black">{message}</span>
   </div>
 );
