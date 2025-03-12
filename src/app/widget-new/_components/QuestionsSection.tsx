@@ -27,9 +27,8 @@ export function QuestionsSection({
   const [resume, setResume] = useState<string | null>(null);
   const [loadingResume, setLoadingResume] = useState(false);
   const [questions, setQuestions] = useState<Questions | null>(null);
-  const [loadingQuestions, setLoadingQuestions] = useState(false);
-
-  console.log("answers", answers);
+  const [areQuestionsLoading, setAreQuestionsLoading] = useState(false);
+  const initialGenerationRef = React.useRef(false);
 
   const handleGenerateQuestions = async () => {
     if (!currentSelection) return;
@@ -42,30 +41,26 @@ export function QuestionsSection({
         ? `${intituleValue}\n${descriptionValue}`
         : (intituleValue as string);
 
-    setLoadingQuestions(true);
+    setAreQuestionsLoading(true);
     try {
       const questionsResult = await generateQuestions(projectText);
-      console.log("Received questions:", questionsResult);
-
       if (questionsResult) {
-        console.log("Setting questions state...");
         setQuestions(questionsResult);
-        console.log("Questions state updated");
-      } else {
-        console.log("No questions received");
       }
     } catch (error) {
       console.error("Error generating questions:", error);
     } finally {
-      setLoadingQuestions(false);
+      setAreQuestionsLoading(false);
     }
   };
 
   useEffect(() => {
-    if (!questions) {
+    if (!questions && !areQuestionsLoading && !initialGenerationRef.current) {
       console.log("generateQuestions");
+      initialGenerationRef.current = true;
       handleGenerateQuestions();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleAnswer = async (questionKey: keyof Questions, answer: "oui" | "non") => {
@@ -128,7 +123,7 @@ export function QuestionsSection({
     }
   };
 
-  if (loadingQuestions) {
+  if (areQuestionsLoading) {
     return (
       <div className="animate-pulse space-y-4">
         <div className="h-4 bg-gray-200 rounded w-3/4"></div>

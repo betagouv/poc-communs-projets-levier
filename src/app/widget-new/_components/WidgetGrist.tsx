@@ -79,6 +79,14 @@ export const WidgetGrist = () => {
     }
   }, [thematiquesHaveBeenSaved, leviersHaveBeenSaved]);
 
+  // Log pour déboguer l'état des réponses
+  useEffect(() => {
+    console.log("[WidgetGrist] Answers state updated", {
+      answersCount: Object.keys(answers).length,
+      answers,
+    });
+  }, [answers]);
+
   const goToThematiquesLeviers = () => {
     setCurrentStep("thematiques-leviers");
   };
@@ -94,6 +102,7 @@ export const WidgetGrist = () => {
     setSelectedLevers(new Set());
     setLeviersHaveBeenSaved(false);
     setThematiquesHaveBeenSaved(false);
+    setAllLeviersScoresLow(false);
   };
 
   const displayStep1 = currentStep === "thematiques-leviers";
@@ -154,12 +163,12 @@ export const WidgetGrist = () => {
         </>
       )}
 
-      {displayStep2 && (
+      {displayStep2 && currentSelection && columnMapping && (
         <QuestionsSection
           setAnswers={setAnswers}
           answers={answers}
           setDescriptionHasBeenUpdated={setDescriptionHasBeenUpdated}
-          intitule={currentSelection![columnMapping?.intitule as string] as string}
+          intitule={currentSelection[columnMapping.intitule as string] as string}
           currentSelection={currentSelection}
           columnMapping={columnMapping}
           goToThematiquesLeviers={redirectToStep1AfterNewDescriptionHasBeenApplied}
