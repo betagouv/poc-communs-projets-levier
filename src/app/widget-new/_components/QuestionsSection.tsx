@@ -1,12 +1,11 @@
 import { QuestionAnswers, Questions } from "@/app/types";
-import { generateResume } from "@/app/actions";
-import React, { useState } from "react";
+import { generateQuestions, generateResume } from "@/app/actions";
+import React, { useEffect, useState } from "react";
 import type { RowRecord } from "grist/GristData";
 import { WidgetColumnMap } from "grist/CustomSectionAPI";
 import { Button } from "./Button";
 
 interface QuestionsSectionProps {
-  questions: Questions;
   answers: QuestionAnswers;
   setAnswers: React.Dispatch<React.SetStateAction<QuestionAnswers>>;
   setDescriptionHasBeenUpdated: React.Dispatch<React.SetStateAction<boolean>>;
@@ -17,7 +16,6 @@ interface QuestionsSectionProps {
 }
 
 export function QuestionsSection({
-  questions,
   answers,
   setAnswers,
   intitule,
@@ -28,12 +26,53 @@ export function QuestionsSection({
 }: QuestionsSectionProps) {
   const [resume, setResume] = useState<string | null>(null);
   const [loadingResume, setLoadingResume] = useState(false);
+  const [questions, setQuestions] = useState<Questions | null>(null);
+  const [loadingQuestions, setLoadingQuestions] = useState(false);
+
+  console.log("answers", answers);
+
+  const handleGenerateQuestions = async () => {
+    if (!currentSelection) return;
+
+    const intituleValue = currentSelection[columnMapping?.intitule as string];
+    const descriptionValue = currentSelection[columnMapping?.description as string];
+
+    const projectText =
+      descriptionValue && typeof descriptionValue === "string" && descriptionValue.trim() !== ""
+        ? `${intituleValue}\n${descriptionValue}`
+        : (intituleValue as string);
+
+    setLoadingQuestions(true);
+    try {
+      const questionsResult = await generateQuestions(projectText);
+      console.log("Received questions:", questionsResult);
+
+      if (questionsResult) {
+        console.log("Setting questions state...");
+        setQuestions(questionsResult);
+        console.log("Questions state updated");
+      } else {
+        console.log("No questions received");
+      }
+    } catch (error) {
+      console.error("Error generating questions:", error);
+    } finally {
+      setLoadingQuestions(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!questions) {
+      handleGenerateQuestions();
+    }
+  }, []);
 
   const handleAnswer = async (questionKey: keyof Questions, answer: "oui" | "non") => {
+    if (!questions) return;
+
     const fullQuestion = questions[questionKey];
     console.log("Storing answer for question:", fullQuestion, answer);
 
-    // Update answers
     const updatedAnswers = {
       ...answers,
       [fullQuestion as string]: answer,
@@ -42,6 +81,8 @@ export function QuestionsSection({
   };
 
   const handleGenerateResume = async () => {
+    if (!questions) return;
+
     const formattedAnswers = Object.entries(answers).reduce<Record<string, "oui" | "non">>(
       (acc, [question, answer]) => {
         acc[question] = answer;
@@ -64,7 +105,7 @@ export function QuestionsSection({
     }
   };
 
-  const allQuestionsAnswered = Object.keys(answers).length === Object.keys(questions).length;
+  const allQuestionsAnswered = questions ? Object.keys(answers).length === Object.keys(questions).length : false;
 
   const applyNewDescriptionToGrist = async () => {
     if (!currentSelection || !columnMapping?.description || !resume) {
@@ -85,6 +126,21 @@ export function QuestionsSection({
       setDescriptionHasBeenUpdated(false);
     }
   };
+
+  if (loadingQuestions) {
+    return (
+      <div className="animate-pulse space-y-4">
+        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+        <div className="h-10 bg-gray-200 rounded"></div>
+        <div className="h-10 bg-gray-200 rounded"></div>
+        <div className="h-10 bg-gray-200 rounded"></div>
+      </div>
+    );
+  }
+
+  if (!questions) {
+    return null;
+  }
 
   return (
     <div className="space-y-3">

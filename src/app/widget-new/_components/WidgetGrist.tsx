@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import type { RowRecord } from "grist/GristData";
-import { CompetencesResult, LeviersResult, QuestionAnswers, Questions } from "@/app/types";
+import { CompetencesResult, LeviersResult, QuestionAnswers } from "@/app/types";
 import { WidgetColumnMap } from "grist/CustomSectionAPI";
 import { push } from "@socialgouv/matomo-next";
-import { analyzeProject, generateQuestions } from "@/app/actions";
+import { analyzeProject } from "@/app/actions";
 import { ProjectDetail } from "./ProjectDetail";
 import { ThematiquesSection } from "./ThematiquesSection";
 import { LeviersSection } from "./LeviersSection";
@@ -20,9 +20,7 @@ export const WidgetGrist = () => {
   const [isLoadingLeviers, setIsLoadingLeviers] = useState(false);
   const [isLoadingCompetences, setIsLoadingCompetences] = useState(false);
   const [error, setError] = useState<string | undefined>();
-  const [questions, setQuestions] = useState<Questions | null>(null);
   const [answers, setAnswers] = useState<QuestionAnswers>({});
-  const [loadingQuestions, setLoadingQuestions] = useState(false);
   const [leviersResult, setLeviersResult] = useState<LeviersResult | undefined>();
   const [competencesResult, setCompetencesResult] = useState<CompetencesResult | undefined>();
   const [selectedLevers, setSelectedLevers] = useState<Set<string>>(new Set());
@@ -60,8 +58,8 @@ export const WidgetGrist = () => {
           setLeviersResult(undefined);
           setCompetencesResult(undefined);
           setSelectedLevers(new Set());
-          setQuestions(null);
           setAnswers({});
+          setDescriptionHasBeenUpdated(false);
           setLeviersHaveBeenSaved(false);
           setThematiquesHaveBeenSaved(false);
           setAllLeviersScoresLow(false);
@@ -136,62 +134,18 @@ export const WidgetGrist = () => {
     }
   };
 
-  const handleGenerateQuestions = async () => {
-    if (!currentSelection || !leviersResult) return;
-
-    const intitule = currentSelection[columnMapping?.intitule as string];
-    const description = currentSelection[columnMapping?.description as string];
-
-    // Combine intitule with description if available
-    const projectText =
-      description && typeof description === "string" && description.trim() !== ""
-        ? `${intitule}\n${description}`
-        : (intitule as string);
-
-    setLoadingQuestions(true);
-    try {
-      const questions = await generateQuestions(projectText);
-      console.log("Received questions:", questions);
-
-      if (questions) {
-        console.log("Setting questions state...");
-        setQuestions(questions);
-        console.log("Questions state updated");
-      } else {
-        console.log("No questions received");
-      }
-    } catch (error) {
-      console.error("Error generating questions:", error);
-    } finally {
-      setLoadingQuestions(false);
-    }
-  };
-
-  // auto generate questions when leviers and thematiques have been saved
+  // Fonction pour passer à l'étape des questions lorsque les thématiques et leviers ont été sauvegardés
   useEffect(() => {
-    if (thematiquesHaveBeenSaved && leviersHaveBeenSaved && !questions) {
-      handleGenerateQuestions();
+    if (thematiquesHaveBeenSaved && leviersHaveBeenSaved) {
       setCurrentStep("questions");
     }
-    // we dont want handleGenerateQuestions to be in the dependency array, because it rerun on every render since the function is declared in the component
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [thematiquesHaveBeenSaved, leviersHaveBeenSaved, questions]);
+  }, [thematiquesHaveBeenSaved, leviersHaveBeenSaved]);
 
   const goToThematiquesLeviers = () => {
     setCurrentStep("thematiques-leviers");
   };
 
   const goToQuestions = () => {
-    setCurrentStep("questions");
-  };
-
-  // New function to go to questions for enriching description
-  const goToQuestionsForEnrichment = async () => {
-    // Generate questions if not already done
-    if (!questions) {
-      await handleGenerateQuestions();
-    }
-    // Navigate to questions step
     setCurrentStep("questions");
   };
 
@@ -236,7 +190,7 @@ export const WidgetGrist = () => {
             isLoadingLeviers={isLoadingLeviers}
             descriptionHasBeenUpdated={descriptionHasBeenUpdated}
             allLeviersScoresLow={allLeviersScoresLow}
-            goToQuestions={goToQuestionsForEnrichment}
+            goToQuestions={goToQuestions}
           />
 
           <ErrorDisplay error={error} />
@@ -265,18 +219,10 @@ export const WidgetGrist = () => {
           />
         </>
       )}
-      {loadingQuestions && (
-        <div className="animate-pulse space-y-4">
-          <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-          <div className="h-10 bg-gray-200 rounded"></div>
-          <div className="h-10 bg-gray-200 rounded"></div>
-          <div className="h-10 bg-gray-200 rounded"></div>
-        </div>
-      )}
-      {displayStep2 && questions && (
+
+      {displayStep2 && (
         <QuestionsSection
           setAnswers={setAnswers}
-          questions={questions}
           answers={answers}
           setDescriptionHasBeenUpdated={setDescriptionHasBeenUpdated}
           intitule={currentSelection![columnMapping?.intitule as string] as string}
