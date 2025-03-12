@@ -7,6 +7,7 @@ type StepNaviguationProps = {
   leviersHaveBeenSaved: boolean;
   goToThematiquesLeviers: () => void;
   goToQuestions: () => void;
+  isEnrichingDescription?: boolean;
 };
 
 export const StepNaviguation:FC<StepNaviguationProps> = ({
@@ -15,6 +16,7 @@ export const StepNaviguation:FC<StepNaviguationProps> = ({
   leviersHaveBeenSaved,
   goToThematiquesLeviers,
   goToQuestions,
+  isEnrichingDescription = false,
 }) => {
   return (
     <div className="flex justify-center mb-6">
@@ -29,7 +31,7 @@ export const StepNaviguation:FC<StepNaviguationProps> = ({
         <div className="w-8 h-0.5 bg-gray-300"></div>
         <Button
           onClick={goToQuestions}
-          disabled={!thematiquesHaveBeenSaved || !leviersHaveBeenSaved}
+          disabled={!isEnrichingDescription && (!thematiquesHaveBeenSaved || !leviersHaveBeenSaved)}
           variant={currentStep === "questions" ? "primary" : "secondary"}
           size="sm"
         >

@@ -11,6 +11,8 @@ type ProjectDetailProps = {
   isLoadingCompetences: boolean;
   analyzeCurrentRow: () => Promise<void>;
   descriptionHasBeenUpdated: boolean;
+  allLeviersScoresLow?: boolean;
+  goToQuestions?: () => void;
 };
 
 export const ProjectDetail: FC<ProjectDetailProps> = ({
@@ -20,6 +22,8 @@ export const ProjectDetail: FC<ProjectDetailProps> = ({
   isLoadingLeviers,
   analyzeCurrentRow,
   descriptionHasBeenUpdated,
+  allLeviersScoresLow = false,
+  goToQuestions,
 }) => {
   //todo remove h2
   return (
@@ -57,6 +61,21 @@ export const ProjectDetail: FC<ProjectDetailProps> = ({
       >
         {isLoadingLeviers || isLoadingCompetences ? "Analyse en cours..." : "Identifier des thématiques / leviers"}
       </Button>
+
+      {allLeviersScoresLow && !isLoadingLeviers && !isLoadingCompetences && (
+        <div className="mt-4">
+          <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg mb-3">
+            <p className="text-sm text-yellow-700">
+              L&#39;intitulé et la description actuels ne permettent pas de détecter avec confiance les leviers et les
+              thématiques liées. Nous vous recommandons d&#39;enrichir la description de votre projet en répondant à
+              quelques questions.
+            </p>
+          </div>
+          <Button onClick={goToQuestions} variant="outline" fullWidth>
+            Enrichir la description du projet
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

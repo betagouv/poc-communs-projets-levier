@@ -33,6 +33,7 @@ export const WidgetGrist = () => {
   const [thematiquesHaveBeenSaved, setThematiquesHaveBeenSaved] = useState(false);
   const [descriptionHasBeenUpdated, setDescriptionHasBeenUpdated] = useState(false);
   const [currentStep, setCurrentStep] = useState<"thematiques-leviers" | "questions">("thematiques-leviers");
+  const [allLeviersScoresLow, setAllLeviersScoresLow] = useState(false);
 
   const fetchFNVReferencesTable = async (): Promise<void> => {
     const levierReferenceTable: { FNV: string[]; Levier: string[] } = await grist.docApi.fetchTable("Thematiques_FNV");
@@ -63,6 +64,7 @@ export const WidgetGrist = () => {
           setAnswers({});
           setLeviersHaveBeenSaved(false);
           setThematiquesHaveBeenSaved(false);
+          setAllLeviersScoresLow(false);
         }
         return record;
       });
@@ -113,7 +115,13 @@ export const WidgetGrist = () => {
 
       analyzeProject(projectText, "TE")
         .then((result) => {
-          setLeviersResult(result as LeviersResult);
+          const leviersResult = result as LeviersResult;
+          setLeviersResult(leviersResult);
+
+          // Check if all levier scores are below 0.7
+          if (leviersResult.leviers) {
+            setAllLeviersScoresLow(checkLeviersScores(leviersResult.leviers));
+          }
         })
         .catch((error) => {
           console.error("Failed to load leviers:", error);
@@ -177,6 +185,16 @@ export const WidgetGrist = () => {
     setCurrentStep("questions");
   };
 
+  // New function to go to questions for enriching description
+  const goToQuestionsForEnrichment = async () => {
+    // Generate questions if not already done
+    if (!questions) {
+      await handleGenerateQuestions();
+    }
+    // Navigate to questions step
+    setCurrentStep("questions");
+  };
+
   const redirectToStep1AfterNewDescriptionHasBeenApplierd = () => {
     goToThematiquesLeviers();
     setLeviersResult(undefined);
@@ -189,6 +207,14 @@ export const WidgetGrist = () => {
   const displayStep1 = currentStep === "thematiques-leviers";
   const displayStep2 = currentStep === "questions";
 
+  // Function to check if all levier scores are below 0.7
+  const checkLeviersScores = (leviers: Record<string, number>) => {
+    if (!leviers || Object.keys(leviers).length === 0) return false;
+
+    // Check if all scores are below 0.7
+    return Object.values(leviers).every((score) => score < 0.7);
+  };
+
   return (
     <div className="p-4 max-w-xl mx-auto bg-white min-h-screen">
       <StepNaviguation
@@ -197,6 +223,7 @@ export const WidgetGrist = () => {
         leviersHaveBeenSaved={leviersHaveBeenSaved}
         goToThematiquesLeviers={goToThematiquesLeviers}
         goToQuestions={goToQuestions}
+        isEnrichingDescription={allLeviersScoresLow && currentStep === "questions"}
       />
 
       {displayStep1 && (
@@ -208,6 +235,8 @@ export const WidgetGrist = () => {
             isLoadingCompetences={isLoadingCompetences}
             isLoadingLeviers={isLoadingLeviers}
             descriptionHasBeenUpdated={descriptionHasBeenUpdated}
+            allLeviersScoresLow={allLeviersScoresLow}
+            goToQuestions={goToQuestionsForEnrichment}
           />
 
           <ErrorDisplay error={error} />

@@ -30,9 +30,6 @@ export function QuestionsSection({
   const [loadingResume, setLoadingResume] = useState(false);
 
   const handleAnswer = async (questionKey: keyof Questions, answer: "oui" | "non") => {
-    //todo still need this condition despite the step isolation ?
-    if (!questions || !questions[questionKey]) return;
-
     const fullQuestion = questions[questionKey];
     console.log("Storing answer for question:", fullQuestion, answer);
 
@@ -45,9 +42,6 @@ export function QuestionsSection({
   };
 
   const handleGenerateResume = async () => {
-    //todo still need this condition despite the step isolation ?
-    if (!questions || Object.keys(answers).length === 0) return;
-
     const formattedAnswers = Object.entries(answers).reduce<Record<string, "oui" | "non">>(
       (acc, [question, answer]) => {
         acc[question] = answer;
