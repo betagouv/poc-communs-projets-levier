@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import type { RowRecord } from "grist/GristData";
 import { WidgetColumnMap } from "grist/CustomSectionAPI";
 import { Button } from "./Button";
+import { push } from "@socialgouv/matomo-next";
 
 interface QuestionsSectionProps {
   answers: QuestionAnswers;
@@ -41,6 +42,8 @@ export function QuestionsSection({
         ? `${intituleValue}\n${descriptionValue}`
         : (intituleValue as string);
 
+    push(["trackEvent", "Questions", "Generate"]);
+
     setAreQuestionsLoading(true);
     try {
       const questionsResult = await generateQuestions(projectText);
@@ -69,6 +72,9 @@ export function QuestionsSection({
     const fullQuestion = questions[questionKey];
     console.log("Storing answer for question:", fullQuestion, answer);
 
+    // Track question answer with Matomo
+    push(["trackEvent", "Questions", "Answer", `${fullQuestion}: ${answer}`]);
+
     const updatedAnswers = {
       ...answers,
       [fullQuestion as string]: answer,
@@ -92,6 +98,9 @@ export function QuestionsSection({
     setLoadingResume(true);
     try {
       const resumeText = await generateResume(intitule, formattedAnswers);
+      // Track generating new description with Matomo
+      push(["trackEvent", "Description", "Generate", intitule]);
+
       console.log("Generated resume:", resumeText);
       setResume(resumeText);
     } catch (error) {
@@ -115,6 +124,7 @@ export function QuestionsSection({
         id: currentSelection.id,
         fields: { [columnMapping.description as string]: resume },
       });
+      push(["trackEvent", "Description", "Apply", intitule]);
       setDescriptionHasBeenUpdated(true);
       goToThematiquesLeviers();
     } catch (error) {
