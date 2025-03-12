@@ -17,6 +17,10 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontSize: {
+        // Reduce the base font size by 1px
+        base: '15px',
+      },
     },
   },
   plugins: [],

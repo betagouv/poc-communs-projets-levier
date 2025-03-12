@@ -5,6 +5,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  font-size: 15px; /* Reduce base font size by 1px from default 16px */
 }
 
 @media (prefers-color-scheme: dark) {
