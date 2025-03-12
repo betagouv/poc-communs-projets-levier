@@ -57,7 +57,7 @@ export const ThematiquesSection: FC<CompetencesResultsProps> = ({
   };
 
   return (
-    <div className="mb-8 mt-4">
+    <div className="mb-4">
       {isLoadingCompetences ? (
         <div className="p-4 border rounded-lg bg-gray-50">
           <div className="flex items-center justify-center">
@@ -79,16 +79,16 @@ export const ThematiquesSection: FC<CompetencesResultsProps> = ({
         </div>
       ) : competencesResult?.competences ? (
         <>
-          <h3 className="font-semibold mb-3 text-black">Thématiques suggérées :</h3>
-          <div className="space-y-3">
+          <h3 className="font-semibold mb-2 text-black">Thématiques suggérées :</h3>
+          <div className="space-y-2">
             {competencesResult.competences
               .sort((a, b) => b.score - a.score)
               .slice(0, 2)
               .map((comp, index) => {
                 const percentage = (comp.score * 100).toFixed(0);
                 return (
-                  <div key={index} className="p-4 border rounded-lg bg-white">
-                    <div className="flex items-center justify-between mb-2">
+                  <div key={index} className="p-3 border rounded-lg bg-white">
+                    <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
                         <span className="font-medium text-black">{comp.competence}</span>
                         {comp.sous_competence && (
@@ -104,7 +104,7 @@ export const ThematiquesSection: FC<CompetencesResultsProps> = ({
                 );
               })}
           </div>
-          <Button onClick={saveCompetences} fullWidth className="mt-4" icon={<CheckMark />}>
+          <Button onClick={saveCompetences} fullWidth className="mt-3" icon={<CheckMark />}>
             Appliquer les thématiques
           </Button>
           {thematiquesHaveBeenSaved && <SuccessMessage message="Thématiques ajoutées avec succès" />}

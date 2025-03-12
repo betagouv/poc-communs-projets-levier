@@ -1,5 +1,5 @@
 export const SuccessMessage = ({ message }: { message: string }) => (
-  <div className="flex items-center  p-2 mb-4 border border-green-600 rounded">
+  <div className="flex items-center p-2 mt-4 mb-4 border border-green-600 rounded">
     <svg className="w-5 h-5 mr-2" fill="green" viewBox="0 0 20 20">
       <path
         fillRule="evenodd"

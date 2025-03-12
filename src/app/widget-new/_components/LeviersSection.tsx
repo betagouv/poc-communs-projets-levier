@@ -104,7 +104,7 @@ export const LeviersSection: FC<LeviersSectionProps> = ({
         </div>
       ) : leviersResult?.leviers ? (
         <>
-          <h3 className="font-semibold mb-3 text-black">Leviers suggérés :</h3>
+          <h3 className="font-semibold mb-2 text-black">Leviers suggérés :</h3>
           <div className="space-y-2">
             {Object.entries(leviersResult.leviers).map(([name, score], index) => {
               const percentage = (score * 100).toFixed(0);
@@ -142,7 +142,7 @@ export const LeviersSection: FC<LeviersSectionProps> = ({
             disabled={selectedLevers.size === 0}
             onClick={saveLevers}
             fullWidth
-            className="mt-6"
+            className="mt-3"
             icon={<CheckMark />}
           >
             Enregistrer les leviers ({selectedLevers.size})

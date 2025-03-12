@@ -84,7 +84,7 @@ export const ProjectDetail: FC<ProjectDetailProps> = ({
 
   //todo remove h2
   return (
-    <div>
+    <div className="mb-4">
       <h1 className="text-md font-bold mb-2 text-black">Détail du projet</h1>
       {currentSelection ? (
         <div>

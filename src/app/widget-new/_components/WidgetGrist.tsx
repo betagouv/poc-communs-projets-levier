@@ -138,6 +138,9 @@ export const WidgetGrist = () => {
           />
 
           <ErrorDisplay error={error} />
+
+          {(competencesResult || isLoadingCompetences) && <hr className="my-6 border-gray-200 border-t-2" />}
+
           <ThematiquesSection
             isLoadingCompetences={isLoadingCompetences}
             competencesResult={competencesResult}
@@ -147,6 +150,8 @@ export const WidgetGrist = () => {
             thematiquesHaveBeenSaved={thematiquesHaveBeenSaved}
             setThematiquesHaveBeenSaved={setThematiquesHaveBeenSaved}
           />
+
+          {(competencesResult || isLoadingCompetences) && <hr className="my-6 border-gray-200 border-t-2" />}
 
           <LeviersSection
             leviersResult={leviersResult}

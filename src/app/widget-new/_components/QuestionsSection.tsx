@@ -141,7 +141,7 @@ export function QuestionsSection({
   return (
     <div className="space-y-3">
       <h2 className="text-lg text-black font-semibold">Enrichir la description du projet</h2>
-      <span className="text-sm text-gray-600">
+      <span className="text-sm text-black">
         Répondez à ces questions pour obtenir une proposition de description enrichie.
       </span>
       <div className="space-y-2">
@@ -188,7 +188,7 @@ export function QuestionsSection({
 
       <div>
         {!allQuestionsAnswered && (
-          <div className="text-sm text-gray-600 text-center">
+          <div className="text-sm text-black text-center">
             Répondez à toutes les questions pour mettre à jour l&apos;analyse
           </div>
         )}
@@ -198,19 +198,20 @@ export function QuestionsSection({
           disabled={!allQuestionsAnswered || loadingResume}
           isLoading={loadingResume}
           fullWidth
-          className="mt-2"
+          className="mt-3"
         >
           Voir la proposition
         </Button>
 
         {loadingResume && (
-          <div className="text-sm text-gray-600 animate-pulse text-center">
+          <div className="text-sm text-black animate-pulse text-center mt-2">
             Génération de la nouvelle description...
           </div>
         )}
 
         {resume && (
           <>
+            <hr className="my-4 border-gray-200" />
             <div className="mb-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
               <h2 className="text-sm font-medium text-black mb-2">Nouvelle description</h2>
               <p className="text-black whitespace-pre-wrap">{resume}</p>
