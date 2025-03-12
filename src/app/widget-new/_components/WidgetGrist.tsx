@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import type { RowRecord } from "grist/GristData";
 import { CompetencesResult, LeviersResult, QuestionAnswers } from "@/app/types";
 import { WidgetColumnMap } from "grist/CustomSectionAPI";
-import { push } from "@socialgouv/matomo-next";
-import { analyzeProject } from "@/app/actions";
 import { ProjectDetail } from "./ProjectDetail";
 import { ThematiquesSection } from "./ThematiquesSection";
 import { LeviersSection } from "./LeviersSection";
@@ -59,6 +57,7 @@ export const WidgetGrist = () => {
           setCompetencesResult(undefined);
           setSelectedLevers(new Set());
           setAnswers({});
+          setCurrentStep("thematiques-leviers");
           setDescriptionHasBeenUpdated(false);
           setLeviersHaveBeenSaved(false);
           setThematiquesHaveBeenSaved(false);
@@ -74,67 +73,6 @@ export const WidgetGrist = () => {
     // Empty dependency array since we only want to set up listeners once
   }, []);
 
-  //todo move this to the ProjectDetail component
-  const analyzeCurrentRow = async () => {
-    push(["trackEvent", "Analysis", "Start"]);
-    setError(undefined);
-
-    try {
-      if (!currentSelection || !columnMapping?.description) {
-        throw new Error("No record selected or missing description column mapping");
-      }
-
-      const intitule = currentSelection[columnMapping.intitule as string];
-      const description = currentSelection[columnMapping.description as string];
-
-      if (!intitule) {
-        throw new Error("Pas de description remplie dans la ligne sélectionnée");
-      }
-
-      setIsLoadingCompetences(true);
-      setIsLoadingLeviers(true);
-
-      // Combine intitule with description if available
-      const projectText =
-        description && typeof description === "string" && description.trim() !== ""
-          ? `${intitule}\n${description}`
-          : (intitule as string);
-
-      analyzeProject(projectText, "competences")
-        .then((result) => {
-          setCompetencesResult(result as CompetencesResult);
-        })
-        .catch((error) => {
-          console.error("Failed to load competences:", error);
-        })
-        .finally(() => {
-          setIsLoadingCompetences(false);
-        });
-
-      analyzeProject(projectText, "TE")
-        .then((result) => {
-          const leviersResult = result as LeviersResult;
-          setLeviersResult(leviersResult);
-
-          // Check if all levier scores are below 0.7
-          if (leviersResult.leviers) {
-            setAllLeviersScoresLow(checkLeviersScores(leviersResult.leviers));
-          }
-        })
-        .catch((error) => {
-          console.error("Failed to load leviers:", error);
-        })
-        .finally(() => {
-          setIsLoadingLeviers(false);
-        });
-    } catch (error) {
-      setError(error instanceof Error ? error.message : "Unknown error occurred");
-      setIsLoadingCompetences(false);
-      setIsLoadingLeviers(false);
-    }
-  };
-
-  // Fonction pour passer à l'étape des questions lorsque les thématiques et leviers ont été sauvegardés
   useEffect(() => {
     if (thematiquesHaveBeenSaved && leviersHaveBeenSaved) {
       setCurrentStep("questions");
@@ -149,7 +87,7 @@ export const WidgetGrist = () => {
     setCurrentStep("questions");
   };
 
-  const redirectToStep1AfterNewDescriptionHasBeenApplierd = () => {
+  const redirectToStep1AfterNewDescriptionHasBeenApplied = () => {
     goToThematiquesLeviers();
     setLeviersResult(undefined);
     setCompetencesResult(undefined);
@@ -160,14 +98,6 @@ export const WidgetGrist = () => {
 
   const displayStep1 = currentStep === "thematiques-leviers";
   const displayStep2 = currentStep === "questions";
-
-  // Function to check if all levier scores are below 0.7
-  const checkLeviersScores = (leviers: Record<string, number>) => {
-    if (!leviers || Object.keys(leviers).length === 0) return false;
-
-    // Check if all scores are below 0.7
-    return Object.values(leviers).every((score) => score < 0.7);
-  };
 
   return (
     <div className="p-4 max-w-xl mx-auto bg-white min-h-screen">
@@ -185,17 +115,21 @@ export const WidgetGrist = () => {
           <ProjectDetail
             columnMapping={columnMapping}
             currentSelection={currentSelection}
-            analyzeCurrentRow={analyzeCurrentRow}
             isLoadingCompetences={isLoadingCompetences}
             isLoadingLeviers={isLoadingLeviers}
             descriptionHasBeenUpdated={descriptionHasBeenUpdated}
             allLeviersScoresLow={allLeviersScoresLow}
             goToQuestions={goToQuestions}
+            setIsLoadingLeviers={setIsLoadingLeviers}
+            setIsLoadingCompetences={setIsLoadingCompetences}
+            setError={setError}
+            setLeviersResult={setLeviersResult}
+            setCompetencesResult={setCompetencesResult}
+            setAllLeviersScoresLow={setAllLeviersScoresLow}
           />
 
           <ErrorDisplay error={error} />
           <ThematiquesSection
-            // useful to force a "remount" when the current selection changes to reinitialise the state of the success message in the component
             isLoadingCompetences={isLoadingCompetences}
             competencesResult={competencesResult}
             columnMapping={columnMapping}
@@ -228,7 +162,7 @@ export const WidgetGrist = () => {
           intitule={currentSelection![columnMapping?.intitule as string] as string}
           currentSelection={currentSelection}
           columnMapping={columnMapping}
-          goToThematiquesLeviers={redirectToStep1AfterNewDescriptionHasBeenApplierd}
+          goToThematiquesLeviers={redirectToStep1AfterNewDescriptionHasBeenApplied}
         />
       )}
     </div>

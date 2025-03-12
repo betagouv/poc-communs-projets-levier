@@ -63,6 +63,7 @@ export function QuestionsSection({
 
   useEffect(() => {
     if (!questions) {
+      console.log("generateQuestions");
       handleGenerateQuestions();
     }
   }, []);
