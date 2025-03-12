@@ -62,14 +62,9 @@ export async function analyzeProject<T>(description: string, type: "TE" | "compe
   });
 }
 
-export async function generateQuestions(description: string, classificationResult: LeviersResult): Promise<Questions> {
+export async function generateQuestions(description: string): Promise<Questions> {
   return new Promise((resolve, reject) => {
     const escapedDescription = description.replace(/'/g, "'\\''");
-    // Stringify and properly escape the classification
-    const classification = JSON.stringify(classificationResult);
-    
-    // Log the values for debugging
-    console.log("Classification being sent:", classification);
     
     const pythonScript = path.join(process.cwd(), "scripts", "LLM_response.py");
 
@@ -77,9 +72,7 @@ export async function generateQuestions(description: string, classificationResul
       pythonScript, 
       `'${escapedDescription}'`, 
       "--type", 
-      "questions",
-      "--classification",
-      classification  // Remove the quotes, let Python handle it
+      "questions"
     ]);
 
     let outputString = "";

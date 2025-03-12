@@ -84,6 +84,7 @@ export const WidgetGrist = () => {
       }
 
       const intitule = currentSelection[columnMapping.intitule as string];
+      const description = currentSelection[columnMapping.description as string];
 
       if (!intitule) {
         throw new Error("Pas de description remplie dans la ligne sélectionnée");
@@ -92,7 +93,12 @@ export const WidgetGrist = () => {
       setIsLoadingCompetences(true);
       setIsLoadingLeviers(true);
 
-      analyzeProject(intitule as string, "competences")
+      // Combine intitule with description if available
+      const projectText = description && typeof description === 'string' && description.trim() !== '' 
+        ? `${intitule}\n${description}`
+        : intitule as string;
+
+      analyzeProject(projectText, "competences")
         .then((result) => {
           setCompetencesResult(result as CompetencesResult);
         })
@@ -103,7 +109,7 @@ export const WidgetGrist = () => {
           setIsLoadingCompetences(false);
         });
 
-      analyzeProject(intitule as string, "TE")
+      analyzeProject(projectText, "TE")
         .then((result) => {
           setLeviersResult(result as LeviersResult);
         })
@@ -123,10 +129,18 @@ export const WidgetGrist = () => {
   // todo put that in questions
   const handleGenerateQuestions = async () => {
     if (!currentSelection || !leviersResult) return;
-    const description = currentSelection[columnMapping?.intitule as string] as string;
+    
+    const intitule = currentSelection[columnMapping?.intitule as string];
+    const description = currentSelection[columnMapping?.description as string];
+    
+    // Combine intitule with description if available
+    const projectText = description && typeof description === 'string' && description.trim() !== '' 
+      ? `${intitule}\n${description}`
+      : intitule as string;
+    
     setLoadingQuestions(true);
     try {
-      const questions = await generateQuestions(description, leviersResult);
+      const questions = await generateQuestions(projectText);
       console.log("Received questions:", questions);
 
       if (questions) {

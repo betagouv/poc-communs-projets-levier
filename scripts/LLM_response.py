@@ -531,9 +531,7 @@ if __name__ == "__main__":
                        help='Modèle à utiliser (default: sonnet)')
     parser.add_argument('--type', default='TE', choices=['TE', 'competences', 'questions', 'resume'],
                        help='Type d\'analyse à effectuer')
-    parser.add_argument('--classification', type=str, help='Classification result for questions generation')
     parser.add_argument('--answers', type=str, help='Questions answers for resume generation')
-    
     args = parser.parse_args()
     
     if args.type == 'TE':

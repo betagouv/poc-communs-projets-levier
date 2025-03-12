@@ -58,7 +58,7 @@ export default function AnalyzerPage() {
       console.log("Current description:", description);
       console.log("Current teResults:", teResults);
 
-      const questions = await generateQuestions(description, teResults);
+      const questions = await generateQuestions(description);
       console.log("Received questions:", questions);
 
       if (questions) {
