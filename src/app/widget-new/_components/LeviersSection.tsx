@@ -145,7 +145,7 @@ export const LeviersSection: FC<LeviersSectionProps> = ({
             className="mt-3"
             icon={<CheckMark />}
           >
-            Enregistrer les leviers ({selectedLevers.size})
+            Appliquer les leviers ({selectedLevers.size})
           </Button>
 
           {leviersHaveBeenSaved && <SuccessMessage message="Leviers ajoutées avec succès" />}

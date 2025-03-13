@@ -99,8 +99,6 @@ export function QuestionsSection({
       {},
     );
 
-    console.log("Formatted answers for resume:", formattedAnswers);
-
     setLoadingResume(true);
     try {
       const resumeText = await generateResume(intitule, formattedAnswers);
