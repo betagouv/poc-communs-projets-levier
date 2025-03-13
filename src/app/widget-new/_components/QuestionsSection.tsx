@@ -48,6 +48,12 @@ export function QuestionsSection({
     try {
       const questionsResult = await generateQuestions(projectText);
       if (questionsResult) {
+        console.log("setting questions", { questionsResult });
+
+        if (answers) {
+          // reset answers if they exist
+          setAnswers({});
+        }
         setQuestions(questionsResult);
       }
     } catch (error) {
@@ -147,7 +153,8 @@ export function QuestionsSection({
   if (!questions) {
     return null;
   }
-
+  console.log("answers", { answers });
+  console.log("!allQuestionsAnswered || loadingResume}", { allQuestionsAnswered, loadingResume });
   return (
     <div className="space-y-3">
       <h2 className="text-lg text-black font-semibold">Enrichir la description du projet</h2>
