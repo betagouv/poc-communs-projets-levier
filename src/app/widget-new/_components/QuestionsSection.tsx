@@ -124,9 +124,12 @@ export function QuestionsSection({
     }
 
     try {
+      const initialDescription = currentSelection[columnMapping.description as string];
       await grist.selectedTable.update({
         id: currentSelection.id,
-        fields: { [columnMapping.description as string]: resume },
+        fields: {
+          [columnMapping.description as string]: `${initialDescription ? `${initialDescription} -- ` : ""}${resume}`,
+        },
       });
       push(["trackEvent", "Description", "Apply", intitule]);
       setDescriptionHasBeenUpdated(true);
@@ -234,6 +237,10 @@ export function QuestionsSection({
             <Button onClick={applyNewDescriptionToGrist} fullWidth className="mt-2">
               Appliquer la nouvelle description
             </Button>
+            <span className="text-sm text-black">
+              La nouvelle description sera appliquée après la description initiale de l&#39;action s&#39;il y en avait
+              une.
+            </span>
           </>
         )}
       </div>
