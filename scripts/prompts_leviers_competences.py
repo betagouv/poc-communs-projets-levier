@@ -64,10 +64,10 @@ Liste des leviers  :
 	22.	Gaz fluorés résidentiel : Réduction de l’utilisation des gaz fluorés dans les équipements résidentiels, car ils ont un fort potentiel de réchauffement climatique.
 	23.	Gaz fluorés tertiaire : Réduction de l’utilisation des gaz fluorés dans les équipements du secteur tertiaire.
 	24.	Captage de méthane dans les ISDND : Récupération du méthane émis par les Installations de Stockage de Déchets Non Dangereux pour limiter les émissions de gaz à effet de serre.
-	25.	Prévention déchets : Réduction de la production de déchets à la source par des comportements sobres.
+	25.	Prévention des déchets : Réduction de la production de déchets à la source par des comportements sobres.
 	26.	Valorisation matière des déchets : Recyclage et réutilisation des déchets pour en faire de nouvelles ressources.
 	27.	Moindre stockage en décharge : Réduction du volume des déchets mis en décharges.
-	28.	Collecte et tri des déchets : Amélioration des systèmes de collecte et de tri pour augmenter le recyclage.
+	28.	Augmentation du taux de collecte : Amélioration des systèmes de collecte et de tri pour augmenter le recyclage.
 	29.	Sobriété dans l'utilisation de la ressource en eau : Réduction de la consommation d'eau par des usages plus économes.
 	30.	Protection des zones de captage d'eau : Mesures pour préserver les zones où l'eau est prélevée pour l'alimentation en eau potable.
 	31.	Désimperméabilisation des sols : Réduction des surfaces imperméables pour favoriser l'infiltration de l'eau dans les sols.
@@ -914,10 +914,10 @@ leviers = [
   "Gaz fluorés résidentiel",
   "Gaz fluorés tertiaire",
   "Captage de méthane dans les ISDND",
-  "Prévention déchets",
+  "Prévention des déchets",
   "Valorisation matière des déchets",
   "Moindre stockage en décharge",
-  "Collecte et tri des déchets",
+  "Augmentation du taux de collecte",
   "Sobriété dans l'utilisation de la ressource en eau",
   "Protection des zones de captage d'eau",
   "Désimperméabilisation des sols",
@@ -963,11 +963,12 @@ corrections_leviers = {
     'Changements des pratiques agricoles': 'Développement de l\'agriculture biologique et de HVE',
     
     # Déchets
-    #'Collecte et tri des déchets' : 'Augmentation du taux de collecte',
-    'Réduction des déchets': 'Prévention déchets',
-    'Sobriété déchets': 'Prévention déchets',
-    'Sobriété des déchets': 'Prévention déchets',
-    'Gestion des déchets': 'Prévention déchets',
+    'Collecte et tri des déchets' : 'Augmentation du taux de collecte',
+    'Prévention déchets': 'Prévention des déchets',
+    'Réduction des déchets': 'Prévention des déchets',
+    'Sobriété déchets': 'Prévention des déchets',
+    'Sobriété des déchets': 'Prévention des déchets',
+    'Gestion des déchets': 'Prévention des déchets',
     
     # Mobility and transport
     '2 roues (élec & efficacité)': '2 roues (élec&efficacité)',
