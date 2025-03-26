@@ -91,7 +91,7 @@ def post_treatment_leviers(json_data, leviers_list, corrections_leviers):
     return result
 
 
-def classification_TE(projet: str, system_prompt=system_prompt_classification_TE, user_prompt=user_prompt_classification_TE, model="haiku"):
+def classification_TE(projet: str, system_prompt=system_prompt_classification_TE, user_prompt=user_prompt_classification_TE, model="sonnet"):
     """
     Classifies a project's relationship with ecological transition and identifies relevant levers.
 
@@ -130,7 +130,7 @@ def classification_TE(projet: str, system_prompt=system_prompt_classification_TE
     """
     
     # Use the MODEL_NAME variable that's being set
-    model_name = "claude-3-5-sonnet-20241022" if model == "sonnet" else "claude-3-5-haiku-20241022"
+    model_name = "claude-3-7-sonnet-20250219" if model == "sonnet" else "claude-3-5-haiku-20241022"
     #print(model_name)
     response = client.messages.create(
         model=model_name,  # Use the variable instead of hardcoding
@@ -317,7 +317,7 @@ def classification_competences(projet: str, system_prompt=system_prompt_competen
         }
     """
     # Use the MODEL_NAME variable that's being set
-    model_name = "claude-3-5-sonnet-20241022" if model == "sonnet" else "claude-3-5-haiku-20241022"
+    model_name = "claude-3-7-sonnet-20250219" if model == "sonnet" else "claude-3-5-haiku-20241022"
     #print(model_name)
     response = client.messages.create(
         model=model_name,  # Use the variable instead of hardcoding
@@ -411,7 +411,7 @@ def generation_question_fermes(projet: str, system_prompt=system_prompt_question
         }
     """
     # Use the MODEL_NAME variable that's being set
-    model_name = "claude-3-5-sonnet-20241022" if model == "sonnet" else "claude-3-5-haiku-20241022"
+    model_name = "claude-3-7-sonnet-20250219" if model == "sonnet" else "claude-3-5-haiku-20241022"
     #print(LLM_response)
     response = client.messages.create(
         model=model_name,
@@ -492,7 +492,7 @@ def generation_resume(projet, question_reponses, system_prompt=system_prompt_res
         "Création d'un city-stade intégrant des aménagements favorables à la biodiversité locale, avec des dispositifs de récupération des eaux de pluie et d'éclairage économe en énergie, offrant un espace sportif et environnemental innovant."
     """
     # Use the MODEL_NAME variable that's being set
-    model_name = "claude-3-5-sonnet-20241022" if model == "sonnet" else "claude-3-5-haiku-20241022"
+    model_name = "claude-3-7-sonnet-20250219" if model == "sonnet" else "claude-3-5-haiku-20241022"
     #print(model_name)
     question_reponses = json.dumps(question_reponses, ensure_ascii=False)
     #print(answers)
@@ -527,8 +527,6 @@ def generation_resume(projet, question_reponses, system_prompt=system_prompt_res
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='matching de projet écologique avec leviers FNV')
     parser.add_argument('projet', help='Description du projet à analyser')
-    parser.add_argument('--model', default='haiku', choices=['haiku', 'sonnet'], 
-                       help='Modèle à utiliser (default: sonnet)')
     parser.add_argument('--type', default='TE', choices=['TE', 'competences', 'questions', 'resume'],
                        help='Type d\'analyse à effectuer')
     parser.add_argument('--answers', type=str, help='Questions answers for resume generation')
@@ -539,14 +537,14 @@ if __name__ == "__main__":
             projet=args.projet,  # This will be either the original description or the resume
             system_prompt=system_prompt_classification_TE,
             user_prompt=user_prompt_classification_TE,
-            model=args.model
+            model="sonnet"
         )
         print(json.dumps(response_classification, ensure_ascii=False))
     elif args.type == 'questions':
         try:
             questions = generation_question_fermes(
                 projet=args.projet,
-                model=args.model
+                model="haiku"
             )
             print(json.dumps(questions, ensure_ascii=False))
         except Exception as e:
@@ -561,7 +559,7 @@ if __name__ == "__main__":
             resume = generation_resume(
                 projet=args.projet,
                 question_reponses=answers,
-                model=args.model
+                model="haiku"
             )
             print(resume)  # The function already returns formatted text
         except Exception as e:
@@ -573,6 +571,6 @@ if __name__ == "__main__":
             projet=args.projet,
             system_prompt=system_prompt_competences,
             user_prompt=user_prompt_competences,
-            model=args.model
+            model="sonnet"
         )
         print(json.dumps(response_competences, ensure_ascii=False))
