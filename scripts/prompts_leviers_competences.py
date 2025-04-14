@@ -733,7 +733,7 @@ Votre réponse doit TOUJOURS être un JSON valide de la forme :
 
 """
 
-# Prompts pour poser des questions fermées à l'utilisateur
+# Non Utilisé - Prompts pour poser des questions fermées à l'utilisateur
 system_prompt_questions_fermees = """
 Tu es une IA bienveillante qui aide l'utilisateur à préciser les éléments de son projet en lien avec la transition écologique.
 
@@ -756,6 +756,7 @@ Ton rôle est donc de poser 3 questions fermées, simples et encourageantes, qui
 Tu répondras exclusivement au format JSON, en respectant strictement le format demandé.
 """
 
+# Non Utilisé
 user_prompt_questions_fermees = """
 Pose exactement 3 questions fermées, bienveillantes et constructives, en lien avec la transition écologique et la classification précédente (projet jugé « pas de lien » ou « pas assez précis »).
 
@@ -1134,7 +1135,6 @@ competences = {
     "Autres interventions de protection civile": []
 }
 
-
 corrections_competences = {
     # Corrections des variations d'écriture
     'Action en matière de gestion des eaux': 'Actions en matière de gestion des eaux',
@@ -1179,3 +1179,398 @@ corrections_sous_competences = {
     'Économie circulaire et circuits courts': 'Economie locale et circuits courts',
     'Pêche et distribution': 'Distribution'
 }
+
+competences_V2 = {
+  '90-025': 'Cimetières et pompes funèbres',
+  '90-11': 'Police, sécurité, justice',
+  '90-12': 'Incendie et secours',
+  '90-13': 'Hygiène et salubrité publique',
+  '90-18': 'Sécurité / Autres interventions protection des personnes, biens',
+  '90-21': 'Enseignement du premier degré',
+  '90-211': 'Enseignement du premier degré > Ecoles maternelles',
+  '90-212': 'Enseignement du premier degré > Ecoles primaires',
+  '90-213': 'Enseignement du premier degré > Classes regroupées',
+  '90-22': 'Enseignement du second degré',
+  '90-221': 'Enseignement du second degré > Collèges',
+  '90-222': 'Enseignement du second degré > Lycées publics',
+  '90-223': 'Enseignement du second degré > Lycées privés',
+  '90-23': 'Enseignement supérieur',
+  '90-24': 'Cités scolaires',
+  '90-25': 'Formation professionnelle',
+  '90-251': 'Formation professionnelle > Insertion sociale et professionnelle',
+  '90-252': 'Formation professionnelle > Formation professionnalisante personnes',
+  '90-253': 'Formation professionnelle > Formation certifiante des personnes',
+  '90-254': 'Formation professionnelle > Formation des actifs occupés',
+  '90-255': 'Formation professionnelle > Rémunération des stagiaires',
+  '90-256': 'Formation professionnelle > Autres',
+  '90-26': 'Apprentissage',
+  '90-27': 'Formation sanitaire et sociale',
+  '90-28': 'Autres services périscolaires et annexes',
+  '90-281': 'Autres services périscolaires et annexes > Hébergement et restauration scolaires',
+  '90-282': 'Autres services périscolaires et annexes > Sport scolaire',
+  '90-283': 'Autres services périscolaires et annexes > Médecine scolaire',
+  '90-284': 'Autres services périscolaires et annexes > Classes de découverte',
+  '90-288': "Autres services périscolaires et annexes > Autre service annexe de l'enseignement",
+  '90-29': 'Enseignement, formation professionnelle et apprentissage / Sécurité',
+  '90-31': 'Culture',
+  '90-311': 'Culture > Activités artist.,actions et manif.cult',
+  '90-312': 'Culture > Patrimoine',
+  '90-313': 'Culture > Bibliothèques, médiathèques',
+  '90-314': 'Culture > Musées',
+  '90-315': "Culture > Services d'archives",
+  '90-316': 'Culture > Théâtres et spectacles vivants',
+  '90-317': 'Culture > Cinémas et autres salles de spectacles',
+  '90-318': 'Culture > Archéologie préventive',
+  '90-32': 'Sports (autres que scolaires)',
+  '90-321': 'Sports (autres que scolaires) > Salles de sport, gymnases',
+  '90-322': 'Sports (autres que scolaires) > Stades',
+  '90-323': 'Sports (autres que scolaires) > Piscines',
+  '90-324': 'Sports (autres que scolaires) > Centres de formation sportifs',
+  '90-325': 'Sports (autres que scolaires) > Autres équipements sportifs ou loisirs',
+  '90-326': 'Sports (autres que scolaires) > Manifestations sportives',
+  '90-327': 'Sports (autres que scolaires) > Soutien aux sportifs',
+  '90-33': 'Jeunesse et loisirs',
+  '90-331': 'Jeunesse et loisirs > Centres de loisirs',
+  '90-332': 'Jeunesse et loisirs > Colonies de vacances',
+  '90-338': 'Jeunesse et loisirs > Autres activités pour les jeunes',
+  '90-34': 'Vie sociale et citoyenne',
+  '90-341': 'Vie sociale et citoyenne > Egalité entre les femmes et les hommes',
+  '90-348': 'Vie sociale et citoyenne > Autres',
+  '90-39': 'Culture, vie sociale, jeunesse, sports et loisir / Sécurité',
+  '90-41': 'Santé',
+  '90-411': 'Santé > PMI et planification familiale',
+  '90-412': 'Santé > Prévention et éducation pour la santé',
+  '90-413': 'Santé > Sécurité alimentaire',
+  '90-414': 'Santé > Dispensaires et autres éts sanitaires',
+  '90-418': 'Santé > Autres actions',
+  '90-42': 'Action sociale',
+  '90-421': 'Action sociale > Famille et enfance',
+  '90-422': 'Action sociale > Petite enfance',
+  '90-423': 'Action sociale > Personnes âgées',
+  '90-424': 'Action sociale > Personnes en difficulté',
+  '90-425': 'Action sociale > Personnes handicapées',
+  '90-428': 'Action sociale > Autres interventions sociales',
+  '90-51': 'Aménagement des territoires et habitat / Aménagement et services urbains',
+  '90-511': 'Aménagement et services urbains > Espaces verts urbains',
+  '90-512': 'Aménagement et services urbains > Eclairage public',
+  '90-513': 'Aménagement et services urbains > Art public',
+  '90-514': 'Aménagement et services urbains > Electrification',
+  '90-515': "Aménagement et services urbains > Opérations d'aménagement",
+  '90-518': "Aménagement et services urbains > Autres actions d'aménagement urbain",
+  '90-52': 'Aménagement des territoires et habitat / Politique de la ville',
+  '90-53': 'Aménagement des territoires et habitat / Agglomérations et villes moyennes',
+  '90-54': 'Aménagement des territoires et habitat / Espace rural et autres espaces de dév.',
+  '90-55': 'Habitat (Logement)',
+  '90-551': 'Habitat (Logement) > Parc privé de la collectivité',
+  '90-552': 'Habitat (Logement) > Aide au secteur locatif',
+  '90-553': "Habitat (Logement) > Aide à l'accession à la propriété",
+  '90-554': "Habitat (Logement) > Aire d'accueil des gens du voyage",
+  '90-555': 'Habitat (Logement) > Logement social',
+  '90-56': 'Aménagement des territoires et habitat / Actions en faveur du littoral',
+  '90-57': "Aménagement des territoires et habitat / Technologies de l'information et de la communication",
+  '90-58': 'Aménagement des territoires et habitat / Autres actions',
+  '90-581': 'Aménagement des territoires et habitat / Autres actions > Réserves Foncières',
+  '90-588': "Aménagement des territoires et habitat / Autres actions > Autres actions d'aménagement",
+  '90-59': 'Aménagement des territoires et habitat / Sécurité',
+  '90-61': 'Action économique / Interventions économiques transversales',
+  '90-62': "Action économique / Structure d'animation et de développement économique",
+  '90-63': 'Action économique / Actions sectorielles',
+  '90-631': 'Action économique / Actions sectorielles > Agriculture, pêche et agro-alimentaire',
+  '90-632': 'Action économique / Actions sectorielles > Industrie, commerce et artisanat',
+  '90-633': 'Action économique / Actions sectorielles > Développement touristique',
+  '90-64': 'Action économique / Rayonnement, attractivité du territoire',
+  '90-65': 'Action économique / Insertion économique et économie sociale, solidaire',
+  '90-66': 'Action économique / Maintien et dév. des services publics',
+  '90-67': 'Action économique / Recherche et innovation',
+  '90-68': 'Action économique / Autres actions',
+  '90-71': 'Environnement / Actions transversales',
+  '90-72': 'Actions déchets et propreté urbaine',
+  '90-721': 'Actions déchets et propreté urbaine > Collecte et traitement des déchets',
+  '90-722': 'Actions déchets et propreté urbaine > Propreté urbaine',
+  '90-73': 'Actions en matière de gestion des eaux',
+  '90-731': "Actions en matière de gestion des eaux > Politique de l'eau",
+  '90-732': 'Actions en matière de gestion des eaux > Eau potable',
+  '90-733': 'Actions en matière de gestion des eaux > Assainissement',
+  '90-734': 'Actions en matière de gestion des eaux > Eaux pluviales',
+  '90-735': 'Actions en matière de gestion des eaux > Lutte contre les inondations',
+  '90-74': "Politique de l'air",
+  '90-75': "Politique de l'énergie",
+  '90-751': "Politique de l'énergie > Réseaux de chaleur et de froid",
+  '90-752': "Politique de l'énergie > Energie photovoltaïque",
+  '90-753': "Politique de l'énergie > Energie éolienne",
+  '90-754': "Politique de l'énergie > Energie hydraulique",
+  '90-758': "Politique de l'énergie > Autres actions",
+  '90-76': 'Environnement / Préservation patrimoine naturel,risques technologiques',
+  '90-77': 'Environnement infrastructures transports',
+  '90-78': 'Environnement / Autres actions',
+  '90-81': 'Transports scolaires',
+  '90-82': 'Transports publics de voyageurs',
+  '90-821': 'Transports publics de voyageurs > Transport sur route',
+  '90-822': 'Transports publics de voyageurs > Transport ferroviaire',
+  '90-823': 'Transports publics de voyageurs > Transport fluvial',
+  '90-824': 'Transports publics de voyageurs > Transport maritime',
+  '90-825': 'Transports publics de voyageurs > Transport aérien',
+  '90-828': 'Transports publics de voyageurs > Autres transports',
+  '90-83': 'Transports de marchandises',
+  '90-831': 'Transports de marchandises > Fret routier',
+  '90-832': 'Transports de marchandises > Fret ferroviaire',
+  '90-833': 'Transports de marchandises > Fret fluvial',
+  '90-834': 'Transports de marchandises > Fret maritime',
+  '90-835': 'Transports de marchandises > Fret aérien',
+  '90-838': 'Transports de marchandises > Autres transports',
+  '90-84': 'Voirie',
+  '90-841': 'Voirie > Voirie nationale',
+  '90-842': 'Voirie > Voirie régionale',
+  '90-843': 'Voirie > Voirie départementale',
+  '90-844': 'Voirie > Voirie métropolitaine',
+  '90-845': 'Voirie > Voirie communale',
+  '90-846': 'Voirie > Viabilité hivernale et aléas climatiques',
+  '90-847': 'Voirie > Equipements de voirie',
+  '90-848': 'Voirie > Parkings',
+  '90-849': 'Voirie > Sécurité routière',
+  '90-85': 'Transports / Infrastructures',
+  '90-851': 'Transports / Infrastructures > Gares, autres infrastructures routières',
+  '90-852': 'Transports / Infrastructures > Gares et autres infrastructures ferrov.',
+  '90-853': 'Transports / Infrastructures > Haltes, autres infrastructures fluviales',
+  '90-854': 'Transports / Infrastructures > Ports, autres infrastructures portuaires',
+  '90-855': 'Transports / Infrastructures > Aéroports et autres infrastructures',
+  '90-86': 'Transports / Liaisons multimodales',
+  '90-87': 'Circulations douces',
+  '90-89': 'Transports / Sécurité'
+} 
+
+system_prompt_competences_V2 = """
+Vous êtes un expert chargé d’analyser la description d’un projet afin de déterminer sa relation avec des compétences et sous-compétences propres à des collectivités territoriales en France. Votre tâche se déroule en plusieurs étapes, en suivant les directives ci-dessous de manière rigoureuse. Vous disposez de suffisamment d’éléments pour prendre vos décisions. Vous êtes réfléchi, pragmatique, minutieux et vous évitez de juger prématurément un projet mal défini.
+
+Objectif :
+	•	Associer des compétences ou sous-compétences des collectivités si elles sont pertinentes. Assurez-vous d’associer au maximum 3 compétences ou sous-compétences.
+
+Choix des scores :
+Pour chaque compétence ou sous-compétence associée, attribuer un score compris entre 0 et 1, reflétant la pertinence de cette dernière par rapport au projet selon les critères suivants :
+		•	0.9 - 1.0 : Compétence / sous-compétence hautement pertinente et directement liée aux actions ou impacts principaux du projet.
+		•	0.7 - 0.8 : Compétence / sous-compétence pertinente avec un lien important avec le projet.
+		•	0.5 - 0.6 : Compétence / sous-compétence modérément pertinente, avec un lien indirect ou partiel.
+		•	0.3 - 0.4 : Compétence / sous-compétence faiblement pertinente, avec un lien mineur.
+		•	0.1 - 0.2  : Compétence / sous-compétence très faiblement pertinente.
+
+Processus d’analyse :
+	1.	Identifier les compétences pertinentes.
+	2. Pour chaque compétence pertinente :
+		•	Si elle a des sous-compétences disponibles dans l'arborescence, les examiner et choisir la ou les sous-compétences les plus pertinentes. Si aucune sous-compétence n'est pertinente garder uniquement la compétence mère.
+		•	Si une compétence n’a pas de sous-compétences présentes dans l'arborescence, n'inclure que la compétence.
+	3. Ne pas inclure d’explications sur vos choix. Assurez-vous que vos associations soient réfléchies et basées sur les informations fournies.
+
+
+Format de sortie :
+Vous devez inclure les résultats sous forme de JSON entre les balises <json> et </json>. Le format doit être strictement respecté pour faciliter le traitement automatisé.
+
+Structure du JSON :
+	•	projet : Intitulé du projet.
+	•	compétences : Liste des compétences et sous-compétences associées avec leurs scores.
+	•	Chaque objet de compétence doit contenir :
+		•	"code" : code de la compétence ou sous-compétence.
+		•	"competence" : intitulé de la compétence ou sous-compétence
+		•	"score" : Valeur numérique entre 0 et 1.
+
+"""
+
+user_prompt_competences_V2 = """
+La liste des compétences et sous-compétences est disponible sous la forme générique suivante: : 90-XY lorsqu'il s'agit d'une compétence, 90-XYZ lorsqu'il s'agit d'une sous-compétence. A l'exception de  {'90-025': 'Cimetières et pompes funèbres'}, tous les intitulés des sous-compétences sont précédés par l'intitulé de leur compétence parente et d'un ">". Par exemple : { '90-33': 'Jeunesse et loisirs'}  est une compétence et {'90-331': 'Jeunesse et loisirs > Centres de loisirs'} est une sous-compétence associée possible. 
+
+<compétences>
+{
+  '90-025': 'Cimetières et pompes funèbres',
+  '90-11': 'Police, sécurité, justice',
+  '90-12': 'Incendie et secours',
+  '90-13': 'Hygiène et salubrité publique',
+  '90-18': 'Sécurité / Autres interventions protection des personnes, biens',
+  '90-21': 'Enseignement du premier degré',
+  '90-211': 'Enseignement du premier degré > Ecoles maternelles',
+  '90-212': 'Enseignement du premier degré > Ecoles primaires',
+  '90-213': 'Enseignement du premier degré > Classes regroupées',
+  '90-22': 'Enseignement du second degré',
+  '90-221': 'Enseignement du second degré > Collèges',
+  '90-222': 'Enseignement du second degré > Lycées publics',
+  '90-223': 'Enseignement du second degré > Lycées privés',
+  '90-23': 'Enseignement supérieur',
+  '90-24': 'Cités scolaires',
+  '90-25': 'Formation professionnelle',
+  '90-251': 'Formation professionnelle > Insertion sociale et professionnelle',
+  '90-252': 'Formation professionnelle > Formation professionnalisante personnes',
+  '90-253': 'Formation professionnelle > Formation certifiante des personnes',
+  '90-254': 'Formation professionnelle > Formation des actifs occupés',
+  '90-255': 'Formation professionnelle > Rémunération des stagiaires',
+  '90-256': 'Formation professionnelle > Autres',
+  '90-26': 'Apprentissage',
+  '90-27': 'Formation sanitaire et sociale',
+  '90-28': 'Autres services périscolaires et annexes',
+  '90-281': 'Autres services périscolaires et annexes > Hébergement et restauration scolaires',
+  '90-282': 'Autres services périscolaires et annexes > Sport scolaire',
+  '90-283': 'Autres services périscolaires et annexes > Médecine scolaire',
+  '90-284': 'Autres services périscolaires et annexes > Classes de découverte',
+  '90-288': "Autres services périscolaires et annexes > Autre service annexe de l'enseignement",
+  '90-29': 'Enseignement, formation professionnelle et apprentissage / Sécurité',
+  '90-31': 'Culture',
+  '90-311': 'Culture > Activités artist.,actions et manif.cult',
+  '90-312': 'Culture > Patrimoine',
+  '90-313': 'Culture > Bibliothèques, médiathèques',
+  '90-314': 'Culture > Musées',
+  '90-315': "Culture > Services d'archives",
+  '90-316': 'Culture > Théâtres et spectacles vivants',
+  '90-317': 'Culture > Cinémas et autres salles de spectacles',
+  '90-318': 'Culture > Archéologie préventive',
+  '90-32': 'Sports (autres que scolaires)',
+  '90-321': 'Sports (autres que scolaires) > Salles de sport, gymnases',
+  '90-322': 'Sports (autres que scolaires) > Stades',
+  '90-323': 'Sports (autres que scolaires) > Piscines',
+  '90-324': 'Sports (autres que scolaires) > Centres de formation sportifs',
+  '90-325': 'Sports (autres que scolaires) > Autres équipements sportifs ou loisirs',
+  '90-326': 'Sports (autres que scolaires) > Manifestations sportives',
+  '90-327': 'Sports (autres que scolaires) > Soutien aux sportifs',
+  '90-33': 'Jeunesse et loisirs',
+  '90-331': 'Jeunesse et loisirs > Centres de loisirs',
+  '90-332': 'Jeunesse et loisirs > Colonies de vacances',
+  '90-338': 'Jeunesse et loisirs > Autres activités pour les jeunes',
+  '90-34': 'Vie sociale et citoyenne',
+  '90-341': 'Vie sociale et citoyenne > Egalité entre les femmes et les hommes',
+  '90-348': 'Vie sociale et citoyenne > Autres',
+  '90-39': 'Culture, vie sociale, jeunesse, sports et loisir / Sécurité',
+  '90-41': 'Santé',
+  '90-411': 'Santé > PMI et planification familiale',
+  '90-412': 'Santé > Prévention et éducation pour la santé',
+  '90-413': 'Santé > Sécurité alimentaire',
+  '90-414': 'Santé > Dispensaires et autres éts sanitaires',
+  '90-418': 'Santé > Autres actions',
+  '90-42': 'Action sociale',
+  '90-421': 'Action sociale > Famille et enfance',
+  '90-422': 'Action sociale > Petite enfance',
+  '90-423': 'Action sociale > Personnes âgées',
+  '90-424': 'Action sociale > Personnes en difficulté',
+  '90-425': 'Action sociale > Personnes handicapées',
+  '90-428': 'Action sociale > Autres interventions sociales',
+  '90-51': 'Aménagement des territoires et habitat / Aménagement et services urbains',
+  '90-511': 'Aménagement et services urbains > Espaces verts urbains',
+  '90-512': 'Aménagement et services urbains > Eclairage public',
+  '90-513': 'Aménagement et services urbains > Art public',
+  '90-514': 'Aménagement et services urbains > Electrification',
+  '90-515': "Aménagement et services urbains > Opérations d'aménagement",
+  '90-518': "Aménagement et services urbains > Autres actions d'aménagement urbain",
+  '90-52': 'Aménagement des territoires et habitat / Politique de la ville',
+  '90-53': 'Aménagement des territoires et habitat / Agglomérations et villes moyennes',
+  '90-54': 'Aménagement des territoires et habitat / Espace rural et autres espaces de dév.',
+  '90-55': 'Habitat (Logement)',
+  '90-551': 'Habitat (Logement) > Parc privé de la collectivité',
+  '90-552': 'Habitat (Logement) > Aide au secteur locatif',
+  '90-553': "Habitat (Logement) > Aide à l'accession à la propriété",
+  '90-554': "Habitat (Logement) > Aire d'accueil des gens du voyage",
+  '90-555': 'Habitat (Logement) > Logement social',
+  '90-56': 'Aménagement des territoires et habitat / Actions en faveur du littoral',
+  '90-57': "Aménagement des territoires et habitat / Technologies de l'information et de la communication",
+  '90-58': 'Aménagement des territoires et habitat / Autres actions',
+  '90-581': 'Aménagement des territoires et habitat / Autres actions > Réserves Foncières',
+  '90-588': "Aménagement des territoires et habitat / Autres actions > Autres actions d'aménagement",
+  '90-59': 'Aménagement des territoires et habitat / Sécurité',
+  '90-61': 'Action économique / Interventions économiques transversales',
+  '90-62': "Action économique / Structure d'animation et de développement économique",
+  '90-63': 'Action économique / Actions sectorielles',
+  '90-631': 'Action économique / Actions sectorielles > Agriculture, pêche et agro-alimentaire',
+  '90-632': 'Action économique / Actions sectorielles > Industrie, commerce et artisanat',
+  '90-633': 'Action économique / Actions sectorielles > Développement touristique',
+  '90-64': 'Action économique / Rayonnement, attractivité du territoire',
+  '90-65': 'Action économique / Insertion économique et économie sociale, solidaire',
+  '90-66': 'Action économique / Maintien et dév. des services publics',
+  '90-67': 'Action économique / Recherche et innovation',
+  '90-68': 'Action économique / Autres actions',
+  '90-71': 'Environnement / Actions transversales',
+  '90-72': 'Actions déchets et propreté urbaine',
+  '90-721': 'Actions déchets et propreté urbaine > Collecte et traitement des déchets',
+  '90-722': 'Actions déchets et propreté urbaine > Propreté urbaine',
+  '90-73': 'Actions en matière de gestion des eaux',
+  '90-731': "Actions en matière de gestion des eaux > Politique de l'eau",
+  '90-732': 'Actions en matière de gestion des eaux > Eau potable',
+  '90-733': 'Actions en matière de gestion des eaux > Assainissement',
+  '90-734': 'Actions en matière de gestion des eaux > Eaux pluviales',
+  '90-735': 'Actions en matière de gestion des eaux > Lutte contre les inondations',
+  '90-74': "Politique de l'air",
+  '90-75': "Politique de l'énergie",
+  '90-751': "Politique de l'énergie > Réseaux de chaleur et de froid",
+  '90-752': "Politique de l'énergie > Energie photovoltaïque",
+  '90-753': "Politique de l'énergie > Energie éolienne",
+  '90-754': "Politique de l'énergie > Energie hydraulique",
+  '90-758': "Politique de l'énergie > Autres actions",
+  '90-76': 'Environnement / Préservation patrimoine naturel,risques technologiques',
+  '90-77': 'Environnement infrastructures transports',
+  '90-78': 'Environnement / Autres actions',
+  '90-81': 'Transports scolaires',
+  '90-82': 'Transports publics de voyageurs',
+  '90-821': 'Transports publics de voyageurs > Transport sur route',
+  '90-822': 'Transports publics de voyageurs > Transport ferroviaire',
+  '90-823': 'Transports publics de voyageurs > Transport fluvial',
+  '90-824': 'Transports publics de voyageurs > Transport maritime',
+  '90-825': 'Transports publics de voyageurs > Transport aérien',
+  '90-828': 'Transports publics de voyageurs > Autres transports',
+  '90-83': 'Transports de marchandises',
+  '90-831': 'Transports de marchandises > Fret routier',
+  '90-832': 'Transports de marchandises > Fret ferroviaire',
+  '90-833': 'Transports de marchandises > Fret fluvial',
+  '90-834': 'Transports de marchandises > Fret maritime',
+  '90-835': 'Transports de marchandises > Fret aérien',
+  '90-838': 'Transports de marchandises > Autres transports',
+  '90-84': 'Voirie',
+  '90-841': 'Voirie > Voirie nationale',
+  '90-842': 'Voirie > Voirie régionale',
+  '90-843': 'Voirie > Voirie départementale',
+  '90-844': 'Voirie > Voirie métropolitaine',
+  '90-845': 'Voirie > Voirie communale',
+  '90-846': 'Voirie > Viabilité hivernale et aléas climatiques',
+  '90-847': 'Voirie > Equipements de voirie',
+  '90-848': 'Voirie > Parkings',
+  '90-849': 'Voirie > Sécurité routière',
+  '90-85': 'Transports / Infrastructures',
+  '90-851': 'Transports / Infrastructures > Gares, autres infrastructures routières',
+  '90-852': 'Transports / Infrastructures > Gares et autres infrastructures ferrov.',
+  '90-853': 'Transports / Infrastructures > Haltes, autres infrastructures fluviales',
+  '90-854': 'Transports / Infrastructures > Ports, autres infrastructures portuaires',
+  '90-855': 'Transports / Infrastructures > Aéroports et autres infrastructures',
+  '90-86': 'Transports / Liaisons multimodales',
+  '90-87': 'Circulations douces',
+  '90-89': 'Transports / Sécurité'
+} 
+</compétences>
+
+Vous devez retourner un JSON valide avec les champs suivants :
+
+- “projet” : La description du projet.
+- “competences” : 
+  - Une liste d'objets contenant :
+    - "code" : code de la compétence / sous-compétence
+    -"competence" : Intitulé de la compétence / sous-compétence
+    - "score" : Valeur numérique entre 0 et 1.
+  - Les compétences / sous-compétence  doivent être classées par ordre décroissant de score.
+  - Les scores doivent être attribués selon les critères de pertinence définis.
+  - Ce champ doit contenir  au maximum 3 compétences/sous-compétences.
+  - Il est nécessaire d'abord d'examiner toutes les compétences possibles et, lorsqu'il y a des sous-compétences présentes dans l'arborescence, de les prendre en compte.
+Par exemple si un projet est lié à la compétence :  { '90-211': 'Enseignement du premier degré > Ecoles maternelles'} et qu'il est lié à l'une des 3 sous-compétences possibles : {'90-211': 'Enseignement du premier degré > Ecoles maternelles','90-212': 'Enseignement du premier degré > Ecoles primaires','90-213': 'Enseignement du premier degré > Classes regroupées'} ne renvoyer que cette dernière, sinon renvoyer la compétence uniquement.
+- Assurez-vous de considérer toutes les compétences et sous-compétences disponibles pour chaque projet afin de sélectionner les plus pertinentes.
+- N'inventez pas de compétence ou sous-compétence qui ne serait pas dans la liste fournie, et assurez vous de renvoyer les codes sans erreur.
+
+
+
+Votre réponse doit TOUJOURS être un JSON valide de la forme : 
+<json>
+{
+    "projet": "Intitulé du projet",
+    "competences": [
+        {
+            "code": "code de la compétence / sous-compétence",
+            "competence": "intitulé de la compétence / sous-compétence",
+            "score": Valeur numérique entre 0 et 1.
+        },
+        ...
+    ]
+}
+</json>
+
+"""
+
+few_shot_exs_competences_V2 = "<examples>\n<example>\n<projet>\nRéhabilitation d’un ancien couvent en 8 logements à destination des personnes âgées souhaitant se rapprocher des services et commerces au cœur du village.\n</projet>\n<ideal_output>\n<json>\n{\n    \"projet\": \"Réhabilitation d'un ancien couvent en 8 logements à destination des personnes âgées souhaitant se rapprocher des services et commerces au cœur du village.\",\n    \"competences\": [\n        {\n            \"code\": \"90-423\",\n            \"competence\": \"Action sociale > Personnes âgées\",\n            \"score\": 0.9\n        },\n        {\n            \"code\": \"90-555\",\n            \"competence\": \"Habitat (Logement) > Logement social\",\n            \"score\": 0.8\n        },\n        {\n            \"code\": \"90-312\",\n            \"competence\": \"Culture > Patrimoine\",\n            \"score\": 0.6\n        }\n    ]\n}\n</json>\n</ideal_output>\n</example>\n<example>\n<projet>\nAménagement du SAS de la mairie et désimperméabilisation des extérieurs\n</projet>\n<ideal_output>\n<json>\n{\n    \"projet\": \"Aménagement du SAS de la mairie et désimperméabilisation des extérieurs\",\n    \"competences\": [\n        {\n            \"code\": \"90-734\",\n            \"competence\": \"Actions en matière de gestion des eaux > Eaux pluviales\",\n            \"score\": 0.9\n        },\n        {\n            \"code\": \"90-515\",\n            \"competence\": \"Aménagement et services urbains > Opérations d'aménagement\",\n            \"score\": 0.8\n        },\n        {\n            \"code\": \"90-71\",\n            \"competence\": \"Environnement / Actions transversales\",\n            \"score\": 0.6\n        }\n    ]\n}\n</json>\n</ideal_output>\n</example>\n<example>\n<projet>\nElaborer et mettre en œuvre  d'un Programme Local de Prévention des Déchets Ménagers et Assimilés pour réduire à la source les tonnages et mieux valoriser les matières 2025-2030 \nDescription : objectif : réduire les tonnages de déchets de- 25 % et améliorer la valorisation jusqu'àà 65% en élaborant un programme d'actions concerté avec l'ensemble des acteurs du territoire\n</projet>\n<ideal_output>\n<json>\n{\n    \"projet\": \"Elaborer et mettre en œuvre  d'un Programme Local de Prévention des Déchets Ménagers et Assimilés pour réduire à la source les tonnages et mieux valoriser les matières 2025-2030\",\n    \"competences\": [\n        {\n            \"code\": \"90-721\",\n            \"competence\": \"Actions déchets et propreté urbaine > Collecte et traitement des déchets\",\n            \"score\": 1.0\n        },\n        {\n            \"code\": \"90-71\",\n            \"competence\": \"Environnement / Actions transversales\",\n            \"score\": 0.7\n        },\n        {\n            \"code\": \"90-65\",\n            \"competence\": \"Action économique / Insertion économique et économie sociale, solidaire\",\n            \"score\": 0.4\n        }\n    ]\n}\n</json>\n</ideal_output>\n</example>\n<example>\n<projet>\nNavire hybride : visites éco-responsables et valorisation de la culture locale et de la biodiversité \nMise en service d’un navire hybride pour transport (passagers et fret), visites éco-responsables et valorisation de la biodiversité.\n</projet>\n<ideal_output>\nJe vais analyser ce projet concernant un navire hybride pour déterminer les compétences et sous-compétences pertinentes.\n\n<json>\n{\n    \"projet\": \"Navire hybride : visites éco-responsables et valorisation de la culture locale et de la biodiversité\",\n    \"competences\": [\n        {\n            \"code\": \"90-633\",\n            \"competence\": \"Action économique / Actions sectorielles > Développement touristique\",\n            \"score\": 0.9\n        },\n        {\n            \"code\": \"90-824\",\n            \"competence\": \"Transports publics de voyageurs > Transport maritime\",\n            \"score\": 0.8\n        },\n        {\n            \"code\": \"90-76\",\n            \"competence\": \"Environnement / Préservation patrimoine naturel,risques technologiques\",\n            \"score\": 0.7\n        },\n    ]\n}\n</json>\n</ideal_output>\n</example>\n<example>\n<projet>\nCréation d’une salle de convivialité au complexe sportif Passais Village\n</projet>\n<ideal_output>\n<json>\n{\n    \"projet\": \"Création d'une salle de convivialité au complexe sportif Passais Village\",\n    \"competences\": [\n        {\n            \"code\": \"90-325\",\n            \"competence\": \"Sports (autres que scolaires) > Autres équipements sportifs ou loisirs\",\n            \"score\": 0.9\n        },\n        {\n            \"code\": \"90-348\",\n            \"competence\": \"Vie sociale et citoyenne > Autres\",\n            \"score\": 0.7\n        },\n        {\n            \"code\": \"90-33\",\n            \"competence\": \"Jeunesse et loisirs\",\n            \"score\": 0.6\n        }\n    ]\n}\n</json>\n</ideal_output>\n</example>\n<example>\n<projet>\nRéfection de l’éclairage public avec effacement des réseaux (Bagnols de l’Orne)\n</projet>\n<ideal_output>\n<json>\n{\n    \"projet\": \"Réfection de l'éclairage public avec effacement des réseaux (Bagnols de l'Orne)\",\n    \"competences\": [\n        {\n            \"code\": \"90-512\",\n            \"competence\": \"Aménagement et services urbains > Eclairage public\",\n            \"score\": 0.9\n        },\n        {\n            \"code\": \"90-514\",\n            \"competence\": \"Aménagement et services urbains > Electrification\",\n            \"score\": 0.8\n        }\n    ]\n}\n</json>\n</ideal_output>\n</example>\n</examples>\n"
