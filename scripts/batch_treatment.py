@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 import os
 import argparse
 import json
+import pandas as pd
 import sys
 import base64
 import copy
@@ -26,7 +27,7 @@ from prompts_leviers_competences import (
     user_prompt_resume_projet,
     system_prompt_questions_fermees_boussole,
     user_prompt_questions_fermees_boussole,
-    leviers,
+    leviers as liste_leviers,
     corrections_leviers,
     competences_V2,
 )
