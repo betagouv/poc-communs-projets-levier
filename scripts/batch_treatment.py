@@ -233,7 +233,7 @@ def check_batch_statuses(list_batch_ids):
         time.sleep(30)
 
 
-def process_results_TE_leviers(list_batch_ids):
+def process_results_TE_leviers(list_batch_ids,liste_leviers,corrections_leviers):
     results_data = []
     failed_data = []
     
@@ -310,7 +310,7 @@ def process_results_TE_leviers(list_batch_ids):
     return success_df, failed_df
 
 
-def process_results_competences(list_batch_ids_competences):
+def process_results_competences(list_batch_ids_competences,dict_competences):
     results_data = []
     failed_data = []
     
@@ -327,7 +327,7 @@ def process_results_competences(list_batch_ids_competences):
                     if json_match:
                         try:
                             json_data = json.loads(json_match.group(1).strip())
-                            json_data = post_treatment_competences_V2(json_data,competences_V2)
+                            json_data = post_treatment_competences_V2(json_data,dict_competences,None)
 
                             
                             row_data = {
@@ -389,12 +389,15 @@ def process_results_competences(list_batch_ids_competences):
 # Orignal Function to merge results from both Leviers and Competences with original df
 def merge_results_with_df(df,df_TE_leviers,df_competences,column_id,prefix_custom_id=None):
 
-    #df.insert(0, 'custom_id', f"{prefix_custom_id}_project_" + df.index.astype(str))
+    # adding custom_id to the base df
+    #  if prefix_custom_id :
+    #     df.insert(0, 'custom_id', f"{prefix_custom_id}_project_" + df.index.astype(str))
 
-    # ensuring all ids are int
-    df_TE_leviers["custom_id"] = df_TE_leviers["custom_id"].astype(int)
-    df_competences["custom_id"] = df_competences["custom_id"].astype(int)
-    # df["id"] = df["id"].astype(int)
+    # ensuring all ids are if "id" when column_id is of type int or string with int values
+    
+    # df_TE_leviers["custom_id"] = df_TE_leviers["custom_id"].astype(int)
+    # df_competences["custom_id"] = df_competences["custom_id"].astype(int)
+    # df[column_id] = df[column_id].astype(int)
 
     df_merged = df.merge(
         df_TE_leviers,
