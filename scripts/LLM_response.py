@@ -95,7 +95,7 @@ def post_treatment_leviers(json_data, leviers_list, corrections_leviers):
     return result
 
 
-def classification_TE(projet: str, system_prompt=system_prompt_classification_TE, user_prompt=user_prompt_classification_TE, model="sonnet"):
+def classification_TE(projet: str, system_prompt=system_prompt_classification_TE, user_prompt=user_prompt_classification_TE, model="haiku"):
     """
     Classifies a project's relationship with ecological transition and identifies relevant levers.
 
@@ -453,7 +453,7 @@ def classification_competences(projet: str, system_prompt=system_prompt_competen
     
     return response_dict
 
-def classification_competences_V2(projet: str, system_prompt=system_prompt_competences_V2, user_prompt=user_prompt_competences_V2,  examples_prompt = few_shot_exs_competences_V2, model="sonnet"):
+def classification_competences_V2(projet: str, system_prompt=system_prompt_competences_V2, user_prompt=user_prompt_competences_V2,  examples_prompt = few_shot_exs_competences_V2, model="haiku"):
     # Use the MODEL_NAME variable that's being set
     model_name = "claude-3-7-sonnet-20250219" if model == "sonnet" else "claude-3-5-haiku-20241022"
     #print(model_name)
@@ -668,7 +668,7 @@ if __name__ == "__main__":
             projet=args.projet,  # This will be either the original description or the resume
             system_prompt=system_prompt_classification_TE,
             user_prompt=user_prompt_classification_TE,
-            model="sonnet"
+            model="haiku"
         )
         print(json.dumps(response_classification, ensure_ascii=False))
     elif args.type == 'questions':
@@ -703,6 +703,6 @@ if __name__ == "__main__":
             system_prompt=system_prompt_competences_V2,
             user_prompt=user_prompt_competences_V2,
             examples_prompt=few_shot_exs_competences_V2,
-            model="sonnet"
+            model="haiku"
         )
         print(json.dumps(response_competences, ensure_ascii=False))
