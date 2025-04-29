@@ -34,18 +34,16 @@ export const ThematiquesSection: FC<CompetencesResultsProps> = ({
       const competences = competencesResult.competences;
       const mainCompetenceColumnId = columnMapping?.thematique_prioritaire;
       const secondaryCompetenceColumnId = columnMapping?.thematique_secondaire;
+      const mainCompetenceCodeColumnId = columnMapping?.code_thematique_prioritaire;
+      const secondaryCompetenceCodeColumnId = columnMapping?.code_thematique_secondaire;
 
       await grist.selectedTable.update({
         id: currentSelection.id,
         fields: {
-          [mainCompetenceColumnId as string]: `${competences[0].competence}${
-            competences[0].sous_competence ? ` > ${competences[0].sous_competence}` : ""
-          }`,
-          [secondaryCompetenceColumnId as string]: competences[1]
-            ? `${competences[1].competence}${
-                competences[1].sous_competence ? ` > ${competences[1].sous_competence}` : ""
-              }`
-            : "",
+          [mainCompetenceColumnId as string]: competences[0].competence,
+          [secondaryCompetenceColumnId as string]: competences[1].competence,
+          [mainCompetenceCodeColumnId as string]: competences[0].code,
+          [secondaryCompetenceCodeColumnId as string]: competences[1].code,
         },
       });
 
@@ -91,12 +89,6 @@ export const ThematiquesSection: FC<CompetencesResultsProps> = ({
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
                         <span className="font-medium text-black">{comp.competence}</span>
-                        {comp.sous_competence && (
-                          <>
-                            <CheckMark />
-                            <span className="text-black">{comp.sous_competence}</span>
-                          </>
-                        )}
                       </div>
                       <span className="text-sm font-medium text-black">{percentage}%</span>
                     </div>

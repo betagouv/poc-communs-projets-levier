@@ -42,6 +42,8 @@ export const WidgetGrist = () => {
       columns: [
         { name: "intitule", type: "Text" },
         { name: "description", type: "Text" },
+        { name: "code_thematique_prioritaire", type: "Text" },
+        { name: "code_thematique_secondaire", type: "Text" },
         { name: "leviers" },
         { name: "thematique_prioritaire", type: "Choice" },
         { name: "thematique_secondaire", type: "Choice" },

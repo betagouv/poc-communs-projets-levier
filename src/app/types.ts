@@ -9,6 +9,7 @@ export interface LeviersResult {
 interface Competence {
   competence: string;
   sous_competence: string;
+  code: string;
   score: number;
 }
 
