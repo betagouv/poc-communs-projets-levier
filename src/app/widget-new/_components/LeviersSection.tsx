@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { LeviersResult, ReferenceTable } from "@/app/types";
+import { LeviersResult, FNVReferenceTable } from "@/app/types";
 import { push } from "@socialgouv/matomo-next";
 import type { CellValue, RowRecord } from "grist/GristData";
 import { WidgetColumnMap } from "grist/CustomSectionAPI";
@@ -14,13 +14,13 @@ type LeviersSectionProps = {
   currentSelection: RowRecord | null;
   columnMapping: WidgetColumnMap | null;
   setSelectedLevers: React.Dispatch<React.SetStateAction<Set<string>>>;
-  FNV_ReferenceTable: ReferenceTable | null;
+  FNV_ReferenceTable: FNVReferenceTable | null;
   setError: (error: string) => void;
   leviersHaveBeenSaved: boolean;
   setLeviersHaveBeenSaved: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-async function getLeverIds(leverNames: string[], levierReferenceTable: ReferenceTable) {
+async function getLeverIds(leverNames: string[], levierReferenceTable: FNVReferenceTable) {
   const leverIds = [];
   for (const name of leverNames) {
     const matchedLevierIndex = levierReferenceTable.Levier.findIndex((levier) => levier === name);

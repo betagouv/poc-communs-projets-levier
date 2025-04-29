@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { CompetencesResult } from "@/app/types";
+import { CompetenceReferenceTable, CompetencesResult } from "@/app/types";
 import { push } from "@socialgouv/matomo-next";
 import { WidgetColumnMap } from "grist/CustomSectionAPI";
 import type { RowRecord } from "grist/GristData";
@@ -14,6 +14,7 @@ type CompetencesResultsProps = {
   setError: (error: string) => void;
   currentSelection: RowRecord | null;
   thematiquesHaveBeenSaved: boolean;
+  competenceReferenceTable: CompetenceReferenceTable | null;
   setThematiquesHaveBeenSaved: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
@@ -23,27 +24,31 @@ export const ThematiquesSection: FC<CompetencesResultsProps> = ({
   columnMapping,
   currentSelection,
   setError,
+  competenceReferenceTable,
   thematiquesHaveBeenSaved,
   setThematiquesHaveBeenSaved,
 }) => {
+  const getCompetenceCodeId = (code: string) => {
+    const matchedCompetenceCodeIndex = competenceReferenceTable!.code.findIndex(
+      (competenceCode) => competenceCode === code,
+    );
+    return matchedCompetenceCodeIndex + 1;
+  };
+
   const saveCompetences = async () => {
     try {
       if (!currentSelection || !competencesResult?.competences) {
         throw new Error("No record or competences selected");
       }
       const competences = competencesResult.competences;
-      const mainCompetenceColumnId = columnMapping?.thematique_prioritaire;
-      const secondaryCompetenceColumnId = columnMapping?.thematique_secondaire;
       const mainCompetenceCodeColumnId = columnMapping?.code_thematique_prioritaire;
       const secondaryCompetenceCodeColumnId = columnMapping?.code_thematique_secondaire;
 
       await grist.selectedTable.update({
         id: currentSelection.id,
         fields: {
-          [mainCompetenceColumnId as string]: competences[0].competence,
-          [secondaryCompetenceColumnId as string]: competences[1].competence,
-          [mainCompetenceCodeColumnId as string]: competences[0].code,
-          [secondaryCompetenceCodeColumnId as string]: competences[1].code,
+          [mainCompetenceCodeColumnId as string]: getCompetenceCodeId(competences[0].code),
+          [secondaryCompetenceCodeColumnId as string]: getCompetenceCodeId(competences[1].code),
         },
       });
 
