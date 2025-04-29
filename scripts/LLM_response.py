@@ -22,12 +22,16 @@ from prompts_leviers_competences import (
     user_prompt_classification_TE,
     system_prompt_competences,
     user_prompt_competences,
+    system_prompt_competences_V2,
+    user_prompt_competences_V2,
+    few_shot_exs_competences_V2,
     system_prompt_resume_projet,
     user_prompt_resume_projet,
     system_prompt_questions_fermees_boussole,
     user_prompt_questions_fermees_boussole,
     leviers,
     corrections_leviers,
+    competences_V2,
     competences,
     corrections_competences,
     corrections_sous_competences
@@ -91,7 +95,7 @@ def post_treatment_leviers(json_data, leviers_list, corrections_leviers):
     return result
 
 
-def classification_TE(projet: str, system_prompt=system_prompt_classification_TE, user_prompt=user_prompt_classification_TE, model="sonnet"):
+def classification_TE(projet: str, system_prompt=system_prompt_classification_TE, user_prompt=user_prompt_classification_TE, model="haiku"):
     """
     Classifies a project's relationship with ecological transition and identifies relevant levers.
 
@@ -281,6 +285,75 @@ def post_treatment_competences(json_data, competences_list, corrections_competen
     
     return result
 
+def post_treatment_competences_V2(json_data, competences_dict, corrections_competences_V2 = None):
+    """
+    Post-processes competences and sub-competences in a JSON response by correcting or removing invalid entries.
+    
+    Args:
+        json_data (dict): Input JSON with project and competences
+        competences_dict (dict): Dictionary of valid codes & competences
+        corrections_competences_V2 (dict, optional): Dictionary for corrections
+    
+    Returns:
+        dict: Processed JSON with validated/corrected competences
+    """
+    result = copy.deepcopy(json_data)
+    
+    # Create reverse lookup for competence description to code
+    desc_to_code = {v: k for k, v in competences_dict.items()}
+    
+    # Filter and correct competences
+    valid_competences = []
+    for comp in result["competences"]:
+        code = comp.get("code")  # Use get to handle potential missing keys
+        desc = comp.get("competence")
+        
+        # Handle None/null values
+        if code is None or code == "":
+            # Case: Null code
+            if desc is not None and desc in desc_to_code:
+                # If description is valid, assign the correct code
+                comp["code"] = desc_to_code[desc]
+                valid_competences.append(comp)
+            # If description is also invalid/null, drop it (hallucination)
+            continue
+            
+        # Case 1: Valid code
+        if code in competences_dict:
+            # Null description but valid code
+            if desc is None or desc == "":
+                # Assign the correct description from the dictionary
+                comp["competence"] = competences_dict[code]
+                valid_competences.append(comp)
+            # Check for mismatch between code and description
+            elif competences_dict[code] != desc:
+                # If description exists in our dictionary, use its code
+                if desc in desc_to_code:
+                    comp["code"] = desc_to_code[desc]
+                    valid_competences.append(comp)
+                # If description doesn't exist, use description from competences_dict
+                else:
+                    comp["competence"] = competences_dict[code]
+                    valid_competences.append(comp)
+            else:
+                # Perfect match, keep as is
+                valid_competences.append(comp)
+                
+        # Case 2: Invalid code
+        else:
+            # Check if description exists in our dictionary
+            if desc is not None and desc in desc_to_code:
+                comp["code"] = desc_to_code[desc]
+                valid_competences.append(comp)
+            # If neither code nor description are valid, drop it (hallucination)
+    
+    result["competences"] = valid_competences
+    
+    # Sort by score
+    result["competences"].sort(key=lambda x: x.get("score", 0), reverse=True)
+    
+    return result
+
 def classification_competences(projet: str, system_prompt=system_prompt_competences, user_prompt=user_prompt_competences, model="haiku"):
     """
     Classifies a project based on required competences and sub-competences.
@@ -380,7 +453,65 @@ def classification_competences(projet: str, system_prompt=system_prompt_competen
     
     return response_dict
 
-def generation_question_fermes(projet: str, system_prompt=system_prompt_questions_fermees_boussole, user_prompt=user_prompt_questions_fermees_boussole, model="haiku"):
+def classification_competences_V2(projet: str, system_prompt=system_prompt_competences_V2, user_prompt=user_prompt_competences_V2,  examples_prompt = few_shot_exs_competences_V2, model="haiku"):
+    # Use the MODEL_NAME variable that's being set
+    model_name = "claude-3-7-sonnet-20250219" if model == "sonnet" else "claude-3-5-haiku-20241022"
+    #print(model_name)
+    response = client.messages.create(
+        model=model_name,  # Use the variable instead of hardcoding
+        temperature = 0.5,
+        max_tokens=1024,
+        system=[{"type": "text","text": system_prompt,"cache_control": {"type": "ephemeral"}}],
+        messages = [{
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": examples_prompt, "cache_control": {"type": "ephemeral"}},
+                        {"type": "text", "text": user_prompt, "cache_control": {"type": "ephemeral"}},
+                        {"type": "text", "text": f"<projet>\n{projet}\n</projet>"}
+                    ]
+                }]
+
+    )   
+    # Print token usage information
+    input_tokens = response.usage.input_tokens
+    output_tokens = response.usage.output_tokens
+    input_tokens_cache_read = getattr(response.usage, 'cache_read_input_tokens', '---')
+    input_tokens_cache_create = getattr(response.usage, 'cache_creation_input_tokens', '---')
+    print(f"User input tokens: {input_tokens}")
+    print(f"Output tokens: {output_tokens}")
+    print(f"Input tokens (cache read): {input_tokens_cache_read}")
+    print(f"Input tokens (cache write): {input_tokens_cache_create}")
+    #print(response.content[0].text)
+
+    #Extract content between <json> 
+    json_content = re.search(r'<json>(.*?)</json>', response.content[0].text, re.DOTALL)    
+    # Initialize response dictionary
+    response_dict = {
+        "projet": projet,
+        "competences": [],
+    }
+    
+    # Parse JSON content
+    if json_content:
+        json_str = json_content.group(1).strip()
+        try:
+            json_data = json.loads(json_str)
+            print("LLM response before post-treatment: \n",json_data)
+            # post-treatment of the LLM response for competences
+            json_data = post_treatment_competences_V2(json_data, competences_V2,None)
+            #print("--------------------------------\n")
+            print("LLM response after post-treatment: \n",json_data)
+            response_dict.update(json_data)
+        except json.JSONDecodeError:
+            response_dict["competences"] = "Error in treating the project: Invalid JSON format"
+    else:
+        print("No JSON content found in the response.")
+        response_dict["competences"] = "Error in treating the project: No JSON content found"
+    
+    return response_dict
+
+
+def generation_questions_fermees(projet: str, system_prompt=system_prompt_questions_fermees_boussole, user_prompt=user_prompt_questions_fermees_boussole, model="haiku"):
     """
     Generates closed-ended questions for a project based on its description.
     
@@ -537,12 +668,12 @@ if __name__ == "__main__":
             projet=args.projet,  # This will be either the original description or the resume
             system_prompt=system_prompt_classification_TE,
             user_prompt=user_prompt_classification_TE,
-            model="sonnet"
+            model="haiku"
         )
         print(json.dumps(response_classification, ensure_ascii=False))
     elif args.type == 'questions':
         try:
-            questions = generation_question_fermes(
+            questions = generation_questions_fermees(
                 projet=args.projet,
                 model="haiku"
             )
@@ -567,10 +698,11 @@ if __name__ == "__main__":
             print(f"Args received: {args}", file=sys.stderr)
             sys.exit(1)
     else:
-        response_competences = classification_competences(
+        response_competences = classification_competences_V2(
             projet=args.projet,
-            system_prompt=system_prompt_competences,
-            user_prompt=user_prompt_competences,
-            model="sonnet"
+            system_prompt=system_prompt_competences_V2,
+            user_prompt=user_prompt_competences_V2,
+            examples_prompt=few_shot_exs_competences_V2,
+            model="haiku"
         )
         print(json.dumps(response_competences, ensure_ascii=False))

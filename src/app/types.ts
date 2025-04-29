@@ -9,6 +9,7 @@ export interface LeviersResult {
 interface Competence {
   competence: string;
   sous_competence: string;
+  code: string;
   score: number;
 }
 
@@ -31,7 +32,12 @@ export interface FormattedQuestionAnswer {
   answer: "oui" | "non";
 }
 
-export type ReferenceTable = {
+export type FNVReferenceTable = {
   FNV: string[];
   Levier: string[];
+};
+
+export type CompetenceReferenceTable = {
+  code: string[];
+  competence_sous_competence: string[];
 };

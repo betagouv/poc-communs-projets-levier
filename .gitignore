@@ -45,6 +45,7 @@ workflow_requalification_projet.ipynb
 
 #python cache
 /__pycache__
+scripts/**/__pycache__/
 
 #intellij
 .idea
