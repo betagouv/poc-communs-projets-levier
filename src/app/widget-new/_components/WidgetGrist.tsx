@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import type { RowRecord } from "grist/GristData";
-import { CompetencesResult, FNVReferenceTable, LeviersResult, QuestionAnswers } from "@/app/types";
+import {
+  CompetenceReferenceTable,
+  CompetencesResult,
+  FNVReferenceTable,
+  LeviersResult,
+  QuestionAnswers,
+} from "@/app/types";
 import { WidgetColumnMap } from "grist/CustomSectionAPI";
 import { ProjectDetail } from "./ProjectDetail";
 import { ThematiquesSection } from "./ThematiquesSection";
@@ -20,6 +26,7 @@ export const WidgetGrist = () => {
   const [currentSelection, setCurrentSelection] = useState<RowRecord | null>(null);
   const [columnMapping, setColumnMapping] = useState<WidgetColumnMap | null>(null);
   const [FNV_ReferenceTable, setFNV_ReferenceTable] = useState<FNVReferenceTable | null>(null);
+  const [competenceReferenceTable, setCompetenceReferenceTable] = useState<CompetenceReferenceTable | null>(null);
   const [leviersHaveBeenSaved, setLeviersHaveBeenSaved] = useState(false);
   const [thematiquesHaveBeenSaved, setThematiquesHaveBeenSaved] = useState(false);
   const [descriptionHasBeenUpdated, setDescriptionHasBeenUpdated] = useState(false);
@@ -28,8 +35,11 @@ export const WidgetGrist = () => {
 
   const fetchReferencesTable = async (): Promise<void> => {
     const levierReferenceTable: FNVReferenceTable = await grist.docApi.fetchTable("Thematiques_FNV");
-
+    const competenceReferenceTable: CompetenceReferenceTable = await grist.docApi.fetchTable(
+      "Referentiel_competences_M57_2025",
+    );
     setFNV_ReferenceTable(levierReferenceTable);
+    setCompetenceReferenceTable(competenceReferenceTable);
   };
 
   useEffect(() => {
@@ -38,10 +48,8 @@ export const WidgetGrist = () => {
       columns: [
         { name: "intitule", type: "Text" },
         { name: "description", type: "Text" },
-        { name: "code_thematique_prioritaire", type: "Text" },
-        { name: "code_thematique_secondaire", type: "Text" },
-        { name: "thematique_prioritaire", type: "Choice" },
-        { name: "thematique_secondaire", type: "Choice" },
+        { name: "code_thematique_prioritaire" },
+        { name: "code_thematique_secondaire" },
         { name: "leviers" },
       ],
     });
@@ -145,6 +153,7 @@ export const WidgetGrist = () => {
             columnMapping={columnMapping}
             currentSelection={currentSelection}
             setError={setError}
+            competenceReferenceTable={competenceReferenceTable}
             thematiquesHaveBeenSaved={thematiquesHaveBeenSaved}
             setThematiquesHaveBeenSaved={setThematiquesHaveBeenSaved}
           />

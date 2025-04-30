@@ -36,3 +36,8 @@ export type FNVReferenceTable = {
   FNV: string[];
   Levier: string[];
 };
+
+export type CompetenceReferenceTable = {
+  code: string[];
+  competence_sous_competence: string[];
+};
