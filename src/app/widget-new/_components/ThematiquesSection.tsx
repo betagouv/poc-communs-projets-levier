@@ -28,9 +28,9 @@ export const ThematiquesSection: FC<CompetencesResultsProps> = ({
   thematiquesHaveBeenSaved,
   setThematiquesHaveBeenSaved,
 }) => {
-  const getCompetenceCodeId = (code: string) => {
-    const matchedCompetenceCodeIndex = competenceReferenceTable!.code.findIndex(
-      (competenceCode) => competenceCode === code,
+  const getCompetenceId = (competence: string) => {
+    const matchedCompetenceCodeIndex = competenceReferenceTable!.competence_sous_competence.findIndex(
+      (competenceFromTable) => competenceFromTable === competence,
     );
     return matchedCompetenceCodeIndex + 1;
   };
@@ -41,14 +41,15 @@ export const ThematiquesSection: FC<CompetencesResultsProps> = ({
         throw new Error("No record or competences selected");
       }
       const competences = competencesResult.competences;
-      const mainCompetenceCodeColumnId = columnMapping?.code_thematique_prioritaire;
-      const secondaryCompetenceCodeColumnId = columnMapping?.code_thematique_secondaire;
+
+      const mainCompetenceColumnId = columnMapping?.thematique_prioritaire;
+      const secondaryCompetenceColumnId = columnMapping?.thematique_secondaire;
 
       await grist.selectedTable.update({
         id: currentSelection.id,
         fields: {
-          [mainCompetenceCodeColumnId as string]: getCompetenceCodeId(competences[0].code),
-          [secondaryCompetenceCodeColumnId as string]: getCompetenceCodeId(competences[1].code),
+          [mainCompetenceColumnId as string]: getCompetenceId(competences[0].competence),
+          [secondaryCompetenceColumnId as string]: getCompetenceId(competences[1].competence),
         },
       });
 
