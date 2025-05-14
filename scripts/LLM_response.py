@@ -20,8 +20,6 @@ client = anthropic.Anthropic(api_key=API_KEY)
 from prompts_leviers_competences import (
     system_prompt_classification_TE,
     user_prompt_classification_TE,
-    system_prompt_competences,
-    user_prompt_competences,
     system_prompt_competences_V2,
     user_prompt_competences_V2,
     few_shot_exs_competences_V2,
@@ -32,9 +30,6 @@ from prompts_leviers_competences import (
     leviers,
     corrections_leviers,
     competences_V2,
-    competences,
-    corrections_competences,
-    corrections_sous_competences
 )
 
 
@@ -207,84 +202,6 @@ def classification_TE(projet: str, system_prompt=system_prompt_classification_TE
         response_dict["raisonnement"] = "No raisonnement found in the response."
     return response_dict
 
-def post_treatment_competences(json_data, competences_list, corrections_competences, corrections_sous_competences):
-    """
-    Post-processes competences and sub-competences in a JSON response by correcting or removing invalid entries.
-    
-    This function takes a JSON response containing project information and competences, validates each competence
-    and sub-competence against reference lists, corrects them using corrections dictionaries, validates the pairs,
-    and removes invalid entries. The resulting competences are sorted by score in descending order.
-    
-    Args:
-        json_data (dict): A dictionary containing project data with the following structure:
-            {
-                'projet': str,
-                'competences': list[dict] where each dict contains:
-                    - 'competence': str
-                    - 'sous_competence': str
-                    - 'score': float
-            }
-        competences_list (dict): Dictionary of valid competences with their associated sub-competences
-        corrections_competences (dict): Dictionary mapping incorrect competence names to their correct forms
-        corrections_sous_competences (dict): Dictionary mapping incorrect sub-competence names to their correct forms
-    
-    Returns:
-        dict: A copy of the input dictionary with processed competences
-    """
-    # Create a deep copy of the entire json_data
-    result = copy.deepcopy(json_data)
-    
-    # Create a copy of competences to avoid modifying the list during iteration
-    competences_to_process = list(result["competences"])
-    result["competences"] = []
-    
-    # Iterate through the copy
-    for comp in competences_to_process:
-        competence_name = comp["competence"]
-        sous_competence_name = comp["sous_competence"]
-        score = comp["score"]
-        
-        # Check and correct competence name if needed
-        if competence_name not in competences_list:
-            if competence_name in corrections_competences:
-                competence_name = corrections_competences[competence_name]
-            else:
-                continue  # Skip this entry if competence is invalid and has no correction
-        
-        # Check if competence has possible sub-competences
-        has_possible_sous_competences = bool(competences_list.get(competence_name, []))
-        
-        if has_possible_sous_competences:
-            # If competence has possible sub-competences, it must have a valid one
-            if not sous_competence_name:
-                continue  # Skip if no sub-competence provided
-            
-            # Try to correct sub-competence if invalid
-            if sous_competence_name not in competences_list[competence_name]:
-                if sous_competence_name in corrections_sous_competences:
-                    sous_competence_name = corrections_sous_competences[sous_competence_name]
-                else:
-                    continue  # Skip if sub-competence invalid and no correction exists
-            
-            # Verify corrected sub-competence is valid for this competence
-            if sous_competence_name not in competences_list[competence_name]:
-                continue
-        else:
-            # If competence has no possible sub-competences, it should not have one
-            sous_competence_name = ""
-        
-        # Add the processed competence entry
-        result["competences"].append({
-            "competence": competence_name,
-            "sous_competence": sous_competence_name,
-            "score": score
-        })
-    
-    # Sort competences by score in descending order
-    result["competences"].sort(key=lambda x: x["score"], reverse=True)
-    
-    return result
-
 def post_treatment_competences_V2(json_data, competences_dict, corrections_competences_V2 = None):
     """
     Post-processes competences and sub-competences in a JSON response by correcting or removing invalid entries.
@@ -354,106 +271,40 @@ def post_treatment_competences_V2(json_data, competences_dict, corrections_compe
     
     return result
 
-def classification_competences(projet: str, system_prompt=system_prompt_competences, user_prompt=user_prompt_competences, model="haiku"):
-    """
-    Classifies a project based on required competences and sub-competences.
-    
-    This function uses the Claude LLM to analyze a project description and identify
-    relevant competences and sub-competences needed for the project, along with their scores.
-    The results are post-processed to ensure they match reference lists or corrections.
-    
-    Args:
-        projet (str): Description of the project to analyze
-        system_prompt (str, optional): System prompt for the LLM. Defaults to system_prompt_competences.
-        user_prompt (str, optional): User prompt for the LLM. Defaults to user_prompt_competences.
-        model (str, optional): Model version to use ("haiku" or "sonnet"). Defaults to "haiku".
-        
-    Returns:
-        dict: A dictionary containing:
-            - projet (str): Original project description
-            - competences (list): List of dictionaries, each containing:
-                - competence (str): The competence name
-                - sous_competence (str): The sub-competence name (if applicable)
-                - score (float): Relevance score for this competence (0-1)
-              The competences are post-processed and sorted by descending score.
-    
-    Example:
-        >>> result = classification_competences("Rénovation thermique de la mairie")
-        >>> result
-        {
-            'projet': "Rénovation thermique de la mairie",
-            'competences': [
-                {'competence': 'Habitat', 'sous_competence': 'Bâtiments et construction', 'score': 0.9},
-                {'competence': 'Habitat', 'sous_competence': 'Equipement public', 'score': 0.9},
-                {'competence': 'Actions en matière de gestion des eaux', 'sous_competence': 'Eau potable', 'score': 0.4}
-            ]
-        }
-    """
-    # Use the MODEL_NAME variable that's being set
-    model_name = "claude-3-7-sonnet-20250219" if model == "sonnet" else "claude-3-5-haiku-20241022"
-    #print(model_name)
-    response = client.messages.create(
-        model=model_name,  # Use the variable instead of hardcoding
-        max_tokens=1024,
-        system=[
-            {
-                "type": "text",
-                "text": system_prompt,
-                "cache_control": {"type": "ephemeral"}
-            }
-        ],
-            messages=[
-        {
-            "role": "user",
-            "content":
-            [{"type": "text",
-            "text": user_prompt
-            ,"cache_control": {"type": "ephemeral"}
-            },
-            {
-                "type": "text",
-                "text":  "<projet>\n" + projet + "\n</projet>"
-            }
-            ]
-        }
-    ]
-        )   
-    # Print token usage information
-    # input_tokens = response.usage.input_tokens
-    # output_tokens = response.usage.output_tokens
-    # input_tokens_cache_read = getattr(response.usage, 'cache_read_input_tokens', '---')
-    # input_tokens_cache_create = getattr(response.usage, 'cache_creation_input_tokens', '---')
-    # print(f"User input tokens: {input_tokens}")
-    # print(f"Output tokens: {output_tokens}")
-    # print(f"Input tokens (cache read): {input_tokens_cache_read}")
-    # print(f"Input tokens (cache write): {input_tokens_cache_create}")
-    # print(response.content[0].text)
-
-    #Extract content between <json> 
-    json_content = re.search(r'<json>(.*?)</json>', response.content[0].text, re.DOTALL)    
-    # Initialize response dictionary
-    response_dict = {
-        "projet": projet,
-        "competences": [],
-    }
-    
-    # Parse JSON content
-    if json_content:
-        json_str = json_content.group(1).strip()
-        try:
-            json_data = json.loads(json_str)
-            # post-treatment of the LLM response for competences
-            json_data = post_treatment_competences(json_data, competences,corrections_competences,corrections_sous_competences)
-            response_dict.update(json_data)
-        except json.JSONDecodeError:
-            response_dict["competences"] = "Error in treating the project: Invalid JSON format"
-    else:
-        print("No JSON content found in the response.")
-        response_dict["competences"] = "Error in treating the project: No JSON content found"
-    
-    return response_dict
-
 def classification_competences_V2(projet: str, system_prompt=system_prompt_competences_V2, user_prompt=user_prompt_competences_V2,  examples_prompt = few_shot_exs_competences_V2, model="haiku"):
+    """
+    Classifies competences for a project using an LLM and performs post-treatment.
+
+    This function sends a project description to an LLM (Claude) to identify relevant
+    competences. It then processes the LLM's JSON response to validate and format
+    the competences.
+
+    Args:
+        projet (str): The project description to analyze.
+        system_prompt (str, optional): The system prompt for the LLM.
+            Defaults to `system_prompt_competences_V2`.
+        user_prompt (str, optional): The user prompt for the LLM.
+            Defaults to `user_prompt_competences_V2`.
+        examples_prompt (str, optional): Few-shot examples for the LLM.
+            Defaults to `few_shot_exs_competences_V2`.
+        model (str, optional): The LLM model to use ("haiku" or "sonnet").
+            Defaults to "haiku".
+
+    Returns:
+        dict: A dictionary containing the original project description and a list of
+              identified competences (or an error message if issues occur).
+              Example:
+              {
+                  "projet": "Réhabilitation du marche couvert",
+                  "competences": [
+                      {"code": "90-633", "competence": "Action économique / Actions sectorielles > Développement touristique", "score": 0.8},
+                      {"code": "90-515", "competence": "Aménagement et services urbains > Opérations d'aménagement", "score": 0.7},
+                      {"code": "90-632", "competence": "Action économique / Actions sectorielles > Industrie, commerce et artisanat", "score": 0.6}
+                  ]
+              }
+              If JSON parsing fails or no JSON content is found in the LLM response,
+              the 'competences' field will contain an error string.
+    """
     # Use the MODEL_NAME variable that's being set
     model_name = "claude-3-7-sonnet-20250219" if model == "sonnet" else "claude-3-5-haiku-20241022"
     #print(model_name)
@@ -473,14 +324,14 @@ def classification_competences_V2(projet: str, system_prompt=system_prompt_compe
 
     )   
     # Print token usage information
-    input_tokens = response.usage.input_tokens
-    output_tokens = response.usage.output_tokens
-    input_tokens_cache_read = getattr(response.usage, 'cache_read_input_tokens', '---')
-    input_tokens_cache_create = getattr(response.usage, 'cache_creation_input_tokens', '---')
-    print(f"User input tokens: {input_tokens}")
-    print(f"Output tokens: {output_tokens}")
-    print(f"Input tokens (cache read): {input_tokens_cache_read}")
-    print(f"Input tokens (cache write): {input_tokens_cache_create}")
+    # input_tokens = response.usage.input_tokens
+    # output_tokens = response.usage.output_tokens
+    # input_tokens_cache_read = getattr(response.usage, 'cache_read_input_tokens', '---')
+    # input_tokens_cache_create = getattr(response.usage, 'cache_creation_input_tokens', '---')
+    # print(f"User input tokens: {input_tokens}")
+    # print(f"Output tokens: {output_tokens}")
+    # print(f"Input tokens (cache read): {input_tokens_cache_read}")
+    # print(f"Input tokens (cache write): {input_tokens_cache_create}")
     #print(response.content[0].text)
 
     #Extract content between <json> 
@@ -496,11 +347,11 @@ def classification_competences_V2(projet: str, system_prompt=system_prompt_compe
         json_str = json_content.group(1).strip()
         try:
             json_data = json.loads(json_str)
-            print("LLM response before post-treatment: \n",json_data)
+            #print("LLM response before post-treatment: \n",json_data)
             # post-treatment of the LLM response for competences
             json_data = post_treatment_competences_V2(json_data, competences_V2,None)
             #print("--------------------------------\n")
-            print("LLM response after post-treatment: \n",json_data)
+            #print("LLM response after post-treatment: \n",json_data)
             response_dict.update(json_data)
         except json.JSONDecodeError:
             response_dict["competences"] = "Error in treating the project: Invalid JSON format"
