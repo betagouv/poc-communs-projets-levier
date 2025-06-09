@@ -10,6 +10,7 @@ import json
 import sys
 import base64
 import copy
+import math
 
 load_dotenv()
 API_KEY = os.getenv("ANTHROPIC_API_KEY")
@@ -90,6 +91,130 @@ def post_treatment_leviers(json_data, leviers_list, corrections_leviers):
     return result
 
 
+
+def string_similarity(string1, string2):
+    """
+    Calculate string similarity using Jaro-Winkler distance.
+    """
+    # Handle edge cases
+    if not string1 or not string2:
+        return 0.0
+    
+    # Convert to lowercase for comparison
+    s1, s2 = string1.lower().strip(), string2.lower().strip()
+    
+    # Handle identical strings
+    if s1 == s2:
+        return 1.0
+    
+    return jaro_winkler_similarity(s1, s2)
+
+def jaro_winkler_similarity(s1, s2, prefix_scale=0.1):
+    """
+    Calculate Jaro-Winkler similarity between two strings.
+    Better handles transpositions and gives bonus for common prefixes.
+    """
+    # Calculate Jaro similarity first
+    jaro_sim = jaro_similarity(s1, s2)
+    
+    if jaro_sim == 0:
+        return 0.0
+    
+    # Calculate common prefix length (up to 4 characters)
+    prefix_len = 0
+    for i in range(min(len(s1), len(s2), 4)):
+        if s1[i] == s2[i]:
+            prefix_len += 1
+        else:
+            break
+    
+    # Apply Winkler modification
+    return jaro_sim + (prefix_len * prefix_scale * (1 - jaro_sim))
+
+def jaro_similarity(s1, s2):
+    """Calculate Jaro similarity between two strings."""
+    len1, len2 = len(s1), len(s2)
+    
+    if len1 == 0 and len2 == 0:
+        return 1.0
+    if len1 == 0 or len2 == 0:
+        return 0.0
+    
+    # Calculate the match window
+    match_window = max(len1, len2) // 2 - 1
+    if match_window < 0:
+        match_window = 0
+    
+    # Initialize match arrays
+    s1_matches = [False] * len1
+    s2_matches = [False] * len2
+    
+    matches = 0
+    transpositions = 0
+    
+    # Find matches
+    for i in range(len1):
+        start = max(0, i - match_window)
+        end = min(i + match_window + 1, len2)
+        
+        for j in range(start, end):
+            if s2_matches[j] or s1[i] != s2[j]:
+                continue
+            s1_matches[i] = s2_matches[j] = True
+            matches += 1
+            break
+    
+    if matches == 0:
+        return 0.0
+    
+    # Count transpositions
+    k = 0
+    for i in range(len1):
+        if not s1_matches[i]:
+            continue
+        while not s2_matches[k]:
+            k += 1
+        if s1[i] != s2[k]:
+            transpositions += 1
+        k += 1
+    
+    # Calculate Jaro similarity
+    jaro = (matches / len1 + matches / len2 + (matches - transpositions/2) / matches) / 3
+    return jaro
+
+
+def post_treatment_leviers_new(json_data, leviers_list):
+    result = copy.deepcopy(json_data)
+    LLM_leviers_to_process = dict(result["leviers"])
+    
+    for LLM_levier in LLM_leviers_to_process:
+        if LLM_levier not in leviers_list:
+            best_match = None
+            best_score = 0.7  # Minimum threshold
+            
+            # Find the levier with highest similarity score
+            for levier in leviers_list:
+                similarity_score = string_similarity(LLM_levier, levier)
+                if similarity_score > best_score:
+                    best_match = levier
+                    best_score = similarity_score
+            
+            if best_match:
+                # Replace with the best match
+                original_score = result["leviers"][LLM_levier]
+                del result["leviers"][LLM_levier]
+                result["leviers"][best_match] = original_score
+            else:
+                # No good match found, remove the levier
+                del result["leviers"][LLM_levier]
+    
+    # Sort leviers by score in descending order
+    sorted_leviers = dict(sorted(result["leviers"].items(), key=lambda x: x[1], reverse=True))
+    result["leviers"] = sorted_leviers
+    
+    return result
+
+
 def classification_TE(projet: str, system_prompt=system_prompt_classification_TE, user_prompt=user_prompt_classification_TE, model="haiku"):
     """
     Classifies a project's relationship with ecological transition and identifies relevant levers.
@@ -134,7 +259,7 @@ def classification_TE(projet: str, system_prompt=system_prompt_classification_TE
     response = client.messages.create(
         model=model_name,  # Use the variable instead of hardcoding
         max_tokens=1024,
-        temperature=0.3,
+        temperature=0,
         system=[
             {
                 "type": "text",
@@ -202,14 +327,13 @@ def classification_TE(projet: str, system_prompt=system_prompt_classification_TE
         response_dict["raisonnement"] = "No raisonnement found in the response."
     return response_dict
 
-def post_treatment_competences_V2(json_data, competences_dict, corrections_competences_V2 = None):
+def post_treatment_competences_V2(json_data, competences_dict):
     """
     Post-processes competences and sub-competences in a JSON response by correcting or removing invalid entries.
     
     Args:
         json_data (dict): Input JSON with project and competences
         competences_dict (dict): Dictionary of valid codes & competences
-        corrections_competences_V2 (dict, optional): Dictionary for corrections
     
     Returns:
         dict: Processed JSON with validated/corrected competences
@@ -349,7 +473,7 @@ def classification_competences_V2(projet: str, system_prompt=system_prompt_compe
             json_data = json.loads(json_str)
             #print("LLM response before post-treatment: \n",json_data)
             # post-treatment of the LLM response for competences
-            json_data = post_treatment_competences_V2(json_data, competences_V2,None)
+            json_data = post_treatment_competences_V2(json_data, competences_V2)
             #print("--------------------------------\n")
             #print("LLM response after post-treatment: \n",json_data)
             response_dict.update(json_data)
