@@ -949,6 +949,8 @@ corrections_leviers = {
     'Énergies renouvelables': 'Electricité renouvelable',
     'Solaire photovoltaïque': 'Electricité renouvelable',
     
+    # Egalim
+    'Respect d\'Egalim': 'Respect d\'Egalim pour la restauration collective',
     
     # Agriculture
     'Élevage durable': 'Elevage durable',
@@ -962,6 +964,8 @@ corrections_leviers = {
     'Gestion des bâtiments & machines': 'Bâtiments & Machines agricoles',
     'Agriculture durable': 'Développement de l\'agriculture biologique et de HVE',
     'Changements des pratiques agricoles': 'Développement de l\'agriculture biologique et de HVE',
+    'Efficacité des bâtiments & Machines': 'Bâtiments & Machines agricoles',
+    'Efficacité des bâtiments & Machines agricoles': 'Bâtiments & Machines agricoles',
     
     # Déchets
     'Collecte et tri des déchets' : 'Augmentation du taux de collecte',
@@ -970,10 +974,13 @@ corrections_leviers = {
     'Sobriété déchets': 'Prévention des déchets',
     'Sobriété des déchets': 'Prévention des déchets',
     'Gestion des déchets': 'Prévention des déchets',
+    'Recyclage et réutilisation des déchets': 'Valorisation matière des déchets',
+    'Réduction des déchets/pollutions': 'Prévention des déchets',
     
     # Mobility and transport
     '2 roues (élec & efficacité)': '2 roues (élec&efficacité)',
     'Deux roues (élec & efficacité)': '2 roues (élec&efficacité)',
+    '45. 2 roues (élec & efficacité)': '2 roues (élec&efficacité)',
     'Transport en commun': 'Transports en commun',
     'Transport décarboné': 'Fret décarboné et multimodalité',
     'Véhicules électriques et hybrides': 'Véhicules électriques',
@@ -983,6 +990,9 @@ corrections_leviers = {
     'Modes actifs': 'Vélo',
     'Mobilités douces': 'Vélo',
     'Mobilité douce': 'Vélo',
+    'Vélo (2 roues & efficacité)': 'Vélo',
+    'Vélo (alternative)': 'Vélo',
+    '40 Vélo': 'Vélo',
     
     # Réduction des déplacements
     'Réduction des émissions de CO2 liées aux déplacements': 'Réduction des déplacements',
@@ -996,7 +1006,10 @@ corrections_leviers = {
     'Réduction de l\'usage des véhicules privés': 'Réduction des déplacements',
     'Réduction des émissions de transport': 'Réduction des déplacements',
     'Réduction des émissions du transport': 'Réduction des déplacements',
-
+    'Réduction des émissions du transport routier': 'Réduction des déplacements',
+    'Sobriété des déplacements': 'Réduction des déplacements',
+    'Réduction de la mobilité routière': 'Réduction des déplacements',
+    'Réduction des déplacements (mobilité alternative)': 'Réduction des déplacements',
 
     # Industrie
     'Efficacité énergétique des sites industriels': 'Industrie diffuse',
@@ -1004,33 +1017,49 @@ corrections_leviers = {
     'Industrie (efficacité énergétique)': 'Industrie diffuse',
     'Efficacité énergétique des process': 'Industrie diffuse',
     'Efficacité énergétique des installations': 'Industrie diffuse',
+    'Efficacité énergétique des équipements': 'Industrie diffuse',
+    'Efficacité des équipements': 'Industrie diffuse',
 
     
     # Réno et sobriété bâtiments
     'Rénovation (tertiaire)' : 'Rénovation (hors changement chaudières)',
     'Rénovation': 'Rénovation (hors changement chaudières)',
     'Rénovation (résidentiel)': 'Rénovation (hors changement chaudières)',
+    'Rénovation hors changement de chaudières': 'Rénovation (hors changement chaudières)',
+    'Rénovation énergétique': 'Rénovation (hors changement chaudières)',
+    'Rénovation des bâtiments (résidentiel)': 'Rénovation (hors changement chaudières)',
+    'Rénovation (hors changement chaudières) (résidentiel)': 'Rénovation (hors changement chaudières)',
+    'Changement huisseries': 'Rénovation (hors changement chaudières)',
     'Efficacité énergétique des bâtiments tertiaires': 'Sobriété des bâtiments (tertiaire)',
     'Efficacité énergétique des bâtiments (tertiaire)': 'Sobriété des bâtiments (tertiaire)',
     'Performance énergétique des bâtiments (tertiaire)': 'Sobriété des bâtiments (tertiaire)',
     'Sobriété des bâtiments': 'Sobriété des bâtiments (résidentiel)',
+    'Efficacité énergétique des bâtiments': 'Sobriété des bâtiments (résidentiel)',
+    'Efficacité des bâtiments (tertiaire)': 'Sobriété des bâtiments (tertiaire)',
+    'Gestion des bâtiments (tertiaire)': 'Sobriété des bâtiments (tertiaire)',
+    'Gestion des bâtiments': 'Sobriété des bâtiments (résidentiel)',
+    'Efficacité énergétique des infrastructures sportives': 'Sobriété des bâtiments (tertiaire)',
+    'Efficacité énergétique des infrastructures': 'Sobriété des bâtiments (tertiaire)',
     
     # Vehicules privés
     'Efficacité des véhicules privés': 'Efficacité énergétique des véhicules privés',
     'Efficacité énergétique des véhicules': 'Efficacité énergétique des véhicules privés',
     'Réduction des émissions des véhicules': 'Efficacité énergétique des véhicules privés',
 
-    # Logistics
+    # Logistique
     'Sobriété logistique et efficacité': 'Efficacité et sobriété logistique',
     'Sobriété logistique': 'Efficacité et sobriété logistique',
     'Efficacité logistique et sobriété': 'Efficacité et sobriété logistique',
+    'Efficacité logistique': 'Efficacité et sobriété logistique',
+    'Sobriété et efficacité logistique': 'Efficacité et sobriété logistique',
     
-    # Protected areas and biodiversity
+    # Zones protégées et biodiversité
     'Résorption des points noirs de continuité écologique': 'Résorption des points noirs prioritaires de continuité écologique',
     'Superficie en aire protégée': 'Surface en aire protégée',
     '9. Surface en aire protégée': 'Surface en aire protégée',
     'Restoration des habitats naturels': 'Restauration des habitats naturels',
     'Artificialisation des sols': 'Sobriété foncière',
+    'Biodiversité': 'Restauration des habitats naturels',
     
     # Eau
     'Sobriété dans l\'utilisation de la ressource': 'Sobriété dans l\'utilisation de la ressource en eau',
@@ -1038,10 +1067,12 @@ corrections_leviers = {
     'Réutilisation des eaux usées traitées (REUT)': 'Sobriété dans l\'utilisation de la ressource en eau',
     'Récupération d\'eau de pluie': 'Sobriété dans l\'utilisation de la ressource en eau',
     
-    # Wood and construction
-    'Respect d\'Egalim': 'Respect d\'Egalim pour la restauration collective',
+    # Bois
     'Bois construction et commande publique': 'Gestion des forêts et produits bois',
     'Construction bois': 'Gestion des forêts et produits bois',
+    
+    # Réseaux et énergie
+    'Efficacité énergétique des réseaux': 'Réseaux de chaleur décarbonés',
     
     # Biofuels
     'Biocaburants': 'Bio-carburants',
